@@ -1,16 +1,14 @@
 <script>
 import Field from './components/Field.vue'
+import Tetris from '@/Tetris.js'
 export default{
   components:{
     Field,
   },
   data() {
     return {
-      field:[
-        [0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,0,0,0,0,0,0],
-        [1,1,1,0,0,0,0,0,0,0],
-      ]
+      tetris:new Tetris(),
+      field:[],
     }
   },
   methods:{
@@ -18,13 +16,23 @@ export default{
   },
   watch:{
 
-  }
+  },
+  mounted() {
+    this.$nextTick(function () {
+      this.field = this.tetris.display()
+    })
+  },
 }
 </script>
 
 <template>
   <main>
     <Field :field="field"></Field>
+    <!-- <pre>{{ field }}</pre> -->
+    <div v-for="(line,index) in field" :key = index>
+      {{ line }}
+    </div>
+
   </main>
 </template>
 
