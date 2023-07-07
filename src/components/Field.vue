@@ -46,6 +46,7 @@ li{
   list-style:none;
   display: flex;
   padding: 10px 10px;
+  border: 1px rgb(162, 162, 162) solid;
 }
 .fill{
     background-color: aquamarine;
