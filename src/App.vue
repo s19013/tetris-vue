@@ -15,7 +15,6 @@ export default{
     keyEvents(event){
       
       let code = event.code
-      console.log(code);
 
       /** 上 */
       if (code == "ArrowUp"   || code == "KeyW") { this.tetris.keyDownUp() }
