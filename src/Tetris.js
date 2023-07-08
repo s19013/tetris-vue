@@ -2,6 +2,7 @@ import Block from "./Block"
 
 export default class Tetris {
     Field = []
+    fallInterval = 1
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
     tetrimino = {
@@ -40,7 +41,8 @@ export default class Tetris {
         for (let block of this.tetrimino.Coordinate) {
             this.Field[block.y][block.x].isFill = true
         }
-        
+        this.Field[8][0].isFill = true
+        this.Field[8][9].isFill = true
     }
 
     /** ボタン押された時の処理たち */
