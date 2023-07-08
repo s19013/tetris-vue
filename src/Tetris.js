@@ -1,12 +1,21 @@
 import Block from "./Block"
 import CheckCanMove from "./CheckCanMove"
 
+// 時間に関する数字は全部ミリ秒
+
 export default class Tetris {
     checkCanMove = new CheckCanMove()
 
-
     Field = []
-    fallInterval = 1
+    autoDropIntervalId = null
+
+    /** 放置してると勝手にブロックが落ちる感覚 */
+    autoDropInterval = 1000 //ms
+
+    /** タイマー系 */
+    /** 接地面についてから固定までの猶予 */
+    graceTimeUntilFixation = 2000 //ms
+
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
     tetrimino = {
@@ -47,6 +56,10 @@ export default class Tetris {
         }
         this.Field[8][0].isFill = true
         this.Field[8][9].isFill = true
+
+        // .bind(this)でthis.が使えるようになる
+        // this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
+
     }
 
     /** ボタン押された時の処理たち */
@@ -116,7 +129,31 @@ export default class Tetris {
         console.log("space");
     }
 
-    /**  */
+    autoDrop(){
+        console.log("drop");
+        /** 動かせないなら固定化する */
+        if (this.checkCanMove.down({
+            Field:this.Field,
+            tetrimino:this.tetrimino
+            })
+            == false
+        ) {
+            this.immobilization()
+            return 
+        }
+
+        /** 動かせるようなら下に動かす */
+        /** 今の位置を古い情報として保存 */
+        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+
+        /** 位置を更新 */
+        for (let block of this.tetrimino.Coordinate) {
+            block.y += 1
+        }
+
+        this.moveTetrimino()
+    }
+
     moveTetrimino(){
         /** 古い場所のブロックを消して */
         for (let block of this.oldTetrimino.Coordinate) {
@@ -127,6 +164,23 @@ export default class Tetris {
             this.Field[block.y][block.x].isFill = true
         }
 
+    }
+
+    immobilization(){
+        /** 揃っているかを調べる */
+        console.log("immobilization");
+
+
+        /** 新しいブロックを生成 */
+        this.tetrimino = {
+            type:"T",
+            Coordinate:[
+                {x:4,y:0},
+                {x:4,y:1},
+                {x:5,y:0},
+                {x:5,y:1},
+            ]
+        }
     }
 
 
