@@ -228,7 +228,7 @@ export default class Tetris {
          *  前のif文でlowerEnd ≠ 9だと証明できた
          */
         for (let block of lowerEnds ) {
-            if (this.Field[block.y + 1][block.y].isFill) { return false }
+            if (this.Field[block.y + 1][block.x].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
