@@ -7,17 +7,17 @@ export default class Tetris {
     tetrimino = {
         type:"T",
         Coordinate:[
-            {x:3,y:1},
-            {x:4,y:1},
             {x:4,y:0},
+            {x:4,y:1},
+            {x:5,y:0},
             {x:5,y:1},
         ]
 
         // T
-        // {x:0,y:1},
-        // {x:1,y:1},
-        // {x:1,y:0},
-        // {x:2,y:1},
+        // {x:3,y:1},
+        // {x:4,y:1},
+        // {x:4,y:0},
+        // {x:5,y:1},
     }
 
     /** 動かす前のブロックの位置 */
@@ -149,8 +149,6 @@ export default class Tetris {
                 rightEdge = block
                 rightEdges.push(block)
             }
-
-            console.log("rightEdges: " + JSON.stringify(rightEdges));
             /** 古い情報は消す必要がある */
             /** 基準より小さいなら消す */
             rightEdges = rightEdges.filter( edge => {
@@ -161,15 +159,16 @@ export default class Tetris {
         console.log("rightEdges: " + JSON.stringify(rightEdges));
 
         /** 壁にぶつからないか調べる 
-         *  右に動かすと壁にぶつかるということは今右端のブロックはx = 10の場所にいることになる
+         *  右に動かすと壁にぶつかるということは今右端のブロックはx = 9の場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
-        if (rightEdge.x == 10) {return false}
+        if (rightEdge.x == 9) {return false}
 
         /** ブロックにぶつからないかどうか調べる
          *  単純に右隣りにブロックがあるかどうか調べるだけでok
-         *  前のif文でrightEdge ≠ 10だと証明できた
+         *  前のif文でrightEdge ≠ 9だと証明できた
          */
+        
         
         for (let block of rightEdges ) {
             if (this.Field[block.y][block.x + 1].isFill) { return false }
