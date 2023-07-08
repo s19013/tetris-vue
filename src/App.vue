@@ -9,11 +9,12 @@ export default{
     return {
       tetris:new Tetris(),
       field:[],
+      reRendIntervalId:0
     }
   },
   methods:{
     keyEvents(event){
-      
+      // _.debounce(,1000)
       let code = event.code
 
       /** 上 */
@@ -32,11 +33,16 @@ export default{
       if (code == "Space") {this.tetris.keyDownSpace()}
 
 
+      // デバック用 インターバルを止める
+      if (code == "KeyQ")  {clearInterval(this.reRendIntervalId)}
+
       /** フィールドを再描画 */
-      this.field = this.tetris.display()
+      this.reRender()
     },
-
-
+    reRender(){
+      this.field = this.tetris.display()
+      console.log("reRend");
+    }
   },
   watch:{
 
@@ -44,14 +50,19 @@ export default{
   mounted() {
     this.$nextTick(function () {
       this.field = this.tetris.display()
+      // 定期的再描画
+      this.reRendIntervalId = setInterval(this.reRender, 1000);
+
     })
     /** キーボード受付 */
     document.addEventListener('keydown', this.keyEvents)
 
+    
+
   },
   beforeUnmount() {
     /** キーボードによる動作の削除(副作用みたいエラーがでるため) */
-    
+    clearInterval(this.reRendIntervalId)
     document.removeEventListener("keydown", this.keyEvents);
   }
 }
