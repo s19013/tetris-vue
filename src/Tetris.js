@@ -50,6 +50,18 @@ export default class Tetris {
 
     keyDownDown(){
         console.log("down");
+        /** 動かせるかどうか確認*/
+        if (this.checkCanMoveDown()) {
+            /** 今の位置を古い情報として保存 */
+            this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+
+            /** 位置を更新 */
+            for (let block of this.tetrimino.Coordinate) {
+                block.y += 1
+            }
+
+            this.moveTetrimino()
+        }
     }
 
     keyDownLeft(){
@@ -172,6 +184,51 @@ export default class Tetris {
         
         for (let block of rightEdges ) {
             if (this.Field[block.y][block.x + 1].isFill) { return false }
+        }
+
+        /** ここまで確認してやっと動かせると返す */
+        return true;
+    }
+
+    checkCanMoveDown(){
+
+        /** 調べるために情報を集める必要がある */
+        /** 一番下端のブロックのyを取得 */
+        /** 基準として一番最初のブロックのyを入れとく */
+        let lowerEnd = this.tetrimino.Coordinate[0]
+        
+
+        /** 下端でもLミノJミノみたいに複数あるかもなので専用の箱を用意しておく */
+        let lowerEnds = []
+
+        for (let block of this.tetrimino.Coordinate) {
+            /** このプログラムは下にいくほどyの値が大きくなるので */
+            /** 基準より大きかったら 代入して新しい基準にする */
+            if (lowerEnd.y <= block.y) {
+                lowerEnd = block
+                lowerEnds.push(block)
+            }
+            /** 古い情報は消す必要がある */
+            /** 基準より小さいなら消す */
+            lowerEnds = lowerEnds.filter( edge => {
+                return lowerEnd.y <= edge.y
+            });
+        }
+        console.log("lowerEnd: " + JSON.stringify(lowerEnd));
+        console.log("lowerEnds: " + JSON.stringify(lowerEnds));
+
+        /** 壁にぶつからないか調べる 
+         *  下に動かすと壁にぶつかるということは今下端のブロックはy = 9の場所にいることになる
+         *  動かすとぶつかるようなら早期return
+        */
+        if (lowerEnd.y == 9) {return false}
+
+        /** ブロックにぶつからないかどうか調べる
+         *  単純に下隣りにブロックがあるかどうか調べるだけでok
+         *  前のif文でlowerEnd ≠ 9だと証明できた
+         */
+        for (let block of lowerEnds ) {
+            if (this.Field[block.y + 1][block.y].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
