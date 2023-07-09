@@ -29,8 +29,8 @@ export default class checkCanMove {
                 return leftEdge.x >= edge.x
             });
         }
-        console.log("leftEdge: " + JSON.stringify(leftEdge));
-        console.log("leftEdges: "+ JSON.stringify(leftEdges));
+        // console.log("leftEdge: " + JSON.stringify(leftEdge));
+        // console.log("leftEdges: "+ JSON.stringify(leftEdges));
 
         /** 壁にぶつからないか調べる 
          *  左に動かすと壁にぶつかるということは今左端のブロックはx = 0の場所にいることになる
@@ -74,8 +74,8 @@ export default class checkCanMove {
                 return rightEdge.x <= edge.x
             });
         }
-        console.log("rightEdge: " + JSON.stringify(rightEdge));
-        console.log("rightEdges: " + JSON.stringify(rightEdges));
+        // console.log("rightEdge: " + JSON.stringify(rightEdge));
+        // console.log("rightEdges: " + JSON.stringify(rightEdges));
 
         /** 壁にぶつからないか調べる 
          *  右に動かすと壁にぶつかるということは今右端のブロックはx = 9の場所にいることになる
@@ -121,8 +121,8 @@ export default class checkCanMove {
                 return lowerEnd.y <= edge.y
             });
         }
-        console.log("lowerEnd: " + JSON.stringify(lowerEnd));
-        console.log("lowerEnds: " + JSON.stringify(lowerEnds));
+        // console.log("lowerEnd: " + JSON.stringify(lowerEnd));
+        // console.log("lowerEnds: " + JSON.stringify(lowerEnds));
 
         /** 壁にぶつからないか調べる 
          *  下に動かすと壁にぶつかるということは今下端のブロックはy = 9の場所にいることになる
