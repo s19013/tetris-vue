@@ -77,13 +77,17 @@ export default{
   <main>
     <Field :field="field"></Field>
     <!-- <pre>{{ field }}</pre> -->
-    <div v-for="(line,index) in field" :key = index>
-      {{ line }}
+    <div class="deb">
+      <p v-for="(line,index) in field" :key = index>
+        {{ line }}
+      </p>
     </div>
 
   </main>
 </template>
 
 <style lang="scss" scoped>
-
+.Field{
+  float: right;
+}
 </style>
