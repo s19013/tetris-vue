@@ -41,7 +41,6 @@ export default{
     },
     reRender(){
       this.field = this.tetris.display()
-      console.log("reRend");
     }
   },
   watch:{
