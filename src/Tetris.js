@@ -1,10 +1,12 @@
 import Block from "./Block"
 import CheckCanMove from "./CheckCanMove"
+import Rotate from "./Rotate"
 
 // 時間に関する数字は全部ミリ秒
 
 export default class Tetris {
     checkCanMove = new CheckCanMove()
+    blockRotate = new Rotate()
 
     Field = []
     autoDropIntervalId = null
@@ -27,18 +29,6 @@ export default class Tetris {
             {x:4,y:0},
             {x:5,y:1},
         ]
-
-        // o
-        // {x:4,y:1},
-        // {x:4,y:0},
-        // {x:5,y:1},
-        // {x:5,y:0},
-
-        // T
-        // {x:3,y:1},
-        // {x:4,y:1},
-        // {x:4,y:0},
-        // {x:5,y:1},
     }
 
     /** 動かす前のブロックの位置 */
@@ -66,7 +56,7 @@ export default class Tetris {
 
 
         // .bind(this)でthis.が使えるようになる
-        this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
+        // this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
         
 
     }
@@ -127,6 +117,41 @@ export default class Tetris {
         }
     }
 
+    keyDownL(){
+        // とりあえず今は回転だけしたい
+        // ぶつかるとかそういうのは後回し
+
+        /** 今の位置を古い情報として保存 */
+        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+
+        /** 回転した後の位置を更新 */
+        this.tetrimino.Coordinate.forEach((block,index) => {
+
+            this.tetrimino.Coordinate[index]
+            = this.blockRotate.clockwise({
+                rotationPoint:this.tetrimino.Coordinate[1],
+                beforeRotation:block
+            })
+        })
+
+        
+        // for (let block of this.tetrimino.Coordinate){
+            
+        //     this.blockRotate.clockwise({
+        //         rotationPoint:this.tetrimino.Coordinate[1],
+        //         beforeRotation:block
+        //     })
+        // }
+
+        console.log("this.tetrimino.Coordinate: " + JSON.stringify(this.tetrimino.Coordinate));
+        
+        this.moveTetrimino()
+    }
+
+    keyDownJ(){
+
+    }
+
     keyDownSpace(){
         // console.log("space");
     }
@@ -163,6 +188,7 @@ export default class Tetris {
         }
         /** 新しい場所に描写 */
         for (let block of this.tetrimino.Coordinate) {
+            console.log();
             this.Field[block.y][block.x].isFill = true
         }
 
