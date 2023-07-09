@@ -29,12 +29,18 @@ export default{
       /** 右 */
       if (code == "ArrowRight" || code == "KeyD") {this.tetris.keyDownRight()}
 
-      /** スペース */
+      /** L 時計回り */
+      if (code == "KeyL") {this.tetris.keyDownL()}
+
+      /** J 反時計回り */
+      if (code == "KeyJ") {this.tetris.keyDownJ()}
+
+      /** スペース ホールド*/
       if (code == "Space") {this.tetris.keyDownSpace()}
 
 
       // デバック用 インターバルを止める
-      if (code == "KeyQ")  {clearInterval(this.reRendIntervalId)}
+      // if (code == "KeyQ")  {clearInterval(this.reRendIntervalId)}
 
       /** フィールドを再描画 */
       this.reRender()
