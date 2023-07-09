@@ -1,10 +1,13 @@
 /** 動かせるかどうかチェック */
 export default class checkCanMove {
-    // constructor({
-    //     fieldLowerEnd
-    // }) {
-    //     this.fieldLowerEnd  = fieldLowerEnd;
-    // }
+    constructor({
+        fieldWidth,
+        fieldHeight
+    }) {
+        // indexとかの関係で - 1する
+        this.fieldWidth   = fieldWidth - 1
+        this.fieldHeight  = fieldHeight;
+    }
 
 
     left({Field,tetrimino}){
@@ -78,14 +81,14 @@ export default class checkCanMove {
         // console.log("rightEdges: " + JSON.stringify(rightEdges));
 
         /** 壁にぶつからないか調べる 
-         *  右に動かすと壁にぶつかるということは今右端のブロックはx = 9の場所にいることになる
+         *  右に動かすと壁にぶつかるということは今右端のブロックはx = this.fieldWidthの場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
-        if (rightEdge.x == 9) {return false}
+        if (rightEdge.x == this.fieldWidth) {return false}
 
         /** ブロックにぶつからないかどうか調べる
          *  単純に右隣りにブロックがあるかどうか調べるだけでok
-         *  前のif文でrightEdge ≠ 9だと証明できた
+         *  前のif文でrightEdge ≠ this.fieldWidth だと証明できた
          */
         
         
@@ -125,17 +128,22 @@ export default class checkCanMove {
         // console.log("lowerEnds: " + JSON.stringify(lowerEnds));
 
         /** 壁にぶつからないか調べる 
-         *  下に動かすと壁にぶつかるということは今下端のブロックはy = 9の場所にいることになる
+         *  下に動かすと壁にぶつかるということは今下端のブロックはy = this.fieldHeightの場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
-        if (lowerEnd.y == 9) {return false}
+        if (lowerEnd.y == this.fieldHeight) {return false}
 
         /** ブロックにぶつからないかどうか調べる
          *  単純に下隣りにブロックがあるかどうか調べるだけでok
-         *  前のif文でlowerEnd ≠ 9だと証明できた
+         *  前のif文でlowerEnd ≠ this.fieldHeightだと証明できた
          */
         for (let block of lowerEnds ) {
-            if (Field[block.y + 1][block.x].isFill) { return false }
+            try {
+                if (Field[block.y + 1][block.x].isFill) { return false }
+            } catch (error) { 
+                // 最下層にいる状態で呼び出した
+                console.log(error);
+            }
         }
 
         /** ここまで確認してやっと動かせると返す */

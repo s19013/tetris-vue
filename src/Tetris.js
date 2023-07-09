@@ -5,12 +5,15 @@ import Rotate from "./Rotate"
 // 時間に関する数字は全部ミリ秒
 
 export default class Tetris {
-    checkCanMove = new CheckCanMove()
-    blockRotate = new Rotate()
+    checkCanMove = new CheckCanMove(10,10)
+    blockRotate = new Rotate(10,10)
 
     Field = []
     autoDropIntervalId = null
     score = 0
+
+    fieldWidth   = 10
+    fieldHeight  = 20;
 
     /** 放置してると勝手にブロックが落ちる感覚 */
     autoDropInterval = 1000 //ms
@@ -38,9 +41,9 @@ export default class Tetris {
         // 10*10のリストにblockクラスを入れる
         // i:縦
         // n:横
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < this.fieldHeight; i++) {
             let line = [] //横一列の配列
-            for (let n = 0; n < 10; n++) {
+            for (let n = 0; n < this.fieldWidth; n++) {
                 line.push(new Block())
             }
             this.Field.push(line)
@@ -126,7 +129,6 @@ export default class Tetris {
 
         /** 回転した後の位置を更新 */
         this.tetrimino.Coordinate.forEach((block,index) => {
-
             this.tetrimino.Coordinate[index]
             = this.blockRotate.clockwise({
                 rotationPoint:this.tetrimino.Coordinate[1],
@@ -225,9 +227,9 @@ export default class Tetris {
         
         /** 計算しやすいようにisFillを数値化する  */
         let table = []
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < this.fieldHeight; i++) {
             let line = []
-            for (let n = 0; n < 10; n++) {
+            for (let n = 0; n < this.fieldWidth; n++) {
                 line.push(Number(this.Field[i][n].isFill))
             }
             table.push(line)
@@ -284,9 +286,9 @@ export default class Tetris {
         /** n:横 */
 
         let temp = []
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < this.fieldHeight; i++) {
             let line = []
-            for (let n = 0; n < 10; n++) {
+            for (let n = 0; n < this.fieldWidth; n++) {
                 line.push(Number(this.Field[i][n].isFill))
             }
             temp.push(line)

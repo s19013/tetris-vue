@@ -1,16 +1,34 @@
 export default class Rotate {
+    constructor({
+        fieldWidth,
+        fieldHeight
+    }) {
+        // indexとかの関係で - 1する
+        this.fieldWidth   = fieldWidth - 1
+        this.fieldHeight  = fieldHeight;
+    }
     // ここで全部受け取ってシュミレーションさせたりするか
+    // 回転軸さえいじればtスピン行けそう
+
+    // 今は床とかぶらないように
 
     /**
      * @param Field 今現在のフィールド
      * @param direction 回転の方向
+     * @param tetrimino 今のブロックの状態
      */
-    // rotation({
-    //     Field,
-    //     direction
-    // }){
+    rotation({
+        Field,
+        direction,
+        tetrimino
+    }){
+        // 色々回してみてシュミレーションしていく
+        /** 実際にまわしてみた状態 */
+        let tentative
+    }
 
-    // }
+    /** 回せる状態か確認 */
+    // checkCanRotation
 
 
 
