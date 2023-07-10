@@ -129,4 +129,52 @@ export default class checkCanMove {
         /** ここまで確認してやっと動かせると返す */
         return true;
     }
+
+    up({Field,tetrimino}){
+
+        /** 調べるために情報を集める必要がある */
+        /** 一番上端のブロックのxを取得 */
+        /** 基準として一番最初のブロックのxを入れとく */
+        let topEdge = tetrimino.Coordinate[0]
+        
+
+        /** 上端でもLミノJミノみたいに複数あるかもなので専用の箱を用意しておく */
+        let topEdges = []
+
+        for (let block of tetrimino.Coordinate) {
+            /** 基準より数字が小さかったら代入して新しい基準にする 
+             *  (配列を使う関係上 上に行くほど数字が小さい)
+            */
+            if (topEdge.y >= block.y) {
+                topEdge = block
+                topEdges.push(block)
+            }
+            /** 古い情報は消す必要がある */
+            /** 基準より大きいなら消す */
+            topEdges = topEdges.filter( edge => {
+                return topEdge.y <= edge.y
+            });
+        }
+        // console.log("topEdge: " + JSON.stringify(topEdge));
+        // console.log("topEdges: " + JSON.stringify(topEdges));
+
+        /** 天辺にぶつからないか調べる 
+         *  上に動かすと天辺にぶつかるということは今上端のブロックはy = 0,もしくはそれよりも小さい場所にいることになる
+         *  動かすとぶつかるようなら早期return
+        */
+        if (topEdge.y <= 0) {return false}
+
+        /** ブロックにぶつからないかどうか調べる
+         *  単純に上隣りにブロックがあるかどうか調べるだけでok
+         *  前のif文でtopEdge ≠ this.fieldWidth だと証明できた
+         */
+        
+        
+        for (let block of topEdges ) {
+            if (Field[block.y - 1][block.y].isFill) { return false }
+        }
+
+        /** ここまで確認してやっと動かせると返す */
+        return true;
+    }
 }
