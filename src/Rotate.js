@@ -5,7 +5,7 @@ export default class Rotate {
     }) {
         // indexとかの関係で - 1する
         this.fieldWidth   = fieldWidth - 1
-        this.fieldHeight  = fieldHeight;
+        this.fieldHeight  = fieldHeight - 1;
     }
     // ここで全部受け取ってシュミレーションさせたりするか
     // 回転軸さえいじればtスピン行けそう
@@ -23,8 +23,28 @@ export default class Rotate {
         tetrimino
     }){
         // 色々回してみてシュミレーションしていく
-        /** 実際にまわしてみた状態 */
-        let tentative
+        /** 実際にまわしてみた状態
+         *  宣言なので今はコピーしただけの状態
+         */
+        let tentativeCoordinate = tetrimino.Coordinate
+
+        /** Oの時はそもそも回さない */
+        
+
+        if (direction == "clockwise" ) {
+            tentativeCoordinate.forEach((block,index) => {
+                tentativeCoordinate[index]
+                = this.clockwise({
+                    rotationPoint:tentativeCoordinate[tetrimino.clockwiseAxis],
+                    beforeRotation:block
+                })
+            })
+        }
+
+        /** 位置を更新 */
+        tetrimino.Coordinate = tentativeCoordinate
+
+        return tetrimino
     }
 
     /** 回せる状態か確認 */
