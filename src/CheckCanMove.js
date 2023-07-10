@@ -171,7 +171,7 @@ export default class checkCanMove {
         
         
         for (let block of topEdges ) {
-            if (Field[block.y - 1][block.y].isFill) { return false }
+            if (Field[block.y - 1][block.x].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
