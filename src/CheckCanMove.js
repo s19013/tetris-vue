@@ -6,7 +6,7 @@ export default class checkCanMove {
     }) {
         // indexとかの関係で - 1する
         this.fieldWidth   = fieldWidth - 1
-        this.fieldHeight  = fieldHeight;
+        this.fieldHeight  = fieldHeight - 1;
     }
 
 
