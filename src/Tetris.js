@@ -34,17 +34,7 @@ export default class Tetris {
 
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
-    tetrimino = {
-        type:"T",
-        Coordinate:[
-            {x:3,y:1},
-            {x:4,y:0},
-            {x:4,y:1},
-            {x:5,y:1},
-        ],
-        clockwiseAxis:2,
-        counterClockwiseAxis:2
-    }
+    tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.T));
 
     /** 動かす前のブロックの位置 */
     oldTetrimino = structuredClone(this.tetrimino);
@@ -72,7 +62,7 @@ export default class Tetris {
 
 
         // .bind(this)でthis.が使えるようになる
-        // this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
+        this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
         
 
     }
@@ -209,32 +199,24 @@ export default class Tetris {
             this.Field[block.y][block.x].moving = false
         }
 
-        console.log(this.tetrimino);
         /** 新しい場所に描写 */
         for (let block of this.tetrimino.Coordinate) {
-            console.log();
             this.Field[block.y][block.x].isFill = true
             this.Field[block.y][block.x].moving = true
         }
 
     }
 
+    /** 動かしているブロックを固定化する */
     immobilization(){
-        /** 揃っているかを調べる */
-        console.log("immobilization");
+        for (let block of this.tetrimino.Coordinate) {
+            this.Field[block.y][block.x].moving = false
+        }
 
 
         /** 新しいブロックを生成 */
-        this.tetrimino = {
-            type:"T",
-            Coordinate:[
-                {x:3,y:1},
-                {x:4,y:1},
-                {x:4,y:0},
-                {x:5,y:1},
-            ]
-        }
-
+        this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.T));
+        /** 揃っているかを調べる */
         this.isColumnsAligned()
     }
 
