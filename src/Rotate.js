@@ -1,12 +1,17 @@
 export default class Rotate {
+
     constructor({
         fieldWidth,
-        fieldHeight
+        fieldHeight,
+        checkCanMove
     }) {
         // indexとかの関係で - 1する
         this.fieldWidth   = fieldWidth - 1
         this.fieldHeight  = fieldHeight - 1;
+        this.checkCanMove = checkCanMove
     }
+
+    
     // ここで全部受け取ってシュミレーションさせたりするか
     // 回転軸さえいじればtスピン行けそう
 
@@ -30,6 +35,16 @@ export default class Rotate {
         /** Oの時はそもそも回さない */
         
         /** Iの時は逆 */
+
+        /** 回せるかどうか確認 
+         *  回せないならそのまま帰す(結局回さなかったってこと)
+        */
+        if (!this.checkCanRotation({
+            Field,
+            tetrimino
+        })) { return tetrimino }
+
+
 
         if (direction == "clockwise" ) {
             // 回したのを代入
@@ -93,12 +108,47 @@ export default class Rotate {
         return tetrimino
     }
 
-    /** 回せる状態か確認 */
-    checkCanRotation(){
+    /** 回せる状態か確認
+     * @param Field 今現在のフィールド
+     * @param tetrimino 今のブロックの状態
+     */
+    checkCanRotation({
+        Field,
+        tetrimino
+    }){
         /** 絶対回せない条件
          *  * 上下どっちも接している
          *  * 左右どっちも接している
          */
+
+        /** 上下どっちも接している */
+        let canMoveDown = this.checkCanMove.down({
+            Field:Field,
+            tetrimino:tetrimino
+        })
+
+        let canMoveUp = this.checkCanMove.up({
+            Field:Field,
+            tetrimino:tetrimino
+        })
+
+        if (!canMoveDown && !canMoveUp) { return false }
+
+        /** 左右どっちも接している */
+        let canMoveLeft = this.checkCanMove.left({
+            Field:Field,
+            tetrimino:tetrimino
+        })
+
+
+        let canMoveRight = this.checkCanMove.right({
+            Field:Field,
+            tetrimino:tetrimino
+        })
+
+        if (canMoveLeft ==false && canMoveRight == false) { return false }
+
+        return true
     }
 
 
