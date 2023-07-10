@@ -1,4 +1,4 @@
 export default class Block{
-    /** 動かせるブロックかどうか */ canMove = false 
+    /** 動かしているかどうか */ moving = false 
     /** 空かどうか */ isFill  = false 
 }
