@@ -2,7 +2,7 @@ export default class Tetrimino{
     /**
      * type ブロックの形
      * Coordinate 一番最初に現れる位置
-     * clockwiseAxis 時計回りのときの中心点
+     * clockwiseAxis 時計回りのときの中心点 (自分自身を参照するのが難しいようなのでindex番号で)
      * counterClockwiseAxis 反時計回りのときの中心点
      */
 
@@ -27,8 +27,8 @@ export default class Tetrimino{
             {x:4,y:1},
             {x:5,y:1},
         ],
-        clockwiseAxis:this.Coordinate[2],
-        counterClockwiseAxis:this.Coordinate[1]
+        clockwiseAxis:2,
+        counterClockwiseAxis:1
     }
 
     T = {
@@ -39,8 +39,8 @@ export default class Tetrimino{
             {x:4,y:1},
             {x:5,y:1},
         ],
-        clockwiseAxis:this.Coordinate[3],
-        counterClockwiseAxis:this.Coordinate[3]
+        clockwiseAxis:2,
+        counterClockwiseAxis:2
     }
 
     L = {
@@ -51,8 +51,8 @@ export default class Tetrimino{
             {x:4,y:1},
             {x:3,y:1},
         ],
-        clockwiseAxis:this.Coordinate[3],
-        counterClockwiseAxis:this.Coordinate[3]
+        clockwiseAxis:2,
+        counterClockwiseAxis:2
     }
 
     J = {
@@ -63,8 +63,8 @@ export default class Tetrimino{
             {x:4,y:1},
             {x:5,y:1},
         ],
-        clockwiseAxis:this.Coordinate[3],
-        counterClockwiseAxis:this.Coordinate[3]
+        clockwiseAxis:2,
+        counterClockwiseAxis:2
     }
 
     S = {
@@ -75,8 +75,8 @@ export default class Tetrimino{
             {x:4,y:1},
             {x:3,y:1},
         ],
-        clockwiseAxis:this.Coordinate[3],
-        counterClockwiseAxis:this.Coordinate[3]
+        clockwiseAxis:2,
+        counterClockwiseAxis:1
     }
 
     Z = {
@@ -87,13 +87,9 @@ export default class Tetrimino{
             {x:4,y:0},
             {x:5,y:0},
         ],
-        clockwiseAxis:this.Coordinate[3],
-        counterClockwiseAxis:this.Coordinate[3]
+        clockwiseAxis:1,
+        counterClockwiseAxis:2
     }
-
-
-
-
 
     // base =
 }
