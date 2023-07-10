@@ -120,7 +120,7 @@ export default class checkCanMove {
             /** 自分の下に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
-            if (Field[block.y + 1][block.x].moving) { continue }
+            if (Field[block.y + 1][block.x].isMoving) { continue }
 
             /** 自分の下にブロックがないか調べる */
             if (Field[block.y + 1][block.x].isFill) { return false }

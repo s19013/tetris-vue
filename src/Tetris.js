@@ -55,7 +55,7 @@ export default class Tetris {
         // 適当に色を塗ってみる
         for (let block of this.tetrimino.Coordinate) {
             this.Field[block.y][block.x].isFill = true
-            this.Field[block.y][block.x].moving = true
+            this.Field[block.y][block.x].isMoving = true
         }
         this.Field[8][0].isFill = true
         this.Field[8][9].isFill = true
@@ -154,7 +154,7 @@ export default class Tetris {
         //     })
         // }
 
-        console.log("this.tetrimino.Coordinate: " + JSON.stringify(this.tetrimino.Coordinate));
+        // console.log("this.tetrimino.Coordinate: " + JSON.stringify(this.tetrimino.Coordinate));
         
         this.moveTetrimino()
     }
@@ -196,13 +196,13 @@ export default class Tetris {
         /** 古い場所のブロックを消して */
         for (let block of this.oldTetrimino.Coordinate) {
             this.Field[block.y][block.x].isFill = false
-            this.Field[block.y][block.x].moving = false
+            this.Field[block.y][block.x].isMoving = false
         }
 
         /** 新しい場所に描写 */
         for (let block of this.tetrimino.Coordinate) {
             this.Field[block.y][block.x].isFill = true
-            this.Field[block.y][block.x].moving = true
+            this.Field[block.y][block.x].isMoving = true
         }
 
     }
@@ -210,7 +210,7 @@ export default class Tetris {
     /** 動かしているブロックを固定化する */
     immobilization(){
         for (let block of this.tetrimino.Coordinate) {
-            this.Field[block.y][block.x].moving = false
+            this.Field[block.y][block.x].isMoving = false
         }
 
 
@@ -257,7 +257,7 @@ export default class Tetris {
         for (let lineIndex of alignedRow) {
             for (let block of this.Field[lineIndex]) {
                 block.isFill = false
-                block.moving = false
+                block.isMoving = false
             }
         }
 
