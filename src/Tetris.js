@@ -1,19 +1,29 @@
 import Block from "./Block"
 import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
+import Tetrimino from "./Tetrimino"
 
 // 時間に関する数字は全部ミリ秒
 
 export default class Tetris {
-    checkCanMove = new CheckCanMove(10,10)
-    blockRotate = new Rotate(10,10)
-
     Field = []
     autoDropIntervalId = null
     score = 0
 
     fieldWidth   = 10
     fieldHeight  = 20;
+
+    checkCanMove = new CheckCanMove({
+        fieldWidth:this.fieldWidth,
+        fieldHeight:this.fieldHeight
+    })
+
+    rotater = new Rotate({
+        fieldWidth:this.fieldWidth,
+        fieldHeight:this.fieldHeight
+    })
+
+    tetriminoFactory = new Tetrimino()
 
     /** 放置してると勝手にブロックが落ちる感覚 */
     autoDropInterval = 1000 //ms
@@ -28,10 +38,12 @@ export default class Tetris {
         type:"T",
         Coordinate:[
             {x:3,y:1},
-            {x:4,y:1},
             {x:4,y:0},
+            {x:4,y:1},
             {x:5,y:1},
-        ]
+        ],
+        clockwiseAxis:2,
+        counterClockwiseAxis:2
     }
 
     /** 動かす前のブロックの位置 */
@@ -53,6 +65,7 @@ export default class Tetris {
         // 適当に色を塗ってみる
         for (let block of this.tetrimino.Coordinate) {
             this.Field[block.y][block.x].isFill = true
+            this.Field[block.y][block.x].moving = true
         }
         this.Field[8][0].isFill = true
         this.Field[8][9].isFill = true
@@ -127,14 +140,20 @@ export default class Tetris {
         /** 今の位置を古い情報として保存 */
         this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
 
-        /** 回転した後の位置を更新 */
-        this.tetrimino.Coordinate.forEach((block,index) => {
-            this.tetrimino.Coordinate[index]
-            = this.blockRotate.clockwise({
-                rotationPoint:this.tetrimino.Coordinate[1],
-                beforeRotation:block
-            })
+        this.tetrimino = this.rotater.rotation({
+            Field:this.Field,
+            direction:"clockwise",
+            tetrimino:this.tetrimino
         })
+
+        /** 回転した後の位置を更新 */
+        // this.tetrimino.Coordinate.forEach((block,index) => {
+        //     this.tetrimino.Coordinate[index]
+        //     = this.blockRotate.clockwise({
+        //         rotationPoint:this.tetrimino.Coordinate[1],
+        //         beforeRotation:block
+        //     })
+        // })
 
         
         // for (let block of this.tetrimino.Coordinate){
@@ -187,11 +206,15 @@ export default class Tetris {
         /** 古い場所のブロックを消して */
         for (let block of this.oldTetrimino.Coordinate) {
             this.Field[block.y][block.x].isFill = false
+            this.Field[block.y][block.x].moving = false
         }
+
+        console.log(this.tetrimino);
         /** 新しい場所に描写 */
         for (let block of this.tetrimino.Coordinate) {
             console.log();
             this.Field[block.y][block.x].isFill = true
+            this.Field[block.y][block.x].moving = true
         }
 
     }
@@ -250,7 +273,10 @@ export default class Tetris {
         this.score += alignedRow.length
         /** 揃った列を消す */
         for (let lineIndex of alignedRow) {
-            for (let block of this.Field[lineIndex]) { block.isFill = false}
+            for (let block of this.Field[lineIndex]) {
+                block.isFill = false
+                block.moving = false
+            }
         }
 
         /** フィールドを整える */

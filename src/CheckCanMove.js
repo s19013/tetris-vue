@@ -36,10 +36,10 @@ export default class checkCanMove {
         // console.log("leftEdges: "+ JSON.stringify(leftEdges));
 
         /** 壁にぶつからないか調べる 
-         *  左に動かすと壁にぶつかるということは今左端のブロックはx = 0の場所にいることになる
+         *  左に動かすと壁にぶつかるということは今左端のブロックはx = 0の場所,もしくはそれよりも小さい場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
-        if (leftEdge.x == 0) {return false}
+        if (leftEdge.x <= 0) {return false}
 
         /** ブロックにぶつからないかどうか調べる
          *  単純に左隣りにブロックがあるかどうか調べるだけでok
@@ -81,10 +81,10 @@ export default class checkCanMove {
         // console.log("rightEdges: " + JSON.stringify(rightEdges));
 
         /** 壁にぶつからないか調べる 
-         *  右に動かすと壁にぶつかるということは今右端のブロックはx = this.fieldWidthの場所にいることになる
+         *  右に動かすと壁にぶつかるということは今右端のブロックはx = this.fieldWidthの場所,もしくはそれよりも大きい場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
-        if (rightEdge.x == this.fieldWidth) {return false}
+        if (rightEdge.x >= this.fieldWidth) {return false}
 
         /** ブロックにぶつからないかどうか調べる
          *  単純に右隣りにブロックがあるかどうか調べるだけでok
@@ -101,49 +101,29 @@ export default class checkCanMove {
     }
 
     down({Field,tetrimino}){
+        /** ぶつかる物が1つでもあれば落ちないようにする */ 
 
-        /** 調べるために情報を集める必要がある */
-        /** 一番下端のブロックのyを取得 */
-        /** 基準として一番最初のブロックのyを入れとく */
-        let lowerEnd = tetrimino.Coordinate[0]
-        
-
-        /** 下端でもLミノJミノみたいに複数あるかもなので専用の箱を用意しておく */
-        let lowerEnds = []
-
-        for (let block of tetrimino.Coordinate) {
-            /** このプログラムは下にいくほどyの値が大きくなるので */
-            /** 基準より大きかったら 代入して新しい基準にする */
-            if (lowerEnd.y <= block.y) {
-                lowerEnd = block
-                lowerEnds.push(block)
-            }
-            /** 古い情報は消す必要がある */
-            /** 基準より小さいなら消す */
-            lowerEnds = lowerEnds.filter( edge => {
-                return lowerEnd.y <= edge.y
-            });
-        }
-        // console.log("lowerEnd: " + JSON.stringify(lowerEnd));
-        // console.log("lowerEnds: " + JSON.stringify(lowerEnds));
-
-        /** 壁にぶつからないか調べる 
-         *  下に動かすと壁にぶつかるということは今下端のブロックはy = this.fieldHeightの場所にいることになる
+        /** 床にぶつからないか調べる 
+         *  下に動かすと床にぶつかるということは今下端のブロックはy = this.fieldHeightの場所,もしくはそれより大きい場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
-        if (lowerEnd.y == this.fieldHeight) {return false}
+        for (let block of tetrimino.Coordinate) {
+            if (block.y >= this.fieldHeight) {return false}
+        }
 
         /** ブロックにぶつからないかどうか調べる
-         *  単純に下隣りにブロックがあるかどうか調べるだけでok
+         *  下隣りにブロックがあるかどうか調べる
+         *  自分自身は除外しないとブロックが落ちなくなる
          *  前のif文でlowerEnd ≠ this.fieldHeightだと証明できた
          */
-        for (let block of lowerEnds ) {
-            try {
-                if (Field[block.y + 1][block.x].isFill) { return false }
-            } catch (error) { 
-                // 最下層にいる状態で呼び出した
-                console.log(error);
-            }
+        for (let block of tetrimino.Coordinate ) {
+            /** 自分の下に属してるグループのブロックがないか調べる
+             *  あったらスキップする
+             */
+            if (Field[block.y + 1][block.x].moving) { continue }
+
+            /** 自分の下にブロックがないか調べる */
+            if (Field[block.y + 1][block.x].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
