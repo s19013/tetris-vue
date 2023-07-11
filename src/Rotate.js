@@ -15,8 +15,6 @@ export default class Rotate {
     // ここで全部受け取ってシュミレーションさせたりするか
     // 回転軸さえいじればtスピン行けそう
 
-    // 今は床とかぶらないように
-
     /**
      * @param Field 今現在のフィールド
      * @param direction 回転の方向
@@ -36,16 +34,6 @@ export default class Rotate {
         
         /** Iの時は逆 */
 
-        /** 回せるかどうか確認 
-         *  回せないならそのまま帰す(結局回さなかったってこと)
-        */
-        if (!this.checkCanRotation({
-            Field,
-            tetrimino
-        })) { return tetrimino }
-
-
-
         if (direction == "clockwise" ) {
             // 回したのを代入
             tentativeCoordinate = tetrimino.Coordinate.map(block => {
@@ -54,14 +42,7 @@ export default class Rotate {
                     beforeRotation:block
                 })
             })
-
-            tentativeCoordinate = this.checkIfThereIsACoveredBlockAfterClockwise({
-                Field:Field,
-                tentativeCoordinate:tentativeCoordinate,
-                rotationPoint:tentativeCoordinate[tetrimino.clockwiseAxis]
-            })
-        } 
-        else {
+        } else {
             tentativeCoordinate = tetrimino.Coordinate.map(block => {
                 return this.counterClockwise({
                     rotationPoint:tetrimino.Coordinate[tetrimino.clockwiseAxis],
@@ -70,37 +51,19 @@ export default class Rotate {
             })
         } 
 
-        /** すでにおいているぶつかるようだったらちょっと移動する */
-
-        /** y軸 */
-        // let coveredBlocks  = []
-        // tentativeCoordinate.forEach(block => {
-        //     if (Field[block.y][block.x].isFill == true
-        //         &&
-        //         Field[block.y][block.x].isMoving == false
-        //     ) {
-        //         coveredBlocks.push(block)
-        //     }
-        // });
-
-
-        // tentativeCoordinate = tentativeCoordinate.map(block => {
-        //     Field[block.y][block.x].isFill = true
-        //     &&
-        //     Field[block.y][block.x].isMoving = false
-
-        // })
-
-        // 下はわかるけど､左右はわかりにくい
-        // 中心よりいくつとかんがえるか?
-
-        /** X軸 */
-        // tentativeCoordinate = tentativeCoordinate.map(block => {
-        //     Field[block.y][block.x].isFill = true
-        //     &&
-        //     Field[block.y][block.x].isMoving = false
-
-        // })
+        /** 回転したブロックが壁や床､既存のブロックと被っているかどうか調べる */
+        try {
+            tentativeCoordinate = this.checkIfThereIsACoveredBlock({
+                Field:Field,
+                tentativeCoordinate:tentativeCoordinate,
+                rotationPoint:tentativeCoordinate[tetrimino.clockwiseAxis]
+            })
+        } catch (error) {
+            /** エラーが起きた
+             * つまり回せなかったのでそのまま帰す 
+             */
+            return tetrimino
+        }
 
         /** 位置を更新 */
         tetrimino.Coordinate = tentativeCoordinate
@@ -222,79 +185,87 @@ export default class Rotate {
         return afterRotation
     }
 
-    /**
+    /** すでにおいているぶつかるようだったらちょっと移動する
+     *  すでにおいてあるブロックとかぶらないか確認と被っていた時の処理
+     *  絶対に回せない状況ではないことは別の関数で証明された
      * 
      * @param Field 今現在のフィールド
      * @param tentativeCoordinate ブロックの状態
      * @param rotationPoint 回転軸
      */
-
-    /** すでにおいてあるブロックとかぶらないか確認と被っていた時の処理*/
-    /** 絶対に回せない状況ではないことは別の関数で証明された */
-    checkIfThereIsACoveredBlockAfterClockwise({
+    checkIfThereIsACoveredBlock({
         Field,
         tentativeCoordinate,
         rotationPoint
     }){
-        // let coveredBlocks  = []
-
         // そのまま使うと参照元が変わってしまうため｡
         /** また別の仮の状態の変数 */
         let tentativeCoordinate2 = JSON.parse(JSON.stringify(tentativeCoordinate));
 
         for (let block of tentativeCoordinate2) {
+            /** 壁や床と被っているようなら移動する */
+
+            // console.log(JSON.stringify(block));
+            /** 左の壁 */
+            if (block.x < 0) {
+                tentativeCoordinate2.forEach(temp => {
+                    temp.x += 1
+                });
+            }
+
+            /** 右の壁 */
+            if (block.x > this.fieldWidth) {
+                tentativeCoordinate2.forEach(temp => {
+                    temp.x -= 1
+                });
+            }
+
+            /** 床 */
+            if (block.y > this.fieldHeight) {
+                tentativeCoordinate2.forEach(temp => {
+                    temp.y -= 1
+                });
+            }
+
+            /** 天井 */
+            if (block.y < 0) {
+                tentativeCoordinate2.forEach(temp => {
+                    temp.y += 1
+                });
+            }
+
+            /** おいているブロックに被っている状態なら移動する */
             if (Field[block.y][block.x].isFill == true
                 &&
                 Field[block.y][block.x].isMoving == false
             ) {
-                let amountOfMovement = {
+                // 途中で計算式が狂わないように変数に保存しておく
+                // そのままやったら色々狂ってしまった｡
+                let amountOfMove = {
                     x:rotationPoint.x - block.x,
                     y:rotationPoint.y - block.y
                 }
-
-                console.log(JSON.stringify(amountOfMovement))
-
                 tentativeCoordinate2.forEach(temp => {
-                    temp.x += amountOfMovement.x
-                    temp.y += amountOfMovement.y
+                    temp.x += amountOfMove.x
+                    temp.y += amountOfMove.y
                 });
-    
-                console.log(JSON.stringify(tentativeCoordinate2))
             }
         }
 
-        // console.log(JSON.stringify(coveredBlocks))
-        // console.log(JSON.stringify(rotationPoint))
+        // 移動した状態でも被っているかを調べる
+        // console.log(JSON.stringify(tentativeCoordinate2));
+        for (let block of tentativeCoordinate2) {
+            if (Field[block.y][block.x].isFill == true
+                &&
+                Field[block.y][block.x].isMoving == false
+            ) {
+                /** 被っている状態 
+                 *  本来なら回せない状態だったということので処理を中断させる
+                */ 
+                throw "can't rotation"
+            }
+        }
 
-        // どこが被っているかはわかったじゃあ次どうするか
-        // 回転軸を中心にどこに何ます動かすか考える
-        // if (coveredBlocks.length != 0) {
-        //     // 例 {x:4,y:10}のブロックが被っている
-        //     // 回転軸は{x:3,10}
-        //     // 全部を左に 1動かす
-        //     // 計算式だと
-        //     // 軸 - 被っているブロック
-
-        //     console.log(rotationPoint.x - coveredBlocks.x);
-        //     let amountOfMovement = {
-        //         x:rotationPoint.x - coveredBlocks.x,
-        //         y:rotationPoint.y - coveredBlocks.y
-        //     }
-
-        //     console.log(JSON.stringify(amountOfMovement))
-
-        //     tentativeCoordinate.forEach(block => {
-        //         block.x += amountOfMovement.x
-        //         block.y += amountOfMovement.y
-        //     });
-
-        //     console.log(JSON.stringify(tentativeCoordinate))
-        // }
-
-
-
-
-        // ここでも回せないと分かったらtherowする
         return tentativeCoordinate2
     }
 }
