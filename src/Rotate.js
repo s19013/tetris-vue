@@ -194,61 +194,63 @@ export default class Rotate {
         /** また別の仮の状態の変数 */
         let tentativeCoordinate2 = JSON.parse(JSON.stringify(tentativeCoordinate));
 
-        for (let block of tentativeCoordinate2) {
+        for (let tentativeBlock of tentativeCoordinate2) {
             /** 壁や床と被っているようなら移動する */
 
             /** 左の壁 */
-            if (block.x < 0) {
-                tentativeCoordinate2.forEach(temp => {
-                    temp.x += 1
+            if (tentativeBlock.x < 0) {
+                tentativeCoordinate2.forEach(block => {
+                    block.x += 1
                 });
             }
 
             /** 右の壁 */
-            if (block.x > this.fieldWidth) {
-                tentativeCoordinate2.forEach(temp => {
-                    temp.x -= 1
+            if (tentativeBlock.x > this.fieldWidth) {
+                tentativeCoordinate2.forEach(block => {
+                    block.x -= 1
                 });
             }
 
             /** 床 */
-            if (block.y > this.fieldHeight) {
-                tentativeCoordinate2.forEach(temp => {
-                    temp.y -= 1
+            if (tentativeBlock.y > this.fieldHeight) {
+                tentativeCoordinate2.forEach(block => {
+                    block.y -= 1
                 });
             }
 
             /** 天井 */
-            if (block.y < 0) {
-                tentativeCoordinate2.forEach(temp => {
-                    temp.y += 1
+            if (tentativeBlock.y < 0) {
+                tentativeCoordinate2.forEach(block => {
+                    block.y += 1
                 });
             }
 
             /** おいているブロックに被っている状態なら移動する */
-            if (Field[block.y][block.x].isFill == true
+            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                Field[block.y][block.x].isMoving == false
+                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
             ) {
                 // 途中で計算式が狂わないように変数に保存しておく
                 // そのままやったら色々狂ってしまった｡
                 let amountOfMove = {
-                    x:rotationPoint.x - block.x,
-                    y:rotationPoint.y - block.y
+                    x:rotationPoint.x - tentativeBlock.x,
+                    y:rotationPoint.y - tentativeBlock.y
                 }
-                tentativeCoordinate2.forEach(temp => {
-                    temp.x += amountOfMove.x
-                    temp.y += amountOfMove.y
+                tentativeCoordinate2.forEach(block => {
+                    block.x += amountOfMove.x
+                    block.y += amountOfMove.y
                 });
             }
         }
 
+        
+
         // 移動した状態でも被っているかを調べる
         // console.log(JSON.stringify(tentativeCoordinate2));
-        for (let block of tentativeCoordinate2) {
-            if (Field[block.y][block.x].isFill == true
+        for (let tentativeBlock of tentativeCoordinate2) {
+            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                Field[block.y][block.x].isMoving == false
+                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
             ) {
                 /** 被っている状態 
                  *  本来なら回せない状態だったということので処理を中断させる
