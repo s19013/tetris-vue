@@ -20,7 +20,8 @@ export default class Tetris {
 
     rotater = new Rotate({
         fieldWidth:this.fieldWidth,
-        fieldHeight:this.fieldHeight
+        fieldHeight:this.fieldHeight,
+        checkCanMove:this.checkCanMove
     })
 
     tetriminoFactory = new Tetrimino()
@@ -34,7 +35,7 @@ export default class Tetris {
 
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
-    tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.T));
+    tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.I));
 
     /** 動かす前のブロックの位置 */
     oldTetrimino = structuredClone(this.tetrimino);
@@ -57,12 +58,17 @@ export default class Tetris {
             this.Field[block.y][block.x].isFill = true
             this.Field[block.y][block.x].isMoving = true
         }
-        this.Field[8][0].isFill = true
-        this.Field[8][9].isFill = true
+
+        // for (let index = 4; index <9 ; index++) {
+        //     this.Field[index][4].isFill = true
+        //     this.Field[index][7].isFill = true
+        // }
+        // this.Field[8][0].isFill = true
+        // this.Field[8][9].isFill = true
 
 
-        // .bind(this)でthis.が使えるようになる
-        this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
+        // .bind(this)でコールバック内でもthis.が使えるようになる
+        // this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
         
 
     }
@@ -70,6 +76,22 @@ export default class Tetris {
     /** ボタン押された時の処理たち */
     keyDownUp(){
         // console.log("up");
+        // デバック用
+        // if (this.checkCanMove.up({
+        //         Field:this.Field,
+        //         tetrimino:this.tetrimino
+        //     })
+        // ) {
+        //     /** 今の位置を古い情報として保存 */
+        //     this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+
+        //     /** 位置を更新 */
+        //     for (let block of this.tetrimino.Coordinate) {
+        //         block.y -= 1
+        //     }
+
+        //     this.moveTetrimino()
+        // }
     }
 
     keyDownDown(){
@@ -124,42 +146,69 @@ export default class Tetris {
     }
 
     keyDownL(){
-        // とりあえず今は回転だけしたい
-        // ぶつかるとかそういうのは後回し
-
         /** 今の位置を古い情報として保存 */
         this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
 
+        /** Oミノはそもそも回さない */
+        if (this.tetrimino.type == "O") {
+
+            // 再描画するだけで早期リターン
+            this.moveTetrimino()
+            return 
+        }
+
+        /** Iミノは回し方が特殊 */
+        if (this.tetrimino.type == "I") {
+            this.tetrimino = this.rotater.rotation({
+                Field:this.Field,
+                direction:"counterClockwise",
+                tetrimino:this.tetrimino
+            })
+            this.moveTetrimino()
+            return 
+        }
+
+        /** 回転した後の位置を更新 */
         this.tetrimino = this.rotater.rotation({
             Field:this.Field,
             direction:"clockwise",
             tetrimino:this.tetrimino
         })
-
-        /** 回転した後の位置を更新 */
-        // this.tetrimino.Coordinate.forEach((block,index) => {
-        //     this.tetrimino.Coordinate[index]
-        //     = this.blockRotate.clockwise({
-        //         rotationPoint:this.tetrimino.Coordinate[1],
-        //         beforeRotation:block
-        //     })
-        // })
-
-        
-        // for (let block of this.tetrimino.Coordinate){
-            
-        //     this.blockRotate.clockwise({
-        //         rotationPoint:this.tetrimino.Coordinate[1],
-        //         beforeRotation:block
-        //     })
-        // }
-
-        // console.log("this.tetrimino.Coordinate: " + JSON.stringify(this.tetrimino.Coordinate));
         
         this.moveTetrimino()
     }
 
     keyDownJ(){
+
+        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+
+        /** Oミノはそもそも回さない */
+        if (this.tetrimino.type == "O") {
+
+            // 再描画するだけで早期リターン
+            this.moveTetrimino()
+            return 
+        }
+
+        /** Iミノは回し方が逆 */
+        if (this.tetrimino.type == "I") {
+            this.tetrimino = this.rotater.rotation({
+                Field:this.Field,
+                direction:"clockwise",
+                tetrimino:this.tetrimino
+            })
+            this.moveTetrimino()
+            return 
+        }
+
+        /** 回転した後の位置を更新 */
+        this.tetrimino = this.rotater.rotation({
+            Field:this.Field,
+            direction:"counterClockwise",
+            tetrimino:this.tetrimino
+        })
+        
+        this.moveTetrimino()
 
     }
 
