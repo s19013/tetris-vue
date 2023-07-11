@@ -5,6 +5,13 @@ import Tetrimino from "./Tetrimino"
 
 // 時間に関する数字は全部ミリ秒
 
+/** コミットメッセージがオーバーしてしまったのでここをみて!!
+ * 落ちてくるテトリミノが変化するようにした｡
+ * nextを作った｡
+ * nextを補充する機能を作った｡
+ * 接地面についたときに下ボタンをおしたら固定化する
+ */
+
 export default class Tetris {
     Field = []
     autoDropIntervalId = null
@@ -33,6 +40,8 @@ export default class Tetris {
     /** 接地面についてから固定までの猶予 */
     graceTimeUntilFixation = 2000 //ms
 
+    /** nextテトリミノ達 */
+    nextTetriminos = []
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
     tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.I));
@@ -53,25 +62,42 @@ export default class Tetris {
             line = []
         }
 
-        // 適当に色を塗ってみる
-        for (let block of this.tetrimino.Coordinate) {
-            this.Field[block.y][block.x].isFill = true
-            this.Field[block.y][block.x].isMoving = true
-        }
+        this.gameStart()
 
         // for (let index = 4; index <9 ; index++) {
         //     this.Field[index][4].isFill = true
         //     this.Field[index][7].isFill = true
         // }
-        // this.Field[8][0].isFill = true
-        // this.Field[8][9].isFill = true
 
 
         // .bind(this)でコールバック内でもthis.が使えるようになる
-        // this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
-        
 
     }
+
+    /** ゲームスタートの処理 */
+    gameStart(){
+        // 2巡分追加しないと行けないのでこうなった
+        let temp = this.tetriminoFactory.passSet()
+        this.nextTetriminos = temp.concat(this.tetriminoFactory.passSet())
+
+        this.startDropping()
+        // this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
+    }
+
+    /** ブロックを落とし始める */
+    startDropping(){
+        /** 厳密には新しく落とすブロックを描写 */
+
+        /** 落ちてくるのをセット */
+        this.tetrimino = this.nextTetriminos.shift()
+
+        for (let block of this.tetrimino.Coordinate) {
+            this.Field[block.y][block.x].isFill = true
+            this.Field[block.y][block.x].isMoving = true
+        }
+
+    }
+
 
     /** ボタン押された時の処理たち */
     keyDownUp(){
@@ -104,7 +130,11 @@ export default class Tetris {
         ) {
             // autoDropとやること一緒だからautoDrop関数使う
             this.autoDrop()
+        } else {
+            /** 動かせないなら固定化 */
+            this.immobilization()
         }
+
     }
 
     keyDownLeft(){
@@ -217,8 +247,11 @@ export default class Tetris {
     }
 
     autoDrop(){
-        /** 動かせないなら固定化する */
         // このロジックmoveTetriminoに分けたほうがよい?
+
+        /** 動かせないなら固定化する 
+         *  下記のコードは自動落下用
+        */
         if (this.checkCanMove.down({
                 Field:this.Field,
                 tetrimino:this.tetrimino
@@ -262,9 +295,6 @@ export default class Tetris {
             this.Field[block.y][block.x].isMoving = false
         }
 
-
-        /** 新しいブロックを生成 */
-        this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.T));
         /** 揃っているかを調べる */
         this.isColumnsAligned()
     }
@@ -333,6 +363,30 @@ export default class Tetris {
             this.Field.unshift(line)
             line = []
         }
+
+        /** 補充確認 */
+        this.shouldItReplenish()
+
+        /** 新しいブロックを落とす */
+        this.startDropping()
+    }
+
+    /** nextを補充するかどうか */
+    shouldItReplenish(){
+        if (this.nextTetriminos.length < 7) {
+            this.nextTetriminos = this.tetriminoFactory.passSet()
+        }
+    }
+
+    startInterval(){
+
+    }
+
+    deleteInterval(){
+        
+    }
+
+    resetInterval(){
 
     }
 
