@@ -68,49 +68,6 @@ export default class Rotate {
         return tetrimino
     }
 
-    /** 回せる状態か確認
-     * @param Field 今現在のフィールド
-     * @param tetrimino 今のブロックの状態
-     */
-    checkCanRotation({
-        Field,
-        tetrimino
-    }){
-        /** 絶対回せない条件
-         *  * 上下どっちも接している
-         *  * 左右どっちも接している
-         */
-
-        /** 上下どっちも接している */
-        let canMoveDown = this.checkCanMove.down({
-            Field:Field,
-            tetrimino:tetrimino
-        })
-
-        let canMoveUp = this.checkCanMove.up({
-            Field:Field,
-            tetrimino:tetrimino
-        })
-
-        if (!canMoveDown && !canMoveUp) { return false }
-
-        /** 左右どっちも接している */
-        let canMoveLeft = this.checkCanMove.left({
-            Field:Field,
-            tetrimino:tetrimino
-        })
-
-
-        let canMoveRight = this.checkCanMove.right({
-            Field:Field,
-            tetrimino:tetrimino
-        })
-
-        if (canMoveLeft ==false && canMoveRight == false) { return false }
-
-        return true
-    }
-
     /** 回転前点{a,b} 回転点 {c,d} */
     /** X = (a - c)cos𝜃 - (b - d)sin𝜃 + c */
     /** Y = (a - c)sin𝜃 + (b - d)cos𝜃 + d */
