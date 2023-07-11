@@ -30,9 +30,6 @@ export default class Rotate {
          *  宣言なので今はコピーしただけの状態
          */
         let tentativeCoordinate = null
-        /** Oの時はそもそも回さない */
-        
-        /** Iの時は逆 */
 
         if (direction == "clockwise" ) {
             // 回したのを代入
@@ -113,11 +110,6 @@ export default class Rotate {
 
         return true
     }
-
-
-
-
-
 
     /** 回転前点{a,b} 回転点 {c,d} */
     /** X = (a - c)cos𝜃 - (b - d)sin𝜃 + c */
@@ -205,7 +197,6 @@ export default class Rotate {
         for (let block of tentativeCoordinate2) {
             /** 壁や床と被っているようなら移動する */
 
-            // console.log(JSON.stringify(block));
             /** 左の壁 */
             if (block.x < 0) {
                 tentativeCoordinate2.forEach(temp => {
