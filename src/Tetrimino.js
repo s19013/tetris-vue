@@ -82,10 +82,10 @@ export default class Tetrimino{
     Z = {
         type:"Z",
         Coordinate:[
-            {x:3,y:1},
+            {x:5,y:1},
             {x:4,y:1},
             {x:4,y:0},
-            {x:5,y:0},
+            {x:3,y:0},
         ],
         clockwiseAxis:1,
         counterClockwiseAxis:2
