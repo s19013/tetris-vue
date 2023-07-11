@@ -374,7 +374,7 @@ export default class Tetris {
     /** nextを補充するかどうか */
     shouldItReplenish(){
         if (this.nextTetriminos.length < 7) {
-            this.nextTetriminos = this.tetriminoFactory.passSet()
+            this.nextTetriminos = this.nextTetriminos.concat(this.tetriminoFactory.passSet())
         }
     }
 
