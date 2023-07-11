@@ -22,10 +22,10 @@ export default class Tetrimino{
     I = {
         type:"I",
         Coordinate:[
-            {x:2,y:1},
             {x:3,y:1},
             {x:4,y:1},
             {x:5,y:1},
+            {x:6,y:1},
         ],
         clockwiseAxis:2,
         counterClockwiseAxis:1
