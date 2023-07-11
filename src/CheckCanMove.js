@@ -12,41 +12,29 @@ export default class checkCanMove {
 
     left({Field,tetrimino}){
 
-        /** 調べるために情報を集める必要がある */
-        /** 一番左端のブロックのxを取得 */
-        /** 基準として一番最初のブロックのxを入れとく */
-        let leftEdge = tetrimino.Coordinate[0]
-
-        /** 左端でもLミノJミノみたいに複数あるかもなので専用の箱を用意しておく */
-        let leftEdges = []
-
-        for (let block of tetrimino.Coordinate) {
-            /** 基準より小さかったら 代入して新しい基準にする */
-            if (leftEdge.x >= block.x) {
-                leftEdge = block
-                leftEdges.push(block)
-            }
-            /** 古い情報は消す必要がある */
-            /** 基準より大きいなら消す */
-            leftEdges = leftEdges.filter( edge => {
-                return leftEdge.x >= edge.x
-            });
-        }
-        // console.log("leftEdge: " + JSON.stringify(leftEdge));
-        // console.log("leftEdges: "+ JSON.stringify(leftEdges));
-
         /** 壁にぶつからないか調べる 
          *  左に動かすと壁にぶつかるということは今左端のブロックはx = 0の場所,もしくはそれよりも小さい場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
-        if (leftEdge.x <= 0) {return false}
+
+        for (let block of tetrimino.Coordinate) {
+            if (block.x <= 0) {return false}
+        }
+        
 
         /** ブロックにぶつからないかどうか調べる
-         *  単純に左隣りにブロックがあるかどうか調べるだけでok
+         *  左隣りにブロックがあるかどうか調べる
+         *  自分が属するグループは除外しないとブロックが動かなくなる
          *  前のif文でleftEdge ≠ 0だと証明できた
          */
         
-        for (let block of leftEdges ) {
+        for (let block of tetrimino.Coordinate ) {
+            /** 自分の左に属してるグループのブロックがないか調べる
+             *  あったらスキップする
+             */
+            if (Field[block.y][block.x - 1].isMoving) { continue }
+
+            /** 自分の左にブロックがないか調べる */
             if (Field[block.y][block.x - 1].isFill) { return false }
         }
 
@@ -55,44 +43,28 @@ export default class checkCanMove {
     }
 
     right({Field,tetrimino}){
-
-        /** 調べるために情報を集める必要がある */
-        /** 一番右端のブロックのxを取得 */
-        /** 基準として一番最初のブロックのxを入れとく */
-        let rightEdge = tetrimino.Coordinate[0]
-        
-
-        /** 右端でもLミノJミノみたいに複数あるかもなので専用の箱を用意しておく */
-        let rightEdges = []
-
-        for (let block of tetrimino.Coordinate) {
-            /** 基準より大きかったら 代入して新しい基準にする */
-            if (rightEdge.x <= block.x) {
-                rightEdge = block
-                rightEdges.push(block)
-            }
-            /** 古い情報は消す必要がある */
-            /** 基準より小さいなら消す */
-            rightEdges = rightEdges.filter( edge => {
-                return rightEdge.x <= edge.x
-            });
-        }
-        // console.log("rightEdge: " + JSON.stringify(rightEdge));
-        // console.log("rightEdges: " + JSON.stringify(rightEdges));
-
         /** 壁にぶつからないか調べる 
          *  右に動かすと壁にぶつかるということは今右端のブロックはx = this.fieldWidthの場所,もしくはそれよりも大きい場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
-        if (rightEdge.x >= this.fieldWidth) {return false}
+
+        for (let block of tetrimino.Coordinate) {
+            if (block.x >= this.fieldWidth) {return false}
+        }
 
         /** ブロックにぶつからないかどうか調べる
-         *  単純に右隣りにブロックがあるかどうか調べるだけでok
+         *  右隣りにブロックがあるかどうか調べる
+         *  自分が属するグループは除外しないとブロックが動かなくなる
          *  前のif文でrightEdge ≠ this.fieldWidth だと証明できた
          */
-        
-        
-        for (let block of rightEdges ) {
+
+        for (let block of tetrimino.Coordinate ) {
+            /** 自分の右に属してるグループのブロックがないか調べる
+             *  あったらスキップする
+             */
+            if (Field[block.y][block.x + 1].isMoving) { continue }
+
+            /** 自分の右にブロックがないか調べる */
             if (Field[block.y][block.x + 1].isFill) { return false }
         }
 
@@ -113,7 +85,7 @@ export default class checkCanMove {
 
         /** ブロックにぶつからないかどうか調べる
          *  下隣りにブロックがあるかどうか調べる
-         *  自分自身は除外しないとブロックが落ちなくなる
+         *  自分が属するグループは除外しないとブロックが落ちなくなる
          *  前のif文でlowerEnd ≠ this.fieldHeightだと証明できた
          */
         for (let block of tetrimino.Coordinate ) {
@@ -131,46 +103,28 @@ export default class checkCanMove {
     }
 
     up({Field,tetrimino}){
-
-        /** 調べるために情報を集める必要がある */
-        /** 一番上端のブロックのxを取得 */
-        /** 基準として一番最初のブロックのxを入れとく */
-        let topEdge = tetrimino.Coordinate[0]
-        
-
-        /** 上端でもLミノJミノみたいに複数あるかもなので専用の箱を用意しておく */
-        let topEdges = []
-
-        for (let block of tetrimino.Coordinate) {
-            /** 基準より数字が小さかったら代入して新しい基準にする 
-             *  (配列を使う関係上 上に行くほど数字が小さい)
-            */
-            if (topEdge.y >= block.y) {
-                topEdge = block
-                topEdges.push(block)
-            }
-            /** 古い情報は消す必要がある */
-            /** 基準より大きいなら消す */
-            topEdges = topEdges.filter( edge => {
-                return topEdge.y <= edge.y
-            });
-        }
-        // console.log("topEdge: " + JSON.stringify(topEdge));
-        // console.log("topEdges: " + JSON.stringify(topEdges));
+        /** ぶつかる物が1つでもあれば落ちないようにする */ 
 
         /** 天辺にぶつからないか調べる 
          *  上に動かすと天辺にぶつかるということは今上端のブロックはy = 0,もしくはそれよりも小さい場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
-        if (topEdge.y <= 0) {return false}
+        for (let block of tetrimino.Coordinate) {
+            if (block.y <= 0) {return false}
+        }
 
         /** ブロックにぶつからないかどうか調べる
-         *  単純に上隣りにブロックがあるかどうか調べるだけでok
+         *  上隣りにブロックがあるかどうか調べる
+         *  自分が属するグループは除外しないとブロックが落ちなくなる
          *  前のif文でtopEdge ≠ this.fieldWidth だと証明できた
          */
-        
-        
-        for (let block of topEdges ) {
+        for (let block of tetrimino.Coordinate ) {
+            /** 自分の下に属してるグループのブロックがないか調べる
+             *  あったらスキップする
+             */
+            if (Field[block.y - 1][block.x].isMoving) { continue }
+
+            /** 自分の上にブロックがないか調べる */
             if (Field[block.y - 1][block.x].isFill) { return false }
         }
 
@@ -178,3 +132,4 @@ export default class checkCanMove {
         return true;
     }
 }
+// console.log(JSON.stringify(object,array));
