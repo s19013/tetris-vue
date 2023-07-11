@@ -55,10 +55,10 @@ export default class Rotate {
                 })
             })
 
-            this.checkIfThereIsACoveredBlockAfterClockwise({
+            tentativeCoordinate = this.checkIfThereIsACoveredBlockAfterClockwise({
                 Field:Field,
                 tentativeCoordinate:tentativeCoordinate,
-                rotationPoint:tetrimino.Coordinate[tetrimino.clockwiseAxis]
+                rotationPoint:tentativeCoordinate[tetrimino.clockwiseAxis]
             })
         } 
         else {
@@ -230,25 +230,71 @@ export default class Rotate {
      */
 
     /** すでにおいてあるブロックとかぶらないか確認と被っていた時の処理*/
+    /** 絶対に回せない状況ではないことは別の関数で証明された */
     checkIfThereIsACoveredBlockAfterClockwise({
         Field,
         tentativeCoordinate,
         rotationPoint
     }){
-        let coveredBlocks  = []
-        for (let block of tentativeCoordinate) {
+        // let coveredBlocks  = []
+
+        // そのまま使うと参照元が変わってしまうため｡
+        /** また別の仮の状態の変数 */
+        let tentativeCoordinate2 = JSON.parse(JSON.stringify(tentativeCoordinate));
+
+        for (let block of tentativeCoordinate2) {
             if (Field[block.y][block.x].isFill == true
                 &&
                 Field[block.y][block.x].isMoving == false
-            ) {coveredBlocks.push(block)}
+            ) {
+                let amountOfMovement = {
+                    x:rotationPoint.x - block.x,
+                    y:rotationPoint.y - block.y
+                }
+
+                console.log(JSON.stringify(amountOfMovement))
+
+                tentativeCoordinate2.forEach(temp => {
+                    temp.x += amountOfMovement.x
+                    temp.y += amountOfMovement.y
+                });
+    
+                console.log(JSON.stringify(tentativeCoordinate2))
+            }
         }
+
+        // console.log(JSON.stringify(coveredBlocks))
+        // console.log(JSON.stringify(rotationPoint))
+
         // どこが被っているかはわかったじゃあ次どうするか
+        // 回転軸を中心にどこに何ます動かすか考える
+        // if (coveredBlocks.length != 0) {
+        //     // 例 {x:4,y:10}のブロックが被っている
+        //     // 回転軸は{x:3,10}
+        //     // 全部を左に 1動かす
+        //     // 計算式だと
+        //     // 軸 - 被っているブロック
+
+        //     console.log(rotationPoint.x - coveredBlocks.x);
+        //     let amountOfMovement = {
+        //         x:rotationPoint.x - coveredBlocks.x,
+        //         y:rotationPoint.y - coveredBlocks.y
+        //     }
+
+        //     console.log(JSON.stringify(amountOfMovement))
+
+        //     tentativeCoordinate.forEach(block => {
+        //         block.x += amountOfMovement.x
+        //         block.y += amountOfMovement.y
+        //     });
+
+        //     console.log(JSON.stringify(tentativeCoordinate))
+        // }
 
 
 
-    }
 
-    checkIfThereIsACoveredBlockAfterCounterClockwise(){
-        
+        // ここでも回せないと分かったらtherowする
+        return tentativeCoordinate2
     }
 }
