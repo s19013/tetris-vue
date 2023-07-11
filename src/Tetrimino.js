@@ -28,7 +28,7 @@ export default class Tetrimino{
             {x:6,y:1},
         ],
         clockwiseAxis:2,
-        counterClockwiseAxis:2
+        counterClockwiseAxis:2 //1
     }
 
     T = {
