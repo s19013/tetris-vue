@@ -91,5 +91,28 @@ export default class Tetrimino{
         counterClockwiseAxis:2
     }
 
-    // base =
+    base = [this.O,this.I,this.T,this.L,this.J,this.S,this.Z]
+
+    /** シャッフルライブラリが無いので自作するしかない */
+    shuffle(array) {
+        /** ネットにあるコードをほぼそのまま流用 */ 
+        
+        /** 適当に10回混ぜる */
+        for(let i = 0; i<10; i++){
+
+            /** 適当に2つ取る */
+            let a = Math.floor(Math.random() * 7);
+            let b = Math.floor(Math.random() * 7);
+      
+            /** 取った2つを入れ替える */
+            let tmp = array[a];
+            array[a] = array[b];
+            array[b] = tmp;
+        }
+
+        return array;
+    }
+
+    // 1セットを返す
+    passSet(){ return this.shuffle(JSON.parse(JSON.stringify(this.base))) }
 }
