@@ -17,6 +17,9 @@ export default class Tetris {
     autoDropIntervalId = null
     score = 0
 
+    /** フィールドの横1列の基本の形 */
+    baseLine = []
+
     fieldWidth   = 10
     fieldHeight  = 20;
 
@@ -50,16 +53,17 @@ export default class Tetris {
     oldTetrimino = structuredClone(this.tetrimino);
 
     constructor(){
+        /** 横1列を生成 */
+        // こえを使えば毎度毎度1列を生成する必要がなくなる
+        for (let n = 0; n < this.fieldWidth; n++) {
+            this.baseLine.push(new Block())
+        }
+
         // 10*10のリストにblockクラスを入れる
         // i:縦
         // n:横
         for (let i = 0; i < this.fieldHeight; i++) {
-            let line = [] //横一列の配列
-            for (let n = 0; n < this.fieldWidth; n++) {
-                line.push(new Block())
-            }
-            this.Field.push(line)
-            line = []
+            this.Field.push(JSON.parse(JSON.stringify(this.baseLine)))
         }
 
         this.gameStart()
@@ -306,69 +310,40 @@ export default class Tetris {
          * 10:1列揃っている
          */
 
-        /** 揃った列番号 */
-        let alignedRow = []
-        
-        /** 計算しやすいようにisFillを数値化する  */
-        let table = []
-        for (let i = 0; i < this.fieldHeight; i++) {
-            let line = []
-            for (let n = 0; n < this.fieldWidth; n++) {
-                line.push(Number(this.Field[i][n].isFill))
-            }
-            table.push(line)
-            line = []
-        }
+        /** 揃った列の数 */
+        let countOfAlignedRow = 0
 
-        for (let line of table) {
+        for (let line of this.Field) {
             /** 配列の中身を全部足す */
-            let sum =  line.reduce(function(a,b){return a + b;});
+            let sum =  line.reduce((a,b) => {
+                return a + Number(b.isFill);
+            },0);
 
-            // index番号を揃った列配列に入れる
-            if (sum == 10) {alignedRow.push(table.indexOf(line))}
+            // 揃っていたら消す
+            if (sum == 10) { 
+                countOfAlignedRow += 1
+                this.vanishTheLine(this.Field.indexOf(line))
+            }
         }
-
-        console.log("alignedRow: " + JSON.stringify(alignedRow));
 
         /** 揃った列をスコアとして足す */
-        this.score += alignedRow.length
-        /** 揃った列を消す */
-        for (let lineIndex of alignedRow) {
-            for (let block of this.Field[lineIndex]) {
-                block.isFill = false
-                block.isMoving = false
-            }
-        }
-
-        /** フィールドを整える */
-        this.FieldLeveling(alignedRow)
-    }
-
-    /** 列を消したあとの処理 */
-    FieldLeveling(alignedRow){
-        // 消した列より上の列すべて一段下げたい
-
-        /** 揃った列自体を消してしまう */
-        for (let lineIndex of alignedRow){ this.Field.splice(lineIndex, 1); }
-
-        // 演出のために少しだけ待つ
-        // sleep処理
-
-        /** 消した分だけ上に加える */
-        for (let i = 0; i < alignedRow.length; i++) {
-            let line = [] //横一列の配列
-            for (let n = 0; n < 10; n++) {
-                line.push(new Block())
-            }
-            this.Field.unshift(line)
-            line = []
-        }
+        this.score += countOfAlignedRow
 
         /** 補充確認 */
         this.shouldItReplenish()
 
         /** 新しいブロックを落とす */
         this.startDropping()
+    }
+
+    /** 列を削除する */
+    async vanishTheLine(lineIndex){
+        console.log(lineIndex);
+        /** 揃った列自体を消してしまう */
+        this.Field.splice(lineIndex, 1); 
+
+        /** 消した分だけ上に加える */
+        this.Field.unshift(JSON.parse(JSON.stringify(this.baseLine)))
     }
 
     /** nextを補充するかどうか */
