@@ -46,6 +46,11 @@ export default class Tetris {
     /** nextテトリミノ達 */
     nextTetriminos = []
 
+    /** ホールド
+     * vueがtypeを参照するからtypeだけ初期化しておく
+     */
+    holdTetrimino = {type:"none"}
+
     /** 動かせるブロックたちの座標 と ブロックの種類*/
     tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.I));
 
@@ -84,16 +89,16 @@ export default class Tetris {
         let temp = this.tetriminoFactory.passSet()
         this.nextTetriminos = temp.concat(this.tetriminoFactory.passSet())
 
-        this.startDropping()
+        this.startDropping(this.nextTetriminos.shift())
         // this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
     }
 
     /** ブロックを落とし始める */
-    startDropping(){
+    startDropping(next){
         /** 厳密には新しく落とすブロックを描写 */
 
         /** 落ちてくるのをセット */
-        this.tetrimino = this.nextTetriminos.shift()
+        this.tetrimino = next
 
         for (let block of this.tetrimino.Coordinate) {
             this.Field[block.y][block.x].isFill = true
@@ -248,6 +253,32 @@ export default class Tetris {
 
     keyDownSpace(){
         // console.log("space");
+        this.hold()
+    }
+
+    hold(){
+        /** 今の位置を古い情報として保存 */
+        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+
+        // ホールドしてるのを取り出す
+        let holded = this.holdTetrimino
+
+        // 保存
+        this.holdTetrimino = JSON.parse(JSON.stringify(this.tetrimino))
+
+        /** 最初のホールドだけ動きが違う */
+        if (holded.type == "none") { this.startDropping(this.nextTetriminos.shift()) }
+        else {
+             if (holded.type == "O") { this.tetrimino = this.tetriminoFactory.O }
+             if (holded.type == "I") { this.tetrimino = this.tetriminoFactory.I }
+             if (holded.type == "T") { this.tetrimino = this.tetriminoFactory.T }
+             if (holded.type == "S") { this.tetrimino = this.tetriminoFactory.S }
+             if (holded.type == "Z") { this.tetrimino = this.tetriminoFactory.Z }
+             if (holded.type == "L") { this.tetrimino = this.tetriminoFactory.L }
+             if (holded.type == "J") { this.tetrimino = this.tetriminoFactory.J }
+        }
+
+        this.moveTetrimino()
     }
 
     autoDrop(){
@@ -335,12 +366,11 @@ export default class Tetris {
         this.shouldItReplenish()
 
         /** 新しいブロックを落とす */
-        this.startDropping()
+        this.startDropping(this.nextTetriminos.shift())
     }
 
     /** 列を削除する */
     async vanishTheLine(lineIndex){
-        console.log(lineIndex);
         /** 揃った列自体を消してしまう */
         this.Field.splice(lineIndex, 1); 
 

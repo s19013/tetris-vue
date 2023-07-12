@@ -2,16 +2,19 @@
 import Tetris from '@/Tetris.js'
 import Field from './components/Field.vue'
 import Next from './components/Next.vue'
+import Hold from './components/Hold.vue'
 export default{
   components:{
     Field,
     Next,
+    Hold
   },
   data() {
     return {
       tetris:new Tetris(),
       field:[],
       next:[],
+      hold:null,
       reRendIntervalId:0
     }
   },
@@ -51,6 +54,7 @@ export default{
     reRender(){
       this.field = this.tetris.Field
       this.next  = this.tetris.nextTetriminos
+      this.hold  = this.tetris.holdTetrimino
     }
   },
   watch:{
@@ -61,6 +65,7 @@ export default{
     // mountedだと遅すぎてエラーになる
     this.field = this.tetris.Field
     this.next  = this.tetris.nextTetriminos
+    this.hold  = this.tetris.holdTetrimino
   },
   mounted() {
     this.$nextTick(function () {
@@ -83,8 +88,9 @@ export default{
 
 <template>
   <main>
-    <Field :field="field"></Field>
-    <Next :next="next"></Next>
+    <Hold :hold="hold"/>
+    <Field :field="field"/>
+    <Next :next="next"/>
     <!-- <pre>{{ field }}</pre> -->
     <!-- <div class="deb">
       <p v-for="(line,index) in field" :key = index>
@@ -98,7 +104,7 @@ export default{
 <style lang="scss" scoped>
 main{
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto auto auto;
   .Field{
 
   }
