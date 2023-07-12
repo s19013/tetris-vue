@@ -322,6 +322,8 @@ export default class Tetris {
             // 揃っていたら消す
             if (sum == 10) { 
                 countOfAlignedRow += 1
+
+                // 番号を直接していするのではなく､上から巡に探していって揃っている列のindexを参照するようにした
                 this.vanishTheLine(this.Field.indexOf(line))
             }
         }
