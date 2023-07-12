@@ -26,7 +26,7 @@ export default{
   <div class="Field">
     <ul v-for="(len,index) in field" :key="index">
         <template v-for="(block,index) in len" :key="index">
-            <li :class="{'fill' : block == 1}"> </li>
+            <li :class="{'fill' : block.isFill == true}"> </li>
         </template>
     </ul>
   </div>
