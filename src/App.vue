@@ -1,14 +1,17 @@
 <script>
-import Field from './components/Field.vue'
 import Tetris from '@/Tetris.js'
+import Field from './components/Field.vue'
+import Next from './components/Next.vue'
 export default{
   components:{
     Field,
+    Next,
   },
   data() {
     return {
       tetris:new Tetris(),
       field:[],
+      next:[],
       reRendIntervalId:0
     }
   },
@@ -46,18 +49,23 @@ export default{
       this.reRender()
     },
     reRender(){
-      this.field = this.tetris.display()
+      this.field = this.tetris.Field
+      this.next  = this.tetris.nextTetriminos
     }
   },
   watch:{
 
   },
+  beforeMount(){
+    // タイミングの問題でここ
+    // mountedだと遅すぎてエラーになる
+    this.field = this.tetris.Field
+    this.next  = this.tetris.nextTetriminos
+  },
   mounted() {
     this.$nextTick(function () {
-      this.field = this.tetris.display()
       // 定期的再描画
-      this.reRendIntervalId = setInterval(this.reRender, 1000);
-
+      this.reRendIntervalId = setInterval(this.reRender, 100);
     })
     /** キーボード受付 */
     document.addEventListener('keydown', this.keyEvents)
@@ -76,18 +84,26 @@ export default{
 <template>
   <main>
     <Field :field="field"></Field>
+    <Next :next="next"></Next>
     <!-- <pre>{{ field }}</pre> -->
-    <div class="deb">
+    <!-- <div class="deb">
       <p v-for="(line,index) in field" :key = index>
         {{ line }}
       </p>
-    </div>
+    </div> -->
 
   </main>
 </template>
 
 <style lang="scss" scoped>
-.Field{
-  float: right;
+main{
+  display: grid;
+  grid-template-columns: auto auto;
+  .Field{
+
+  }
+  .Next{
+
+  }
 }
 </style>
