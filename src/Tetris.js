@@ -57,15 +57,15 @@ export default class Tetris {
     oldTetrimino = structuredClone(this.tetrimino);
 
     constructor(){
+        // 10*10のリストにblockクラスを入れる
+
         /** 横1列を生成 */
         // こえを使えば毎度毎度1列を生成する必要がなくなる
         for (let n = 0; n < this.fieldWidth; n++) {
             this.baseLine.push(new Block())
         }
 
-        // 10*10のリストにblockクラスを入れる
-        // i:縦
-        // n:横
+        /** 縦を生成 */
         for (let i = 0; i < this.fieldHeight; i++) {
             this.Field.push(JSON.parse(JSON.stringify(this.baseLine)))
         }
