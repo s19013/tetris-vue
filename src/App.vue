@@ -3,11 +3,15 @@ import Tetris from '@/Tetris.js'
 import Field from './components/Field.vue'
 import Next from './components/Next.vue'
 import Hold from './components/Hold.vue'
+import GameOver from './components/GameOver.vue'
+
+
 export default{
   components:{
     Field,
     Next,
-    Hold
+    Hold,
+    GameOver
   },
   data() {
     return {
@@ -15,13 +19,18 @@ export default{
       field:[],
       next:[],
       hold:null,
+      isGameOver:false,
       reRendIntervalId:0
     }
   },
   methods:{
     keyEvents(event){
       // _.debounce(,1000)
+      event.preventDefault();
       let code = event.code
+      
+      // ゲームオーバーしてたら動かない
+      if (this.isGameOver) { return }
 
       /** 上 */
       if (code == "ArrowUp"   || code == "KeyW") { this.tetris.keyDownUp() }
@@ -55,6 +64,7 @@ export default{
       this.field = this.tetris.Field
       this.next  = this.tetris.nextTetriminos
       this.hold  = this.tetris.holdTetrimino
+      this.isGameOver = this.tetris.isGameOver
     }
   },
   watch:{
@@ -88,9 +98,12 @@ export default{
 
 <template>
   <main>
-    <Hold :hold="hold"/>
-    <Field :field="field"/>
-    <Next :next="next"/>
+    <GameOver v-if="isGameOver" />
+    <div class="game">
+      <Hold :hold="hold"/>
+      <Field :field="field"/>
+      <Next :next="next"/>
+    </div>
     <!-- <pre>{{ field }}</pre> -->
     <!-- <div class="deb">
       <p v-for="(line,index) in field" :key = index>
@@ -102,7 +115,7 @@ export default{
 </template>
 
 <style lang="scss" scoped>
-main{
+.game{
   display: grid;
   grid-template-columns: auto auto auto;
   .Field{

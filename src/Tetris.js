@@ -14,7 +14,8 @@ export default class Tetris {
     baseLine = []
 
     fieldWidth   = 10
-    fieldHeight  = 20;
+    fieldHeight  = 20
+    effectiveHeight = 0
 
     checkCanMove = new CheckCanMove({
         fieldWidth:this.fieldWidth,
@@ -48,6 +49,8 @@ export default class Tetris {
 
     /** 動かす前のブロックの位置 */
     oldTetrimino = structuredClone(this.tetrimino);
+
+    isGameOver = false
 
     constructor(){
         // 10*10のリストにblockクラスを入れる
@@ -85,9 +88,6 @@ export default class Tetris {
         this.nextTetriminos = temp.concat(this.tetriminoFactory.passSet())
 
         this.startDropping(this.nextTetriminos.shift())
-
-        // .bind(this)でコールバック内でもthis.が使えるようになる
-        // this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
     }
 
     /** ブロックを落とし始める */
@@ -360,6 +360,13 @@ export default class Tetris {
         /** 揃った列をスコアとして足す */
         this.score += countOfAlignedRow
 
+        /** ゲームオーバーになってないか確認 */
+        if (this.checkIsGameOver()) {
+            // ゲーム終了
+            this.isGameOver = true
+            return //このあとの処理はしない
+        }
+
         /** 補充確認 */
         this.shouldItReplenish()
 
@@ -386,16 +393,33 @@ export default class Tetris {
         }
     }
 
-    startInterval(){
+    // 
+    checkIsGameOver(){
+        /** 
+         * ゲームオーバーになる条件1
+         * {x:3,y:0} ~ {x:6,y:0}
+         * {x:3,y:1} ~ {x:6,y:1}
+         * の範囲にブロックがある
+         */
+        for (let index = 3; index < 6; index++) {
+            if (this.Field[0][index].isFill) { return true }
+            if (this.Field[1][index].isFill) { return true }
+        }
+        return false
+    }
 
+    startInterval(){
+        // .bind(this)でコールバック内でもthis.が使えるようになる
+        // this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
     }
 
     deleteInterval(){
-        
+        clearInterval(this.autoDropIntervalId)
     }
 
     resetInterval(){
-
+        this.deleteInterval()
+        this.startInterval()
     }
 
 
