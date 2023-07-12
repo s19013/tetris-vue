@@ -38,22 +38,29 @@ export default{
 
 <style lang="scss" scoped>
 .Next{
-    width: fit-content;
+    width: 6rem;
     ul{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         padding: 0;
         margin: 0;
-        text-align: center;
-        align-items: center;
     }
     li{
+        grid-column: 2 / 3;
         list-style:none;
-        padding: 10px 10px;
-        width:4rem;
+        width: 100%;
+        padding: 0.8rem;
         border: 1px rgb(162, 162, 162) solid;
+
+        text-align:center;
+        align-items: center;
+        justify-content: center;
     }
     .Big{
-        width: 8rem;
-        height: 8rem;
+        font-size: 4rem;
+        grid-column: 1 / 3;
+        padding:0;
+        // padding: 1rem 3rem;
     }
 }
 </style>

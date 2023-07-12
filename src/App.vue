@@ -28,7 +28,7 @@ export default{
       // _.debounce(,1000)
       event.preventDefault();
       let code = event.code
-      
+
       // ゲームオーバーしてたら動かない
       if (this.isGameOver) { return }
 
@@ -116,13 +116,10 @@ export default{
 
 <style lang="scss" scoped>
 .game{
-  display: grid;
-  grid-template-columns: auto auto auto;
-  .Field{
-
-  }
-  .Next{
-
-  }
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap:1rem;
+    text-align:center;
+    justify-content: center;
 }
 </style>
