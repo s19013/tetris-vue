@@ -21,22 +21,29 @@ export default{
 
 <template>
   <div class="GameOver">
-    <p>Game Over</p>
-    <button @click="reload()">reTry</button>
+    <div class="contaner">
+        <p>Game Over</p>
+        <button @click="reload()">ReTry</button>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .GameOver{
     position: fixed;
-    // top: 40vh;
-    // left: 50vh;
     background-color: rgba(0, 0, 0, 0.506);
+    color: aliceblue;
+    font-weight: bolder;
     width: 100%;
     height: 100%;
     z-index: 10;
     text-align:center;
     align-items: center;
     justify-content: center;
+    .contaner{
+        position: fixed;
+        top :40vh;
+        left:45vw;
+    }
 }
 </style>
