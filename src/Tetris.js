@@ -78,8 +78,6 @@ export default class Tetris {
         // }
 
 
-        // .bind(this)でコールバック内でもthis.が使えるようになる
-
     }
 
     /** ゲームスタートの処理 */
@@ -89,6 +87,8 @@ export default class Tetris {
         this.nextTetriminos = temp.concat(this.tetriminoFactory.passSet())
 
         this.startDropping(this.nextTetriminos.shift())
+
+        // .bind(this)でコールバック内でもthis.が使えるようになる
         // this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
     }
 
