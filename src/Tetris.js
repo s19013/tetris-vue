@@ -68,16 +68,22 @@ export default class Tetris {
 
         this.gameStart()
 
-        // this.Field[19][9].isFill = true
-        // this.Field[18][9].isFill = true
-        // this.Field[17][9].isFill = true
-        // this.Field[16][9].isFill = true
-        // this.Field[15][9].isFill = true
-        // this.Field[15][8].isFill = true
-        // this.Field[15][9].isFill = true
-        // this.Field[19][7].isFill = true
-        // this.Field[18][6].isFill = true
-        // this.Field[17][7].isFill = true
+        this.Field[19][0].isFill = true
+        this.Field[19][1].isFill = true
+        this.Field[19][3].isFill = true
+        this.Field[18][0].isFill = true
+        this.Field[18][1].isFill = true
+        this.Field[18][3].isFill = true
+        this.Field[17][0].isFill = true
+        this.Field[16][0].isFill = true
+        this.Field[16][3].isFill = true
+        this.Field[15][0].isFill = true
+        this.Field[15][1].isFill = true
+        this.Field[15][3].isFill = true
+        this.Field[14][3].isFill = true
+        this.Field[13][3].isFill = true
+        this.Field[13][2].isFill = true
+        
 
     }
 
