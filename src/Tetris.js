@@ -72,11 +72,16 @@ export default class Tetris {
 
         this.gameStart()
 
-        // for (let index = 4; index <9 ; index++) {
-        //     this.Field[index][4].isFill = true
-        //     this.Field[index][7].isFill = true
-        // }
-
+        // this.Field[19][9].isFill = true
+        // this.Field[18][9].isFill = true
+        // this.Field[17][9].isFill = true
+        // this.Field[16][9].isFill = true
+        // this.Field[15][9].isFill = true
+        // this.Field[15][8].isFill = true
+        // this.Field[15][9].isFill = true
+        // this.Field[19][7].isFill = true
+        // this.Field[18][6].isFill = true
+        // this.Field[17][7].isFill = true
 
     }
 
