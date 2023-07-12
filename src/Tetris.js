@@ -48,6 +48,7 @@ export default class Tetris {
 
     /** ホールド */
     holdTetrimino = "none"
+    holdLock = false
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
     tetrimino = null;
@@ -250,14 +251,13 @@ export default class Tetris {
     }
 
     keyDownSpace(){
-        // console.log("space");
-        this.hold()
+        // ロックがかかっていたら入れ替え不可
+        if (!this.holdLock) { this.hold() }
     }
 
     hold(){
         /** 今の位置を古い情報として保存 */
         this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
-        console.log("oldTetrimino",this.oldTetrimino);
 
         // ホールドしてるのを取り出す
         let holded = this.holdTetrimino
@@ -277,6 +277,7 @@ export default class Tetris {
              if (holded == "J") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.J)) }
         }
 
+        this.holdLock = true
         this.moveTetrimino()
     }
 
@@ -364,12 +365,15 @@ export default class Tetris {
         /** 補充確認 */
         this.shouldItReplenish()
 
+        /** ホールドのロックを解除 */
+        this.holdLock = false
+
         /** 新しいブロックを落とす */
         this.startDropping(this.nextTetriminos.shift())
     }
 
     /** 列を削除する */
-    async vanishTheLine(lineIndex){
+    vanishTheLine(lineIndex){
         /** 揃った列自体を消してしまう */
         this.Field.splice(lineIndex, 1); 
 
