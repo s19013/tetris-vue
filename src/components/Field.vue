@@ -26,7 +26,7 @@ export default{
   <div class="Field">
     <ul v-for="(len,index) in field" :key="index">
         <template v-for="(block,index) in len" :key="index">
-            <li :class="{'fill' : block.isFill == true}"> </li>
+            <li :class="{'fill' : block.isFill == true,'moving':block.isMoving == true}"> </li>
         </template>
     </ul>
   </div>
@@ -50,5 +50,8 @@ li{
 }
 .fill{
     background-color: aquamarine;
+}
+.moving {
+  background-color: rgb(255, 163, 127);
 }
 </style>
