@@ -5,13 +5,6 @@ import Tetrimino from "./Tetrimino"
 
 // 時間に関する数字は全部ミリ秒
 
-/** コミットメッセージがオーバーしてしまったのでここをみて!!
- * 落ちてくるテトリミノが変化するようにした｡
- * nextを作った｡
- * nextを補充する機能を作った｡
- * 接地面についたときに下ボタンをおしたら固定化する
- */
-
 export default class Tetris {
     Field = []
     autoDropIntervalId = null
