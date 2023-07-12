@@ -39,28 +39,43 @@ export default class Rotate {
                     beforeRotation:block
                 })
             })
+
+            /** 回転したブロックが壁や床､既存のブロックと被っているかどうか調べる */
+            try {
+                tentativeCoordinate = this.checkIfThereIsACoveredBlock({
+                    Field:Field,
+                    tetrimino:tentativeCoordinate,
+                    rotationIndex:tetrimino.clockwiseAxis
+                })
+            } catch (error) {
+                /** エラーが起きた
+                 * つまり回せなかったのでそのまま帰す 
+                 */
+                return tetrimino
+            }
+
         } else {
             tentativeCoordinate = tetrimino.Coordinate.map(block => {
                 return this.counterClockwise({
-                    rotationPoint:tetrimino.Coordinate[tetrimino.clockwiseAxis],
+                    rotationPoint:tetrimino.Coordinate[tetrimino.counterClockwiseAxis],
                     beforeRotation:block
                 })
             })
-        } 
 
-        /** 回転したブロックが壁や床､既存のブロックと被っているかどうか調べる */
-        try {
-            tentativeCoordinate = this.checkIfThereIsACoveredBlock({
-                Field:Field,
-                tentativeCoordinate:tentativeCoordinate,
-                rotationPoint:tentativeCoordinate[tetrimino.clockwiseAxis]
-            })
-        } catch (error) {
-            /** エラーが起きた
-             * つまり回せなかったのでそのまま帰す 
-             */
-            return tetrimino
-        }
+            /** 回転したブロックが壁や床､既存のブロックと被っているかどうか調べる */
+            try {
+                tentativeCoordinate = this.checkIfThereIsACoveredBlock({
+                    Field:Field,
+                    tetrimino:tentativeCoordinate,
+                    rotationIndex:tetrimino.counterClockwiseAxis
+                })
+            } catch (error) {
+                /** エラーが起きた
+                 * つまり回せなかったのでそのまま帰す 
+                 */
+                return tetrimino
+            }
+        } 
 
         /** 位置を更新 */
         tetrimino.Coordinate = tentativeCoordinate
@@ -139,52 +154,59 @@ export default class Rotate {
      *  絶対に回せない状況ではないことは別の関数で証明された
      * 
      * @param Field 今現在のフィールド
-     * @param tentativeCoordinate ブロックの状態
+     * @param tetrimino ブロックの状態
      * @param rotationPoint 回転軸
      */
     checkIfThereIsACoveredBlock({
         Field,
-        tentativeCoordinate,
-        rotationPoint
+        tetrimino,
+        rotationIndex,
+        count = 0
     }){
+
         // そのまま使うと参照元が変わってしまうため｡
         /** また別の仮の状態の変数 */
-        let tentativeCoordinate2 = JSON.parse(JSON.stringify(tentativeCoordinate));
+        let tentativeCoordinate = JSON.parse(JSON.stringify(tetrimino));
+        console.log("before",JSON.stringify(tentativeCoordinate));
 
-        for (let tentativeBlock of tentativeCoordinate2) {
+        for (let tentativeBlock of tentativeCoordinate) {
             /** 壁や床と被っているようなら移動する 
              *  完全に出てくるまで繰り返すためwhile
             */
 
+            console.log(tentativeBlock.x < 0);
             /** 左の壁 */
             while (tentativeBlock.x < 0) {
-                tentativeCoordinate2.forEach(block => {
+                tentativeCoordinate.forEach(block => {
                     block.x += 1
+                    console.log("left");
                 });
             }
 
             /** 右の壁 */
             while (tentativeBlock.x > this.fieldWidth) {
-                tentativeCoordinate2.forEach(block => {
+                tentativeCoordinate.forEach(block => {
                     block.x -= 1
                 });
             }
 
             /** 床 */
             while (tentativeBlock.y > this.fieldHeight) {
-                tentativeCoordinate2.forEach(block => {
+                tentativeCoordinate.forEach(block => {
                     block.y -= 1
                 });
             }
 
             /** 天井 */
             while (tentativeBlock.y < 0) {
-                tentativeCoordinate2.forEach(block => {
+                tentativeCoordinate.forEach(block => {
                     block.y += 1
                 });
             }
 
+            let rotationPoint = tentativeCoordinate[rotationIndex]
             /** おいているブロックに被っている状態なら移動する */
+            // まずは下に移動させる
             while (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
                 Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
@@ -194,18 +216,17 @@ export default class Rotate {
                     x:rotationPoint.x - tentativeBlock.x,
                     y:rotationPoint.y - tentativeBlock.y
                 }
-                tentativeCoordinate2.forEach(block => {
+                tentativeCoordinate.forEach(block => {
                     block.x += amountOfMove.x
                     block.y += amountOfMove.y
                 });
             }
         }
-
-        
+        console.log("after",JSON.stringify(tentativeCoordinate));
 
         // 移動した状態でも被っているかを調べる
         // console.log(JSON.stringify(tentativeCoordinate2));
-        for (let tentativeBlock of tentativeCoordinate2) {
+        for (let tentativeBlock of tentativeCoordinate) {
             if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
                 Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
@@ -217,6 +238,6 @@ export default class Rotate {
             }
         }
 
-        return tentativeCoordinate2
+        return tentativeCoordinate
     }
 }
