@@ -46,13 +46,11 @@ export default class Tetris {
     /** nextテトリミノ達 */
     nextTetriminos = []
 
-    /** ホールド
-     * vueがtypeを参照するからtypeだけ初期化しておく
-     */
-    holdTetrimino = {type:"none"}
+    /** ホールド */
+    holdTetrimino = "none"
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
-    tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.I));
+    tetrimino = null;
 
     /** 動かす前のブロックの位置 */
     oldTetrimino = structuredClone(this.tetrimino);
@@ -259,23 +257,24 @@ export default class Tetris {
     hold(){
         /** 今の位置を古い情報として保存 */
         this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+        console.log("oldTetrimino",this.oldTetrimino);
 
         // ホールドしてるのを取り出す
         let holded = this.holdTetrimino
 
         // 保存
-        this.holdTetrimino = JSON.parse(JSON.stringify(this.tetrimino))
+        this.holdTetrimino = this.tetrimino.type
 
         /** 最初のホールドだけ動きが違う */
-        if (holded.type == "none") { this.startDropping(this.nextTetriminos.shift()) }
+        if (holded == "none") { this.startDropping(this.nextTetriminos.shift()) }
         else {
-             if (holded.type == "O") { this.tetrimino = this.tetriminoFactory.O }
-             if (holded.type == "I") { this.tetrimino = this.tetriminoFactory.I }
-             if (holded.type == "T") { this.tetrimino = this.tetriminoFactory.T }
-             if (holded.type == "S") { this.tetrimino = this.tetriminoFactory.S }
-             if (holded.type == "Z") { this.tetrimino = this.tetriminoFactory.Z }
-             if (holded.type == "L") { this.tetrimino = this.tetriminoFactory.L }
-             if (holded.type == "J") { this.tetrimino = this.tetriminoFactory.J }
+             if (holded == "O") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.O)) }
+             if (holded == "I") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.I)) }
+             if (holded == "T") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.T)) }
+             if (holded == "S") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.S)) }
+             if (holded == "Z") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.Z)) }
+             if (holded == "L") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.L)) }
+             if (holded == "J") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.J)) }
         }
 
         this.moveTetrimino()
