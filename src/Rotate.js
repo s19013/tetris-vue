@@ -152,41 +152,42 @@ export default class Rotate {
         let tentativeCoordinate2 = JSON.parse(JSON.stringify(tentativeCoordinate));
 
         for (let tentativeBlock of tentativeCoordinate2) {
-            /** 壁や床と被っているようなら移動する */
+            /** 壁や床と被っているようなら移動する 
+             *  完全に出てくるまで繰り返すためwhile
+            */
 
             /** 左の壁 */
-            if (tentativeBlock.x < 0) {
+            while (tentativeBlock.x < 0) {
                 tentativeCoordinate2.forEach(block => {
                     block.x += 1
                 });
             }
 
             /** 右の壁 */
-            if (tentativeBlock.x > this.fieldWidth) {
+            while (tentativeBlock.x > this.fieldWidth) {
                 tentativeCoordinate2.forEach(block => {
                     block.x -= 1
                 });
             }
 
             /** 床 */
-            if (tentativeBlock.y > this.fieldHeight) {
+            while (tentativeBlock.y > this.fieldHeight) {
                 tentativeCoordinate2.forEach(block => {
                     block.y -= 1
                 });
             }
 
             /** 天井 */
-            if (tentativeBlock.y < 0) {
+            while (tentativeBlock.y < 0) {
                 tentativeCoordinate2.forEach(block => {
                     block.y += 1
                 });
             }
 
             /** おいているブロックに被っている状態なら移動する */
-            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+            while (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
-            ) {
+                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
                 // 途中で計算式が狂わないように変数に保存しておく
                 // そのままやったら色々狂ってしまった｡
                 let amountOfMove = {
