@@ -26,7 +26,10 @@ export default{
   methods:{
     keyEvents(event){
       // _.debounce(,1000)
-      event.preventDefault();
+      try {
+        event.preventDefault();
+      } catch (error) {console.log();}
+      
       let code = event.code
 
       // ゲームオーバーしてたら動かない
@@ -102,6 +105,45 @@ export default{
       <Field :field="field"/>
       <Next :next="next"/>
     </div>
+    <div class="controller">
+        <button @click="keyEvents({code:'KeyJ'})">左回転</button>
+        <button @click="keyEvents({})">↑</button>
+        <button @click="keyEvents({code:'KeyL'})">右回転</button>
+
+        <button @click="keyEvents({code:'KeyA'})">←</button>
+        <button @click="keyEvents({code:'KeyS'})">↓</button>
+        <button @click="keyEvents({code:'KeyD'})">→</button>
+
+        <button @click="keyEvents({code:'Space'})">ホールド</button>
+    </div>
+    <div class="messages">
+      <div class="howToPlay">
+        <table border="1">
+          <tr>
+            <td>WASD 矢印ボタン</td>
+            <td>移動</td>
+          </tr>
+          <tr>
+            <td>L</td>
+            <td>右回転</td>
+          </tr>
+          <tr>
+            <td>J</td>
+            <td>左回転</td>
+          </tr>
+          <tr>
+            <td>Space</td>
+            <td>ホールド</td>
+          </tr>
+        </table>
+      </div>
+      <div class="Cannot">
+        <h2>できないこと(未実装)</h2>
+        <p>ハードドロップ</p>
+        <p>ゴースト</p>
+        <p>Tスピントリプルなどの回しいれ(DT砲とか不可能)</p>
+      </div>
+    </div>
     <!-- <pre>{{ field }}</pre> -->
     <!-- <div class="deb">
       <p v-for="(line,index) in field" :key = index>
@@ -122,5 +164,30 @@ export default{
     gap:1rem;
     text-align:center;
     justify-content: center;
+}
+.messages{
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr ;
+    gap:1rem;
+    justify-content: center;
+    .howToPlay{
+      margin-right: 0;
+      margin-left: auto;
+      td{padding:0.5rem}
+    }
+}
+
+.controller{
+  @media (min-width: 961px){
+    display: none;
+  }
+  display: grid;
+  margin-top:1rem;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+  button{padding: 1rem;}
+  :nth-child(7){grid-column: 1/4;}
 }
 </style>
