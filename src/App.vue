@@ -61,8 +61,7 @@ export default{
       this.reRender()
     },
     reRender(){
-      console.log("rend");
-      this.field = JSON.parse(JSON.stringify(this.tetris.Field))
+      this.field = JSON.parse(JSON.stringify())
       this.next  = JSON.parse(JSON.stringify(this.tetris.nextTetriminos))
       this.hold  = this.tetris.holdTetrimino
       this.isGameOver = this.tetris.isGameOver
