@@ -144,6 +144,7 @@ export default{
         <p>Tスピントリプルなどの回しいれ(DT砲とか不可能)</p>
       </div>
     </div>
+    <a href="https://github.com/s19013/tetris-vue">コード</a>
     <!-- <pre>{{ field }}</pre> -->
     <!-- <div class="deb">
       <p v-for="(line,index) in field" :key = index>
