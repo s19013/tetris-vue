@@ -68,21 +68,21 @@ export default class Tetris {
 
         this.gameStart()
 
-        this.Field[19][0].isFill = true
-        this.Field[19][1].isFill = true
-        this.Field[19][3].isFill = true
-        this.Field[18][0].isFill = true
-        this.Field[18][1].isFill = true
-        this.Field[18][3].isFill = true
-        this.Field[17][0].isFill = true
-        this.Field[16][0].isFill = true
-        this.Field[16][3].isFill = true
-        this.Field[15][0].isFill = true
-        this.Field[15][1].isFill = true
-        this.Field[15][3].isFill = true
-        this.Field[14][3].isFill = true
-        this.Field[13][3].isFill = true
-        this.Field[13][2].isFill = true
+        // this.Field[19][0].isFill = true
+        // this.Field[19][1].isFill = true
+        // this.Field[19][3].isFill = true
+        // this.Field[18][0].isFill = true
+        // this.Field[18][1].isFill = true
+        // this.Field[18][3].isFill = true
+        // this.Field[17][0].isFill = true
+        // this.Field[16][0].isFill = true
+        // this.Field[16][3].isFill = true
+        // this.Field[15][0].isFill = true
+        // this.Field[15][1].isFill = true
+        // this.Field[15][3].isFill = true
+        // this.Field[14][3].isFill = true
+        // this.Field[13][3].isFill = true
+        // this.Field[13][2].isFill = true
         
 
     }
@@ -94,6 +94,7 @@ export default class Tetris {
         this.nextTetriminos = temp.concat(this.tetriminoFactory.passSet())
 
         this.startDropping(this.nextTetriminos.shift())
+        this.startInterval()
     }
 
     /** ブロックを落とし始める */
@@ -140,8 +141,12 @@ export default class Tetris {
                 tetrimino:this.tetrimino
             })
         ) {
-            // autoDropとやること一緒だからautoDrop関数使う
-            this.autoDrop()
+            /** 自動落下のインターバルリセット 
+             *  自動落下と重なって2重に落ちるのを防ぐ
+            */
+            this.resetInterval()
+
+            this.droppingTheBlock()
         } else {
             /** 動かせないなら固定化 */
             this.immobilization()
@@ -285,7 +290,7 @@ export default class Tetris {
         this.moveTetrimino()
     }
 
-    autoDrop(){
+    droppingTheBlock(){
         // このロジックmoveTetriminoに分けたほうがよい?
 
         /** 動かせないなら固定化する 
@@ -304,6 +309,7 @@ export default class Tetris {
         /** 動かせるようなら下に動かす */
         /** 今の位置を古い情報として保存 */
         this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+        
 
         /** 位置を更新 */
         for (let block of this.tetrimino.Coordinate) {
@@ -416,7 +422,7 @@ export default class Tetris {
 
     startInterval(){
         // .bind(this)でコールバック内でもthis.が使えるようになる
-        // this.autoDropIntervalId = setInterval(this.autoDrop.bind(this), this.autoDropInterval);
+        this.autoDropIntervalId = setInterval(this.droppingTheBlock.bind(this), this.autoDropInterval);
     }
 
     deleteInterval(){
