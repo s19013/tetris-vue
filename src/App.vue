@@ -76,9 +76,9 @@ export default{
     this.next  = this.tetris.nextTetriminos
   },
   mounted() {
+    // 定期的再描画
+    this.reRendIntervalId = setInterval(this.reRender, 100);
     this.$nextTick(function () {
-      // 定期的再描画
-      this.reRendIntervalId = setInterval(this.reRender, 100);
     })
     /** キーボード受付 */
     document.addEventListener('keydown', this.keyEvents)
