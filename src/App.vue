@@ -61,8 +61,9 @@ export default{
       this.reRender()
     },
     reRender(){
-      this.field = this.tetris.Field
-      this.next  = this.tetris.nextTetriminos
+      console.log("rend");
+      this.field = JSON.parse(JSON.stringify(this.tetris.Field))
+      this.next  = JSON.parse(JSON.stringify(this.tetris.nextTetriminos))
       this.hold  = this.tetris.holdTetrimino
       this.isGameOver = this.tetris.isGameOver
     }
@@ -73,9 +74,7 @@ export default{
   beforeMount(){
     // タイミングの問題でここ
     // mountedだと遅すぎてエラーになる
-    this.field = this.tetris.Field
     this.next  = this.tetris.nextTetriminos
-    this.hold  = this.tetris.holdTetrimino
   },
   mounted() {
     this.$nextTick(function () {
@@ -107,7 +106,10 @@ export default{
     <!-- <pre>{{ field }}</pre> -->
     <!-- <div class="deb">
       <p v-for="(line,index) in field" :key = index>
-        {{ line }}
+        <template v-for="(block,index) in line" :key = index>
+          <template v-if="block.isFill">1</template>
+          <template v-else>0</template>
+        </template>
       </p>
     </div> -->
 
