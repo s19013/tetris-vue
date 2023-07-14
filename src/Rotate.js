@@ -44,10 +44,11 @@ export default class Rotate {
             try {
                 tentativeCoordinate = this.checkIfThereIsACoveredBlock({
                     Field:Field,
-                    tetrimino:tentativeCoordinate,
+                    tetriminoCoordinate:tentativeCoordinate,
                     rotationIndex:tetrimino.clockwiseAxis
                 })
             } catch (error) {
+                console.log(error);
                 /** エラーが起きた
                  * つまり回せなかったのでそのまま帰す 
                  */
@@ -66,10 +67,11 @@ export default class Rotate {
             try {
                 tentativeCoordinate = this.checkIfThereIsACoveredBlock({
                     Field:Field,
-                    tetrimino:tentativeCoordinate,
+                    tetriminoCoordinate:tentativeCoordinate,
                     rotationIndex:tetrimino.counterClockwiseAxis
                 })
             } catch (error) {
+                console.log(error);
                 /** エラーが起きた
                  * つまり回せなかったのでそのまま帰す 
                  */
@@ -154,78 +156,51 @@ export default class Rotate {
      *  絶対に回せない状況ではないことは別の関数で証明された
      * 
      * @param Field 今現在のフィールド
-     * @param tetrimino ブロックの状態
+     * @param tetriminoCoordinate ブロックの座標
      * @param rotationPoint 回転軸
      */
     checkIfThereIsACoveredBlock({
         Field,
-        tetrimino,
+        tetriminoCoordinate,
         rotationIndex,
-        count = 0
     }){
-
         // そのまま使うと参照元が変わってしまうため｡
         /** また別の仮の状態の変数 */
-        let tentativeCoordinate = JSON.parse(JSON.stringify(tetrimino));
-        console.log("before",JSON.stringify(tentativeCoordinate));
+        let tentativeCoordinate = JSON.parse(JSON.stringify(tetriminoCoordinate))
+        console.log("before",JSON.stringify(tentativeCoordinate))
 
+        // 主に下にずらすパターン
+        let shiftedDown = this.shiftToDown({
+            Field:JSON.parse(JSON.stringify(Field)),
+            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+            rotationIndex:rotationIndex
+        })
+
+        tentativeCoordinate = JSON.parse(JSON.stringify(shiftedDown))
+
+        /** 
+         * 下にずらしたパターンでまだ被っているかどうか確認する
+         * 駄目なら上にずらすパターン
+         */
+        // 移動した状態でも被っているかを調べる
+        // とりあえずshiftdownコピーしとく
+        let shiftedUp = JSON.parse(JSON.stringify(shiftedDown))
         for (let tentativeBlock of tentativeCoordinate) {
-            /** 壁や床と被っているようなら移動する 
-             *  完全に出てくるまで繰り返すためwhile
-            */
-
-            console.log(tentativeBlock.x < 0);
-            /** 左の壁 */
-            while (tentativeBlock.x < 0) {
-                tentativeCoordinate.forEach(block => {
-                    block.x += 1
-                    console.log("left");
-                });
-            }
-
-            /** 右の壁 */
-            while (tentativeBlock.x > this.fieldWidth) {
-                tentativeCoordinate.forEach(block => {
-                    block.x -= 1
-                });
-            }
-
-            /** 床 */
-            while (tentativeBlock.y > this.fieldHeight) {
-                tentativeCoordinate.forEach(block => {
-                    block.y -= 1
-                });
-            }
-
-            /** 天井 */
-            while (tentativeBlock.y < 0) {
-                tentativeCoordinate.forEach(block => {
-                    block.y += 1
-                });
-            }
-
-            let rotationPoint = tentativeCoordinate[rotationIndex]
-            /** おいているブロックに被っている状態なら移動する */
-            // まずは下に移動させる
-            while (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
-                // 途中で計算式が狂わないように変数に保存しておく
-                // そのままやったら色々狂ってしまった｡
-                let amountOfMove = {
-                    x:rotationPoint.x - tentativeBlock.x,
-                    y:rotationPoint.y - tentativeBlock.y
-                }
-                tentativeCoordinate.forEach(block => {
-                    block.x += amountOfMove.x
-                    block.y += amountOfMove.y
-                });
+                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
+            ) {
+                shiftedUp = this.shiftToUp({
+                    Field:JSON.parse(JSON.stringify(Field)),
+                    tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+                    rotationIndex:rotationIndex
+                })
             }
         }
-        console.log("after",JSON.stringify(tentativeCoordinate));
 
-        // 移動した状態でも被っているかを調べる
-        // console.log(JSON.stringify(tentativeCoordinate2));
+        tentativeCoordinate = JSON.parse(JSON.stringify(shiftedUp))
+
+        // ここまで来てだめな場合は回せなかったってこと
         for (let tentativeBlock of tentativeCoordinate) {
             if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
@@ -238,6 +213,298 @@ export default class Rotate {
             }
         }
 
+        console.log("after",JSON.stringify(tentativeCoordinate));
         return tentativeCoordinate
+    }
+
+    shiftToUp({
+        Field,
+        tetriminoCoordinate,
+        rotationIndex,
+    }){
+        // 上下確認
+        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate)
+
+        // 左右確認
+        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftUp({
+            Field:JSON.parse(JSON.stringify(Field)),
+            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate))
+        })
+        
+        /** おいてあるブロックと被っているようなら移動する  */
+        for (let tentativeBlock of tetriminoCoordinate) {
+            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+                &&
+                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+
+                let rotationPoint = tetriminoCoordinate[rotationIndex]
+                // 途中で計算式が狂わないように変数に保存しておく
+                // そのままやったら色々狂ってしまった｡
+                let amountOfMove = {
+                    x:rotationPoint.x - tentativeBlock.x,
+                    y:rotationPoint.y - tentativeBlock.y
+                }
+
+                console.log("amountOfMove",amountOfMove);
+
+                // 説明難しいけど
+                // とにかく重なっているから上にずらして見る
+                if (amountOfMove.y == 0) { amountOfMove.y = 1 }
+                tetriminoCoordinate.forEach(block => {
+                    block.x += amountOfMove.x,
+                    block.y += amountOfMove.y
+                });
+            }
+        }
+
+        // もう一度上下確認
+        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate)
+
+        // もう一度左右確認
+        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftUp({
+            Field:JSON.parse(JSON.stringify(Field)),
+            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate))
+        })
+
+        return tetriminoCoordinate
+    }
+
+    shiftToDown({
+        Field,
+        tetriminoCoordinate,
+        rotationIndex,
+    }){
+        // 上下確認
+        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate)
+
+        // 左右確認
+        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftDown({
+            Field:JSON.parse(JSON.stringify(Field)),
+            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate))
+        })
+        
+        /** おいてあるブロックと被っているようなら移動する  */
+        for (let tentativeBlock of tetriminoCoordinate) {
+            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+                &&
+                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+
+                let rotationPoint = tetriminoCoordinate[rotationIndex]
+                // 途中で計算式が狂わないように変数に保存しておく
+                // そのままやったら色々狂ってしまった｡
+                let amountOfMove = {
+                    x:rotationPoint.x - tentativeBlock.x,
+                    y:rotationPoint.y - tentativeBlock.y
+                }
+
+                console.log("amountOfMove",amountOfMove);
+
+                // 説明難しいけど
+                // とにかく重なっているから下にずらして見る
+                if (amountOfMove.y == 0) { amountOfMove.y = -1 }
+                tetriminoCoordinate.forEach(block => {
+                    block.x += amountOfMove.x,
+                    block.y -= amountOfMove.y
+                });
+            }
+        }
+
+        // もう一度上下確認
+        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate)
+
+        // もう一度左右確認
+        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftDown({
+            Field:JSON.parse(JSON.stringify(Field)),
+            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate))
+        })
+
+        return tetriminoCoordinate
+    }
+
+    ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate){
+        /** 天井 */
+        tetriminoCoordinate = this.PushOutFromTheFloor(JSON.parse(JSON.stringify(tetriminoCoordinate)))
+
+        /** 床 */
+        tetriminoCoordinate = this.PushOutFromTheFloor(JSON.parse(JSON.stringify(tetriminoCoordinate)))
+
+        return tetriminoCoordinate
+    }
+
+    ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftUp({
+        Field,
+        tetriminoCoordinate
+    }){
+    /** 左の壁 */
+    let hidarikabe = this.PushOutFromTheLeftWall(
+        JSON.parse(JSON.stringify(tetriminoCoordinate))
+    )
+
+    tetriminoCoordinate = JSON.parse(JSON.stringify(hidarikabe.tetriminoCoordinate))
+
+    /** 壁から出したあとにおいてあるブロックと被っていたら1つ上げる */
+    if (hidarikabe.moved) {
+        tetriminoCoordinate= this.MoveVerticallyFromCoveringBlock({
+            Field:JSON.parse(JSON.stringify(Field)),
+            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+            amountOfMoveY:-1
+        })
+    }
+
+    /** 右の壁 */
+    let migikabe = this.PushOutFromTheRightWall(
+        JSON.parse(JSON.stringify(tetriminoCoordinate))
+    )
+
+    tetriminoCoordinate = JSON.parse(JSON.stringify(migikabe.tetriminoCoordinate))
+
+    /** 壁から出したあとにおいてあるブロックと被っていたら1つ下げる */
+    if (migikabe.moved) {
+        tetriminoCoordinate = this.MoveVerticallyFromCoveringBlock({
+            Field:JSON.parse(JSON.stringify(Field)),
+            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+            amountOfMoveY:-1
+        })
+    }
+
+    return tetriminoCoordinate
+}
+
+    ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftDown({
+            Field,
+            tetriminoCoordinate
+        }){
+        /** 左の壁 */
+        let hidarikabe = this.PushOutFromTheLeftWall(
+            JSON.parse(JSON.stringify(tetriminoCoordinate))
+        )
+
+        tetriminoCoordinate = JSON.parse(JSON.stringify(hidarikabe.tetriminoCoordinate))
+
+        /** 壁から出したあとにおいてあるブロックと被っていたら1つ下げる */
+        if (hidarikabe.moved) {
+            tetriminoCoordinate= this.MoveVerticallyFromCoveringBlock({
+                Field:JSON.parse(JSON.stringify(Field)),
+                tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+                amountOfMoveY:1
+            })
+        }
+
+        /** 右の壁 */
+        let migikabe = this.PushOutFromTheRightWall(
+            JSON.parse(JSON.stringify(tetriminoCoordinate))
+        )
+
+        tetriminoCoordinate = JSON.parse(JSON.stringify(migikabe.tetriminoCoordinate))
+
+        /** 壁から出したあとにおいてあるブロックと被っていたら1つ下げる */
+        if (migikabe.moved) {
+            tetriminoCoordinate = this.MoveVerticallyFromCoveringBlock({
+                Field:JSON.parse(JSON.stringify(Field)),
+                tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+                amountOfMoveY:1
+            })
+        }
+
+        return tetriminoCoordinate
+    }
+
+    /** 完全に出てくるまで繰り返すためwhile */
+
+    PushOutFromTheFloor(tetriminoCoordinate){
+        for (let tentativeBlock of tetriminoCoordinate) {
+            while (tentativeBlock.y > this.fieldHeight) {
+                tetriminoCoordinate.forEach(block => { block.y -= 1 });
+            }
+        }
+
+        return tetriminoCoordinate
+    }
+
+    PushOutFromTheRoof(tetriminoCoordinate){
+        for (let tentativeBlock of tetriminoCoordinate) {
+            while (tentativeBlock.y < 0) {
+                tetriminoCoordinate.forEach(block => { block.y += 1 });
+            }
+        }
+
+        return tetriminoCoordinate
+    }
+
+    PushOutFromTheLeftWall(tetriminoCoordinate){
+        let moved = false
+        for (let tentativeBlock of tetriminoCoordinate) {
+            while (tentativeBlock.x < 0) {
+                tetriminoCoordinate.forEach(block => { block.x += 1 });
+                moved = true
+            }
+        }
+
+        return {
+            tetriminoCoordinate:tetriminoCoordinate,
+            moved:moved
+        }
+    }
+
+    PushOutFromTheRightWall(tetriminoCoordinate){
+        let moved = false
+        for (let tentativeBlock of tetriminoCoordinate) {
+            while (tentativeBlock.x > this.fieldWidth) {
+                tetriminoCoordinate.forEach(block => { block.x -= 1 });
+                moved = true
+            }
+        }
+
+        return {
+            tetriminoCoordinate:tetriminoCoordinate,
+            moved:moved
+        }
+    }
+
+    /**
+     * X軸にずらした座標を返す 
+     * @param  Field フィールドの状態
+     * @param  tetriminoCoordinate ブロックの座標
+     * @param  amountOfMoveX 移動量 
+     * @returns ブロックの座標
+     */
+    MoveHorizontallyFromCoveringBlock({
+        Field,
+        tetriminoCoordinate,
+        amountOfMoveX
+    }){
+        let tentativeCoordinate = JSON.parse(JSON.stringify(tetriminoCoordinate));
+        for (let tentativeBlock of tentativeCoordinate){
+            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+                &&
+                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+                tentativeCoordinate.forEach(block => { block.x +=  amountOfMoveX});
+            }
+        }
+
+        return tentativeCoordinate
+    }
+
+    /**
+     * Y軸にずらした座標を返す 
+     * @param  Field フィールドの状態
+     * @param  tetriminoCoordinate ブロックの座標
+     * @param  amountOfMoveY 移動量 
+     * @returns ブロックの座標
+     */
+    MoveVerticallyFromCoveringBlock({
+        Field,
+        tetriminoCoordinate,
+        amountOfMoveY
+    }){
+        for (let tentativeBlock of tetriminoCoordinate){
+            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+                &&
+                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+                tetriminoCoordinate.forEach(block => { block.y +=  amountOfMoveY});
+            }
+        }
+
+        return tetriminoCoordinate
     }
 }
