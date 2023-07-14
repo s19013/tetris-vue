@@ -256,28 +256,30 @@ export default class Rotate {
         })
         /** おいてあるブロックと被っているようなら移動する  */
         for (let tentativeBlock of tetriminoCoordinate) {
-            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
-                &&
-                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
-
-                let rotationPoint = tetriminoCoordinate[rotationIndex]
-                // 途中で計算式が狂わないように変数に保存しておく
-                // そのままやったら色々狂ってしまった｡
-                let amountOfMove = {
-                    x:rotationPoint.x - tentativeBlock.x,
-                    y:rotationPoint.y - tentativeBlock.y
+            try {
+                if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+                    &&
+                    Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+    
+                    let rotationPoint = tetriminoCoordinate[rotationIndex]
+                    // 途中で計算式が狂わないように変数に保存しておく
+                    // そのままやったら色々狂ってしまった｡
+                    let amountOfMove = {
+                        x:rotationPoint.x - tentativeBlock.x,
+                        y:rotationPoint.y - tentativeBlock.y
+                    }
+    
+                    console.log("amountOfMove",amountOfMove);
+    
+                    // 説明難しいけど
+                    // とにかく重なっているから上にずらして見る
+                    if (amountOfMove.y == 0) { amountOfMove.y = 1 }
+                    tetriminoCoordinate.forEach(block => {
+                        block.x += amountOfMove.x,
+                        block.y += amountOfMove.y
+                    });
                 }
-
-                console.log("amountOfMove",amountOfMove);
-
-                // 説明難しいけど
-                // とにかく重なっているから上にずらして見る
-                if (amountOfMove.y == 0) { amountOfMove.y = 1 }
-                tetriminoCoordinate.forEach(block => {
-                    block.x += amountOfMove.x,
-                    block.y += amountOfMove.y
-                });
-            }
+            } catch (error) { console.log(error); }
         }
 
         // もう一度上下確認
@@ -333,9 +335,7 @@ export default class Rotate {
                     });
                     console.log(tetriminoCoordinate);
                 }
-            } catch (error) {
-                console.log();
-            }
+            } catch (error) { console.log(error); }
         }
 
         // もう一度上下確認
