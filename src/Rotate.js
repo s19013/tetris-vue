@@ -178,40 +178,64 @@ export default class Rotate {
 
         tentativeCoordinate = JSON.parse(JSON.stringify(shiftedDown))
 
+        // 確認する順番が問題になる(主に右回転で起きる)
+        // とりあえず今は強引に2回確認?
+
+        let noProblem = true
+        for (let tentativeBlock of tentativeCoordinate) {
+            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+                &&
+                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
+            ) { noProblem = false }
+        }
+
+        if (noProblem) { return tentativeCoordinate }
+        
+        // 強引に更にもう一度する
+        shiftedDown = this.shiftToDown({
+            Field:JSON.parse(JSON.stringify(Field)),
+            tetriminoCoordinate:JSON.parse(JSON.stringify(tentativeCoordinate)), //編集したやつを入れる
+            rotationIndex:rotationIndex
+        })
+
+        tentativeCoordinate = JSON.parse(JSON.stringify(shiftedDown))
+
         /** 
          * 下にずらしたパターンでまだ被っているかどうか確認する
+         * 大丈夫なら抜ける
          * 駄目なら上にずらすパターン
          */
-        // 移動した状態でも被っているかを調べる
-        // とりあえずshiftdownコピーしとく
-        let shiftedUp = JSON.parse(JSON.stringify(shiftedDown))
-        for (let tentativeBlock of tentativeCoordinate) {
-            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
-                &&
-                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
-            ) {
-                shiftedUp = this.shiftToUp({
-                    Field:JSON.parse(JSON.stringify(Field)),
-                    tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
-                    rotationIndex:rotationIndex
-                })
-            }
-        }
 
-        tentativeCoordinate = JSON.parse(JSON.stringify(shiftedUp))
+        // noProblem = true
+        // for (let tentativeBlock of tentativeCoordinate) {
+        //     if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+        //         &&
+        //         Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
+        //     ) { noProblem = false }
+        // }
+
+        // if (noProblem) { return tentativeCoordinate }
+
+        // let shiftedUp = this.shiftToUp({
+        //     Field:JSON.parse(JSON.stringify(Field)),
+        //     tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+        //     rotationIndex:rotationIndex
+        // })
+
+        // tentativeCoordinate = JSON.parse(JSON.stringify(shiftedUp))
 
         // ここまで来てだめな場合は回せなかったってこと
-        for (let tentativeBlock of tentativeCoordinate) {
-            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
-                &&
-                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
-            ) {
-                /** 被っている状態 
-                 *  本来なら回せない状態だったということので処理を中断させる
-                */ 
-                throw "can't rotation"
-            }
-        }
+        // for (let tentativeBlock of tentativeCoordinate) {
+        //     if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+        //         &&
+        //         Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
+        //     ) {
+        //         /** 被っている状態 
+        //          *  本来なら回せない状態だったということので処理を中断させる
+        //         */ 
+        //         throw "can't rotation"
+        //     }
+        // }
 
         console.log("after",JSON.stringify(tentativeCoordinate));
         return tentativeCoordinate
@@ -230,7 +254,7 @@ export default class Rotate {
             Field:JSON.parse(JSON.stringify(Field)),
             tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate))
         })
-        
+        console.log("shoftUp");
         /** おいてあるブロックと被っているようなら移動する  */
         for (let tentativeBlock of tetriminoCoordinate) {
             if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
@@ -274,6 +298,7 @@ export default class Rotate {
         tetriminoCoordinate,
         rotationIndex,
     }){
+        console.log("shoftDown");
         // 上下確認
         tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate)
 
@@ -292,6 +317,7 @@ export default class Rotate {
                 let rotationPoint = tetriminoCoordinate[rotationIndex]
                 // 途中で計算式が狂わないように変数に保存しておく
                 // そのままやったら色々狂ってしまった｡
+                console.log(rotationPoint.x,"-",tentativeBlock.x);
                 let amountOfMove = {
                     x:rotationPoint.x - tentativeBlock.x,
                     y:rotationPoint.y - tentativeBlock.y
@@ -306,6 +332,7 @@ export default class Rotate {
                     block.x += amountOfMove.x,
                     block.y -= amountOfMove.y
                 });
+                console.log(tetriminoCoordinate);
             }
         }
 
@@ -358,7 +385,7 @@ export default class Rotate {
 
     tetriminoCoordinate = JSON.parse(JSON.stringify(migikabe.tetriminoCoordinate))
 
-    /** 壁から出したあとにおいてあるブロックと被っていたら1つ下げる */
+    /** 壁から出したあとにおいてあるブロックと被っていたら1つ上げる */
     if (migikabe.moved) {
         tetriminoCoordinate = this.MoveVerticallyFromCoveringBlock({
             Field:JSON.parse(JSON.stringify(Field)),
