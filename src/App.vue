@@ -126,22 +126,35 @@ export default{
     <GameOver v-if="isGameOver" score:score/>
     <h1>動きに癖がある非公式テトリス </h1>
     <a href="https://github.com/s19013/tetris-vue">コード</a>
-    <div class="coution">
-      <p v-show="ojyamaCountDown <= 3000">Danger!!</p>
-    </div>
     <div class="game">
-      <Hold :hold="hold"/>
-      <Field :field="field"/>
-      <Next :next="next"/>
-      <p class="Score">{{ score }}</p>
       <div class="LeftInfo">
-        <p>レベル:{{ level }} </p>
-        <p>列数:{{ countOfLinesVanished }}</p>
-        <p>時間:{{ time }}</p>
-      </div>
-      <div class="RightInfo">
+        <Hold :hold="hold"/>
+        <div class="coution">
+          <p v-show="ojyamaCountDown <= 3000">Danger!!</p>
+        </div>
         <p class="Ren" v-show="ren > 0">Ren:{{ ren }}</p>
         <p class="isTetris" v-show="isTetris">Tetris!</p>
+      </div>
+      <div class="Center">
+        <Field :field="field"/>
+        <p class="Score">{{ score }}</p>
+      </div>
+      <div class="RightInfo">
+        <Next :next="next"/>
+        <table border="1">
+          <tr>
+            <td>レベル</td>
+            <td>{{ level }}</td>
+          </tr>
+          <tr>
+            <td>列数</td>
+            <td>{{ countOfLinesVanished }}</td>
+          </tr>
+          <tr>
+            <td>時間</td>
+            <td>{{ time }}</td>
+          </tr>
+        </table>
       </div>
     </div>
     <div class="controller">
@@ -210,40 +223,24 @@ export default{
   min-height: 2rem;
 }
 .game{
-    display: grid;
-    grid-template-rows: auto auto  0.2fr 0.2fr;
-    grid-template-columns: auto auto auto;
+    display: flex;
     gap:1rem;
     text-align:center;
     justify-content: center;
-
-    .Hold{
-      grid-column: 1/2;
-      grid-row: 1/2;
-      justify-content: right;
-    }
-    .Field{
-      grid-column:2/3;
-      grid-row: 1/3;
-    }
-    .Next{
-      grid-column: 3/4;
-      grid-row: 1/2;
-    }
     .Score{
-      grid-column:2/3;
-      grid-row: 3/4;
+      text-align:center;
+      justify-content: center;
     }
     .LeftInfo{
-      text-align:left;
-      justify-content: left;
-      grid-column: 1/2;
-      grid-row: 2/3;
-      min-width: 2rem;
+      .Hold{margin-left: auto;}
+    }
+    .Center{
     }
     .RightInfo{
-      grid-column: 3/4;
-      grid-row: 2/3;
+      table{
+        margin-top:1rem;
+        width: 10rem
+      }
     }
 }
 .messages{
