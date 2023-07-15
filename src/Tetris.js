@@ -148,7 +148,6 @@ export default class Tetris {
 
         // 落ちてくるブロックをフィールドに出現させる
         for (let block of this.tetrimino.Coordinate) {
-            console.log(block);
             this.Field[block.y][block.x].isFill = true
             this.Field[block.y][block.x].isMoving = true
         }

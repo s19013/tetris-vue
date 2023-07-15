@@ -167,7 +167,7 @@ export default class Rotate {
         // そのまま使うと参照元が変わってしまうため｡
         /** また別の仮の状態の変数 */
         let tentativeCoordinate = JSON.parse(JSON.stringify(tetriminoCoordinate))
-        console.log("before",JSON.stringify(tentativeCoordinate))
+        // console.log("before",JSON.stringify(tentativeCoordinate))
 
         // 主に下にずらすパターン
         let shiftedDown = this.shiftToDown({
@@ -237,7 +237,7 @@ export default class Rotate {
             }
         }
 
-        console.log("after",JSON.stringify(tentativeCoordinate));
+        // console.log("after",JSON.stringify(tentativeCoordinate));
         return tentativeCoordinate
     }
 
@@ -269,7 +269,7 @@ export default class Rotate {
                         y:rotationPoint.y - tentativeBlock.y
                     }
     
-                    console.log("amountOfMove",amountOfMove);
+                    // console.log("amountOfMove",amountOfMove);
     
                     // 説明難しいけど
                     // とにかく重なっているから上にずらして見る
@@ -318,13 +318,12 @@ export default class Rotate {
                     let rotationPoint = tetriminoCoordinate[rotationIndex]
                     // 途中で計算式が狂わないように変数に保存しておく
                     // そのままやったら色々狂ってしまった｡
-                    console.log(rotationPoint.x,"-",tentativeBlock.x);
                     let amountOfMove = {
                         x:rotationPoint.x - tentativeBlock.x,
                         y:rotationPoint.y - tentativeBlock.y
                     }
     
-                    console.log("amountOfMove",amountOfMove);
+                    // console.log("amountOfMove",amountOfMove);
     
                     // 説明難しいけど
                     // とにかく重なっているから下にずらして見る
@@ -333,7 +332,6 @@ export default class Rotate {
                         block.x += amountOfMove.x,
                         block.y -= amountOfMove.y
                     });
-                    console.log(tetriminoCoordinate);
                 }
             } catch (error) { console.log(error); }
         }
