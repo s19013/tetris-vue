@@ -2,6 +2,7 @@ import Block from "./Block"
 import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
 import Tetrimino from "./Tetrimino"
+import Ojyama from "./Ojyama"
 
 // 時間に関する数字は全部ミリ秒
 
@@ -9,10 +10,10 @@ export default class Tetris {
     Field = []
     autoDropIntervalId = null
     timerId = null
+    ojyamaId = null
     score = 0
     level = 1
     countOfLinesErased = 0
-    time = 0
 
     /** jsの最大整数値 */
     maxScore = 9000000000000000
@@ -44,14 +45,21 @@ export default class Tetris {
         checkCanMove:this.checkCanMove
     })
 
+    ojyama = new Ojyama(this.fieldWidth)
+
     tetriminoFactory = new Tetrimino()
 
     /** 放置してると勝手にブロックが落ちる感覚 */
-    autoDropInterval = 1000 //ms
+    autoDropInterval = 2000 //ms
 
-    /** タイマー系 */
-    /** 接地面についてから固定までの猶予 */
-    graceTimeUntilFixation = 2000 //ms
+    /** 下からせり上がるまでの時間 */
+    ojyamaInterval = 10000 //ms
+
+    /** ゲームを初めてからの時間 */
+    time = 0
+
+    /** お邪魔が発動するまでのカウントダウン */
+    ojyamaCountDown = this.ojyamaInterval
 
     /** nextテトリミノ達 */
     nextTetriminos = []
@@ -112,6 +120,7 @@ export default class Tetris {
         this.startDropping(this.nextTetriminos.shift())
         this.startInterval()
         this.startTimer()
+        this.startOjyamaInterval()
     }
 
     /** ブロックを落とし始める */
@@ -392,7 +401,6 @@ export default class Tetris {
         /** 揃った列をスコアとして足す */
         this.scoreCalculation(countOfAlignedRow)
 
-
         /** 消した列を足す */
         this.countOfLinesErased += countOfAlignedRow
 
@@ -402,6 +410,14 @@ export default class Tetris {
             this.isGameOver = true
             this.gameOver
             return //このあとの処理はしない
+        }
+
+        /** お邪魔 */
+        if (this.ojyamaCountDown <= 0) {
+            this.triggeringOjyama()
+
+            // 時間再設定
+            this.ojyamaCountDown = this.ojyamaInterval
         }
 
         /** 補充確認 */
@@ -475,6 +491,16 @@ export default class Tetris {
         this.Field.unshift(JSON.parse(JSON.stringify(this.baseLine)))
     }
 
+    // お邪魔発動
+    triggeringOjyama(){
+        /** 一番上を消してしまう 
+         * 縦のマス数が増えないように
+        */
+        this.Field.splice(0, 1); 
+
+        this.Field.push(JSON.parse(JSON.stringify(this.ojyama.createOjyama())))
+    }
+
     /** nextを補充するかどうか */
     shouldItReplenish(){
         if (this.nextTetriminos.length < 7) {
@@ -500,9 +526,21 @@ export default class Tetris {
     gameOver(){
         // タイマー止める
         this.stopTimer()
+        this.deleteInterval()
+        this.deleteOjyamaInterval()
 
         // スコア集計
         this.addScore(this.time * this.level)
+    }
+
+    startOjyamaInterval(){
+        this.ojyamaId = setInterval(() => {
+            this.ojyamaCountDown -= 100 //ms
+        },100)
+    }
+
+    deleteOjyamaInterval(){
+        clearInterval(this.ojyamaId)
     }
 
     startTimer(){
