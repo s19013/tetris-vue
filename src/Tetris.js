@@ -100,6 +100,24 @@ export default class Tetris {
         // this.Field[13][6].isFill = true
         // this.Field[13][7].isFill = true
 
+        // this.Field[19][9].isFill = true
+        // this.Field[19][8].isFill = true
+        // this.Field[19][6].isFill = true
+        // this.Field[18][9].isFill = true
+        // this.Field[18][8].isFill = true
+        // this.Field[18][6].isFill = true
+        // this.Field[17][9].isFill = true
+        // this.Field[17][6].isFill = true
+        // this.Field[16][9].isFill = true
+        // this.Field[16][8].isFill = true
+        // this.Field[16][6].isFill = true
+        // this.Field[15][6].isFill = true
+        // this.Field[14][6].isFill = true
+        // this.Field[14][7].isFill = true
+
+        // this.Field[19][2].isFill = true
+        // this.Field[18][2].isFill = true
+
     }
 
     /** ゲームスタートの処理 */
@@ -109,7 +127,7 @@ export default class Tetris {
         this.nextTetriminos = temp.concat(this.tetriminoFactory.passSet())
 
         this.startDropping(this.nextTetriminos.shift())
-        this.startInterval()
+        // this.startInterval()
     }
 
     /** ブロックを落とし始める */
@@ -159,7 +177,7 @@ export default class Tetris {
             /** 自動落下のインターバルリセット 
              *  自動落下と重なって2重に落ちるのを防ぐ
             */
-            this.resetInterval()
+            // this.resetInterval()
 
             this.droppingTheBlock()
         } else {
