@@ -472,7 +472,7 @@ export default class Tetris {
         }
 
         // b2b
-        this.addScore(50 * this.level)
+        // this.addScore(50 * this.level)
 
         // ren
         this.addScore(this.ren * 10 * this.level)
