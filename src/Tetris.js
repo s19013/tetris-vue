@@ -124,24 +124,6 @@ export default class Tetris {
         // this.Field[13][6].isFill = true
         // this.Field[13][7].isFill = true
 
-        // this.Field[19][9].isFill = true
-        // this.Field[19][8].isFill = true
-        // this.Field[19][6].isFill = true
-        // this.Field[18][9].isFill = true
-        // this.Field[18][8].isFill = true
-        // this.Field[18][6].isFill = true
-        // this.Field[17][9].isFill = true
-        // this.Field[17][6].isFill = true
-        // this.Field[16][9].isFill = true
-        // this.Field[16][8].isFill = true
-        // this.Field[16][6].isFill = true
-        // this.Field[15][6].isFill = true
-        // this.Field[14][6].isFill = true
-        // this.Field[14][7].isFill = true
-
-        // this.Field[19][2].isFill = true
-        // this.Field[18][2].isFill = true
-
     }
 
     /** ゲームスタートの処理 */
@@ -173,7 +155,6 @@ export default class Tetris {
 
     /** ボタン押された時の処理たち */
     keyDownUp(){
-        // console.log("up");
         // デバック用
         // if (this.checkCanMove.up({
         //         Field:JSON.parse(JSON.stringify(this.Field)),
@@ -193,7 +174,6 @@ export default class Tetris {
     }
 
     keyDownDown(){
-        // console.log("down");
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.down({
                 Field:JSON.parse(JSON.stringify(this.Field)),
@@ -217,7 +197,6 @@ export default class Tetris {
     }
 
     keyDownLeft(){
-        // console.log("left");
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.left({
                 Field:JSON.parse(JSON.stringify(this.Field)),
@@ -237,7 +216,6 @@ export default class Tetris {
     }
 
     keyDownRight(){
-        // console.log("right");
         if (this.checkCanMove.right({
                 Field:JSON.parse(JSON.stringify(this.Field)),
                 tetrimino:this.tetrimino
