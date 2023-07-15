@@ -24,8 +24,8 @@ export default{
 
 <template>
   <div class="Field">
-    <ul v-for="(len,index) in field" :key="index">
-        <template v-for="(block,index) in len" :key="index">
+    <ul v-for="index in field.length" :key="index">
+        <template v-for="(block,index) in field[index+9]" :key="index">
             <li :class="{'fill' : block.isFill == true,'moving':block.isMoving == true}"> </li>
         </template>
     </ul>
