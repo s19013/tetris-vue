@@ -27,6 +27,7 @@ export default{
       timer:0,
       min:0,
       sec:0,
+      ojyamaCountDown:10,
       isTetris:false,
       reRendIntervalId:0
     }
@@ -82,6 +83,7 @@ export default{
       this.level = this.tetris.level
       this.countOfLinesErased = this.tetris.countOfLinesErased
       this.timer = this.tetris.time
+      this.ojyamaCountDown = this.tetris.ojyamaCountDown
     }
   },
   computed:{
@@ -122,6 +124,10 @@ export default{
 <template>
   <main>
     <GameOver v-if="isGameOver" />
+    <p>動きに癖がある非公式テトリス</p>
+    <div class="coution">
+      <p v-show="ojyamaCountDown <= 3000">Danger!!</p>
+    </div>
     <div class="game">
       <Hold :hold="hold"/>
       <Field :field="field"/>
@@ -191,6 +197,10 @@ export default{
 </template>
 
 <style lang="scss" scoped>
+.coution{
+  text-align:center;
+  min-height: 2rem;
+}
 .game{
     display: grid;
     grid-template-rows: auto auto  0.2fr 0.2fr;
