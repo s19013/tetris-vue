@@ -6,9 +6,6 @@ export default{
     }
   },
   props:{
-    gameOver:{
-        type:Boolean
-    }
     score:{
       type:Number,
       default:0
