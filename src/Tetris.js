@@ -541,12 +541,12 @@ export default class Tetris {
         /** 
          * ゲームオーバーになる条件2
          * {x:3,y:this.effectiveRoof} ~ {x:6,y:this.effectiveRoof}
-         * {x:3,y:this.effectiveRoof + 1} ~ {x:6,y:this.effectiveRoof + 1}
+         * {x:3,y:this.effectiveRoof - 1} ~ {x:6,y:this.effectiveRoof - 1}
          * の範囲にブロックがある
          */
         for (let index = 3; index < 6; index++) {
             if (this.Field[this.effectiveRoof][index].isFill) { return true }
-            if (this.Field[this.effectiveRoof + 1][index].isFill) { return true }
+            if (this.Field[this.effectiveRoof - 1][index].isFill) { return true }
         }
         return false
     }
