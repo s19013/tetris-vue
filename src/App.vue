@@ -20,6 +20,15 @@ export default{
       next:[],
       hold:null,
       isGameOver:false,
+      score:0,
+      ren:0,
+      level:0,
+      countOfLinesErased:0,
+      timer:0,
+      min:0,
+      sec:0,
+      ojyamaCountDown:10,
+      isTetris:false,
       reRendIntervalId:0
     }
   },
@@ -68,6 +77,21 @@ export default{
       this.next  = JSON.parse(JSON.stringify(this.tetris.nextTetriminos))
       this.hold  = this.tetris.holdTetrimino
       this.isGameOver = this.tetris.isGameOver
+      this.score = this.tetris.score
+      this.ren = this.tetris.ren
+      this.isTetris = this.tetris.isTetris
+      this.level = this.tetris.level
+      this.countOfLinesErased = this.tetris.countOfLinesErased
+      this.timer = this.tetris.time
+      this.ojyamaCountDown = this.tetris.ojyamaCountDown
+    }
+  },
+  computed:{
+    time:function(){
+      let m = Math.floor(this.timer /60)
+      let s = this.timer % 60
+
+      return `${m}m ${s}s`
     }
   },
   watch:{
@@ -99,11 +123,25 @@ export default{
 
 <template>
   <main>
-    <GameOver v-if="isGameOver" />
+    <GameOver v-if="isGameOver" score:score/>
+    <p>動きに癖がある非公式テトリス</p>
+    <div class="coution">
+      <p v-show="ojyamaCountDown <= 3000">Danger!!</p>
+    </div>
     <div class="game">
       <Hold :hold="hold"/>
       <Field :field="field"/>
       <Next :next="next"/>
+      <p class="Score">{{ score }}</p>
+      <div class="LeftInfo">
+        <p>レベル:{{ level }} </p>
+        <p>列数:{{ countOfLinesErased }}</p>
+        <p>時間:{{ time }}</p>
+      </div>
+      <div class="RightInfo">
+        <p class="Ren" v-show="ren > 0">Ren:{{ ren }}</p>
+        <p class="isTetris" v-show="isTetris">Tetris!</p>
+      </div>
     </div>
     <div class="controller">
         <button @click="keyEvents({code:'KeyJ'})">左回転</button>
@@ -167,12 +205,46 @@ export default{
 </template>
 
 <style lang="scss" scoped>
+.coution{
+  text-align:center;
+  min-height: 2rem;
+}
 .game{
     display: grid;
+    grid-template-rows: auto auto  0.2fr 0.2fr;
     grid-template-columns: auto auto auto;
     gap:1rem;
     text-align:center;
     justify-content: center;
+
+    .Hold{
+      grid-column: 1/2;
+      grid-row: 1/2;
+      justify-content: right;
+    }
+    .Field{
+      grid-column:2/3;
+      grid-row: 1/3;
+    }
+    .Next{
+      grid-column: 3/4;
+      grid-row: 1/2;
+    }
+    .Score{
+      grid-column:2/3;
+      grid-row: 3/4;
+    }
+    .LeftInfo{
+      text-align:left;
+      justify-content: left;
+      grid-column: 1/2;
+      grid-row: 2/3;
+      min-width: 2rem;
+    }
+    .RightInfo{
+      grid-column: 3/4;
+      grid-row: 2/3;
+    }
 }
 .messages{
     margin-top: 1rem;

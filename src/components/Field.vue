@@ -34,8 +34,9 @@ export default{
 
 <style lang="scss" scoped>
 .Field{
+    width: fit-content;
+    height: fit-content; // 中身に幅をあわせる
     border: 1px black solid;
-    width: fit-content; // 中身に幅をあわせる
 }
 ul{
     display: flex;

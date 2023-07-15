@@ -6,8 +6,9 @@ export default{
     }
   },
   props:{
-    gameOver:{
-        type:Boolean
+    score:{
+      type:Number,
+      default:0
     }
   },
   methods:{
@@ -23,6 +24,7 @@ export default{
   <div class="GameOver">
     <div class="contaner">
         <p>Game Over</p>
+        <p>最終スコア:{{ score }}</p>
         <button @click="reload()">ReTry</button>
     </div>
   </div>

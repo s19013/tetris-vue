@@ -2,13 +2,30 @@ import Block from "./Block"
 import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
 import Tetrimino from "./Tetrimino"
+import Ojyama from "./Ojyama"
 
 // 時間に関する数字は全部ミリ秒
 
 export default class Tetris {
     Field = []
     autoDropIntervalId = null
+    timerId = null
+    ojyamaId = null
     score = 0
+    level = 1
+    countOfLinesVanished = 0
+
+    /** jsの最大整数値 */
+    maxScore = 9000000000000000
+
+    /** 4列消し */
+    isTetris = false
+
+    /** 連続消し */
+    ren = 0
+
+    /** 連続4列消し */
+    back2back = false
 
     /** フィールドの横1列の基本の形 */
     baseLine = []
@@ -28,14 +45,21 @@ export default class Tetris {
         checkCanMove:this.checkCanMove
     })
 
+    ojyama = new Ojyama(this.fieldWidth)
+
     tetriminoFactory = new Tetrimino()
 
     /** 放置してると勝手にブロックが落ちる感覚 */
-    autoDropInterval = 1500 //ms
+    autoDropInterval = 2000 //ms
 
-    /** タイマー系 */
-    /** 接地面についてから固定までの猶予 */
-    graceTimeUntilFixation = 2000 //ms
+    /** 下からせり上がるまでの時間 */
+    ojyamaInterval = 10000 //ms
+
+    /** ゲームを初めてからの時間 */
+    time = 0
+
+    /** お邪魔が発動するまでのカウントダウン */
+    ojyamaCountDown = this.ojyamaInterval
 
     /** nextテトリミノ達 */
     nextTetriminos = []
@@ -127,7 +151,9 @@ export default class Tetris {
         this.nextTetriminos = temp.concat(this.tetriminoFactory.passSet())
 
         this.startDropping(this.nextTetriminos.shift())
-        // this.startInterval()
+        this.startInterval()
+        this.startTimer()
+        this.startOjyamaInterval()
     }
 
     /** ブロックを落とし始める */
@@ -178,6 +204,9 @@ export default class Tetris {
              *  自動落下と重なって2重に落ちるのを防ぐ
             */
             // this.resetInterval()
+
+            this.addScore(1)
+
 
             this.droppingTheBlock()
         } else {
@@ -407,13 +436,28 @@ export default class Tetris {
         }
 
         /** 揃った列をスコアとして足す */
-        this.score += countOfAlignedRow
+        this.scoreCalculation(countOfAlignedRow)
+
+        /** 消した列を足す */
+        this.countOfLinesVanished += countOfAlignedRow
+
+        /** レベル */
+        this.checkLevel()
 
         /** ゲームオーバーになってないか確認 */
         if (this.checkIsGameOver()) {
             // ゲーム終了
             this.isGameOver = true
+            this.gameOver
             return //このあとの処理はしない
+        }
+
+        /** お邪魔 */
+        if (this.ojyamaCountDown <= 0) {
+            this.triggeringOjyama()
+
+            // 時間再設定
+            this.ojyamaCountDown = this.ojyamaInterval
         }
 
         /** 補充確認 */
@@ -426,6 +470,58 @@ export default class Tetris {
         this.startDropping(this.nextTetriminos.shift())
     }
 
+    /** 計算 */
+    scoreCalculation(countOfAlignedRow){
+
+        // 揃った列の数
+
+        /** 一列も揃ってない時はさっさと返す */
+        if (countOfAlignedRow == 0) {
+            this.back2back = false
+            this.ren = 0
+            return 
+        }
+
+        this.addScore(countOfAlignedRow * countOfAlignedRow * this.level * 10)
+
+        if (countOfAlignedRow == 4) {
+            this.isTetris = true
+
+            // これは表示用なので数秒たったら消す
+            setTimeout(()=> {
+                this.isTetris = false
+            },2000) ;
+        }
+
+        // b2b
+        this.addScore(50 * this.level)
+
+        // ren
+        this.addScore(this.ren * 10 * this.level)
+        
+        // renを加える
+        this.ren += 1
+
+    }
+
+    /** スコアを加える
+     * オーバーフローしないように処理するため別関数
+     */
+    addScore(ScoreToAdd=0){
+        try {
+            this.score += ScoreToAdd
+            // 限界値超えないように
+            if (this.score >= this.maxScore) { this.score = this.maxScore }
+
+
+        } catch (error) {
+            console.log(error);
+
+            // おそらくエラーが起きるのはオーバーフローした時だと思うので最大値設定
+            this.score = this.maxScore
+        }
+    }
+
     /** 列を削除する */
     vanishTheLine(lineIndex){
         /** 揃った列自体を消してしまう */
@@ -433,6 +529,16 @@ export default class Tetris {
 
         /** 消した分だけ上に加える */
         this.Field.unshift(JSON.parse(JSON.stringify(this.baseLine)))
+    }
+
+    // お邪魔発動
+    triggeringOjyama(){
+        /** 一番上を消してしまう 
+         * 縦のマス数が増えないように
+        */
+        this.Field.splice(0, 1); 
+
+        this.Field.push(JSON.parse(JSON.stringify(this.ojyama.createOjyama())))
     }
 
     /** nextを補充するかどうか */
@@ -457,18 +563,114 @@ export default class Tetris {
         return false
     }
 
+    gameOver(){
+        // タイマー止める
+        this.stopTimer()
+        this.deleteInterval()
+        this.deleteOjyamaInterval()
+
+        // スコア集計
+        this.addScore(this.time * this.level)
+    }
+
+    startOjyamaInterval(){
+        this.ojyamaId = setInterval(() => {
+            this.ojyamaCountDown -= 100 //ms
+        },100)
+    }
+
+    deleteOjyamaInterval(){
+        clearInterval(this.ojyamaId)
+    }
+
+    startTimer(){
+        // 1秒ごと
+        this.timerId = setInterval(() => {
+            this.time += 1
+        },1000)
+    }
+
+    stopTimer(){ clearInterval(this.timerId) }
+
     startInterval(){
         // .bind(this)でコールバック内でもthis.が使えるようになる
         this.autoDropIntervalId = setInterval(this.droppingTheBlock.bind(this), this.autoDropInterval);
     }
 
-    deleteInterval(){
-        clearInterval(this.autoDropIntervalId)
-    }
+    deleteInterval(){ clearInterval(this.autoDropIntervalId) }
 
     resetInterval(){
         this.deleteInterval()
         this.startInterval()
+    }
+
+    /** レベル計測 
+     *  1000ms秒ずつ短くしたいけど良い書き方が思い浮かばない
+     * 単純に書くと効果が重複するし
+    */
+    checkLevel(){
+        if (this.countOfLinesVanished >= 270) { 
+            this.level = 10
+            this.autoDropInterval = 1100
+            this.ojyamaInterval = 6000
+            return 
+        }
+
+        if (this.countOfLinesVanished >= 216) { 
+            this.level = 9
+            this.autoDropInterval = 1200
+            this.ojyamaInterval = 7000
+            return 
+        }
+
+        if (this.countOfLinesVanished >= 168) { 
+            this.level = 8
+            this.autoDropInterval = 1300
+            this.ojyamaInterval = 8000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 126) { 
+            this.level = 7
+            this.autoDropInterval = 1400
+            this.ojyamaInterval = 9000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 90) { 
+            this.level = 6
+            this.autoDropInterval = 1500
+            this.ojyamaInterval = 10000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 60) { 
+            this.level = 5
+            this.autoDropInterval = 1600
+            this.ojyamaInterval = 11000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 36) { 
+            this.level = 4
+            this.autoDropInterval = 1700
+            this.ojyamaInterval = 12000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 18) { 
+            this.level = 3
+            this.autoDropInterval = 1800
+            this.ojyamaInterval = 13000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 6) { 
+            this.level = 2
+            this.autoDropInterval = 1900
+            this.ojyamaInterval = 14000
+            return
+        }
     }
 
 
