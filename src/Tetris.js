@@ -8,8 +8,11 @@ import Tetrimino from "./Tetrimino"
 export default class Tetris {
     Field = []
     autoDropIntervalId = null
+    timerId = null
     score = 0
     level = 1
+    countOfLinesErased = 0
+    time = 0
 
     /** jsの最大整数値 */
     maxScore = 9000000000000000
@@ -108,6 +111,7 @@ export default class Tetris {
 
         this.startDropping(this.nextTetriminos.shift())
         this.startInterval()
+        this.startTimer()
     }
 
     /** ブロックを落とし始める */
@@ -388,10 +392,15 @@ export default class Tetris {
         /** 揃った列をスコアとして足す */
         this.scoreCalculation(countOfAlignedRow)
 
+
+        /** 消した列を足す */
+        this.countOfLinesErased += countOfAlignedRow
+
         /** ゲームオーバーになってないか確認 */
         if (this.checkIsGameOver()) {
             // ゲーム終了
             this.isGameOver = true
+            this.gameOver
             return //このあとの処理はしない
         }
 
@@ -407,7 +416,6 @@ export default class Tetris {
 
     /** 計算 */
     scoreCalculation(countOfAlignedRow){
-        let ScoreToAdd = 0
 
         // 揃った列の数
 
@@ -489,14 +497,29 @@ export default class Tetris {
         return false
     }
 
+    gameOver(){
+        // タイマー止める
+        this.stopTimer()
+
+        // スコア集計
+        this.addScore(this.time * this.level)
+    }
+
+    startTimer(){
+        // 1秒ごと
+        this.timerId = setInterval(() => {
+            this.time += 1
+        },1000)
+    }
+
+    stopTimer(){ clearInterval(this.timerId) }
+
     startInterval(){
         // .bind(this)でコールバック内でもthis.が使えるようになる
         this.autoDropIntervalId = setInterval(this.droppingTheBlock.bind(this), this.autoDropInterval);
     }
 
-    deleteInterval(){
-        clearInterval(this.autoDropIntervalId)
-    }
+    deleteInterval(){ clearInterval(this.autoDropIntervalId) }
 
     resetInterval(){
         this.deleteInterval()
