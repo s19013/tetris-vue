@@ -76,7 +76,7 @@ export default class Tetrimino{
             {x:3,y:1},
         ],
         clockwiseAxis:1, //2
-        counterClockwiseAxis:2 //1
+        counterClockwiseAxis:1 //1
     }
 
     Z = {
@@ -87,7 +87,7 @@ export default class Tetrimino{
             {x:4,y:0},
             {x:3,y:0},
         ],
-        clockwiseAxis:2, //1
+        clockwiseAxis:1, //1
         counterClockwiseAxis:1 //2
     }
 
