@@ -1,97 +1,102 @@
 export default class Tetrimino{
-    /**
+    constructor(roof){
+        /** 落とし初めて良い場所の最大値 */
+        this.roof = roof 
+
+        /**
      * type ブロックの形
      * Coordinate 一番最初に現れる位置
      * clockwiseAxis 時計回りのときの中心点 (自分自身を参照するのが難しいようなのでindex番号で)
      * counterClockwiseAxis 反時計回りのときの中心点
      */
 
-    O = {
-        type:"O",
-        Coordinate:[
-            {x:4,y:1},
-            {x:4,y:0},
-            {x:5,y:1},
-            {x:5,y:0},
-        ],
-        clockwiseAxis:null,
-        counterClockwiseAxis:null
-    }
+        this.O = {
+            type:"O",
+            Coordinate:[
+                {x:4,y:this.roof + 1},
+                {x:4,y:this.roof},
+                {x:5,y:this.roof + 1},
+                {x:5,y:this.roof},
+            ],
+            clockwiseAxis:null,
+            counterClockwiseAxis:null
+        }
 
     // Iは色々特殊
-    I = {
-        type:"I",
-        Coordinate:[
-            {x:3,y:2},
-            {x:4,y:2},
-            {x:5,y:2},
-            {x:6,y:2},
-        ],
-        clockwiseAxis:2,
-        counterClockwiseAxis:1
-    }
+        this.I = {
+            type:"I",
+            Coordinate:[
+                {x:3,y:this.roof + 1},
+                {x:4,y:this.roof + 1},
+                {x:5,y:this.roof + 1},
+                {x:6,y:this.roof + 1},
+            ],
+            clockwiseAxis:2,
+            counterClockwiseAxis:1
+        }
 
-    T = {
-        type:"T",
-        Coordinate:[
-            {x:3,y:1},
-            {x:4,y:0},
-            {x:4,y:1},
-            {x:5,y:1},
-        ],
-        clockwiseAxis:2,
-        counterClockwiseAxis:2
-    }
+        this.T = {
+            type:"T",
+            Coordinate:[
+                {x:3,y:this.roof + 1},
+                {x:4,y:this.roof },
+                {x:4,y:this.roof + 1},
+                {x:5,y:this.roof + 1},
+            ],
+            clockwiseAxis:2,
+            counterClockwiseAxis:2
+        }
 
-    L = {
-        type:"L",
-        Coordinate:[
-            {x:5,y:0},
-            {x:5,y:1},
-            {x:4,y:1},
-            {x:3,y:1},
-        ],
-        clockwiseAxis:2,
-        counterClockwiseAxis:2
-    }
+        this.L = {
+            type:"L",
+            Coordinate:[
+                {x:5,y:this.roof},
+                {x:5,y:this.roof + 1},
+                {x:4,y:this.roof + 1},
+                {x:3,y:this.roof + 1},
+            ],
+            clockwiseAxis:2,
+            counterClockwiseAxis:2
+        }
 
-    J = {
-        type:"J",
-        Coordinate:[
-            {x:3,y:0},
-            {x:3,y:1},
-            {x:4,y:1},
-            {x:5,y:1},
-        ],
-        clockwiseAxis:2,
-        counterClockwiseAxis:2
-    }
+        this.J = {
+            type:"J",
+            Coordinate:[
+                {x:3,y:this.roof},
+                {x:3,y:this.roof + 1},
+                {x:4,y:this.roof + 1},
+                {x:5,y:this.roof + 1},
+            ],
+            clockwiseAxis:2,
+            counterClockwiseAxis:2
+        }
 
-    S = {
-        type:"S",
-        Coordinate:[
-            {x:5,y:0},
-            {x:4,y:0},
-            {x:4,y:1},
-            {x:3,y:1},
-        ],
-        clockwiseAxis:1, //2
-        counterClockwiseAxis:1 //1
-    }
+        this.S = {
+            type:"S",
+            Coordinate:[
+                {x:5,y:this.roof},
+                {x:4,y:this.roof},
+                {x:4,y:this.roof + 1},
+                {x:3,y:this.roof + 1},
+            ],
+            clockwiseAxis:1, //2
+            counterClockwiseAxis:1 //1
+        }
 
-    Z = {
-        type:"Z",
-        Coordinate:[
-            {x:5,y:1},
-            {x:4,y:1},
-            {x:4,y:0},
-            {x:3,y:0},
-        ],
-        clockwiseAxis:1, //1
-        counterClockwiseAxis:1 //2
-    }
+        this.Z = {
+            type:"Z",
+            Coordinate:[
+                {x:5,y:this.roof + 1},
+                {x:4,y:this.roof + 1},
+                {x:4,y:this.roof},
+                {x:3,y:this.roof},
+            ],
+            clockwiseAxis:1, //1
+            counterClockwiseAxis:1 //2
+        }
 
-    base = [this.O,this.I,this.T,this.L,this.J,this.S,this.Z]
+        this.base = [this.O,this.I,this.T,this.L,this.J,this.S,this.Z]
+    }
 
     /** シャッフルライブラリが無いので自作するしかない */
     shuffle(array) {

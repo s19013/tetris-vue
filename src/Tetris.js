@@ -31,8 +31,9 @@ export default class Tetris {
     baseLine = []
 
     fieldWidth   = 10
-    fieldHeight  = 20
-    effectiveHeight = 0
+    fieldHeight  = 30
+    /** ユーザーから見える天井 */
+    effectiveRoof = 10 
 
     checkCanMove = new CheckCanMove({
         fieldWidth:this.fieldWidth,
@@ -47,7 +48,7 @@ export default class Tetris {
 
     ojyama = new Ojyama(this.fieldWidth)
 
-    tetriminoFactory = new Tetrimino()
+    tetriminoFactory = new Tetrimino(this.effectiveRoof)
 
     /** 放置してると勝手にブロックが落ちる感覚 */
     autoDropInterval = 2000 //ms
@@ -145,7 +146,9 @@ export default class Tetris {
         /** 落ちてくるのをセット */
         this.tetrimino = next
 
+        // 落ちてくるブロックをフィールドに出現させる
         for (let block of this.tetrimino.Coordinate) {
+            console.log(block);
             this.Field[block.y][block.x].isFill = true
             this.Field[block.y][block.x].isMoving = true
         }
@@ -422,20 +425,20 @@ export default class Tetris {
         /** レベル */
         this.checkLevel()
 
-        /** ゲームオーバーになってないか確認 */
-        if (this.checkIsGameOver()) {
-            // ゲーム終了
-            this.isGameOver = true
-            this.gameOver
-            return //このあとの処理はしない
-        }
-
         /** お邪魔 */
         if (this.ojyamaCountDown <= 0) {
             this.triggeringOjyama()
 
             // 時間再設定
             this.ojyamaCountDown = this.ojyamaInterval
+        }
+
+        /** ゲームオーバーになってないか確認 */
+        if (this.checkIsGameOver()) {
+            // ゲーム終了
+            this.isGameOver = true
+            this.gameOver()
+            return //このあとの処理はしない
         }
 
         /** 補充確認 */
@@ -528,15 +531,23 @@ export default class Tetris {
 
     // 
     checkIsGameOver(){
+        /** ゲームオーバーになる条件2
+         * 一番上の天井 y = 0の部分にブロックがある
+         */
+
+        for (let index = 0; index < this.fieldWidth; index++) {
+            if (this.Field[0][index].isFill) { return true }
+        }
+
         /** 
-         * ゲームオーバーになる条件1
-         * {x:3,y:0} ~ {x:6,y:0}
-         * {x:3,y:1} ~ {x:6,y:1}
+         * ゲームオーバーになる条件2
+         * {x:3,y:this.effectiveRoof} ~ {x:6,y:this.effectiveRoof}
+         * {x:3,y:this.effectiveRoof + 1} ~ {x:6,y:this.effectiveRoof + 1}
          * の範囲にブロックがある
          */
         for (let index = 3; index < 6; index++) {
-            if (this.Field[0][index].isFill) { return true }
-            if (this.Field[1][index].isFill) { return true }
+            if (this.Field[this.effectiveRoof][index].isFill) { return true }
+            if (this.Field[this.effectiveRoof + 1][index].isFill) { return true }
         }
         return false
     }
