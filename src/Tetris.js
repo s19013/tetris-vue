@@ -9,6 +9,19 @@ export default class Tetris {
     Field = []
     autoDropIntervalId = null
     score = 0
+    level = 1
+
+    /** jsの最大整数値 */
+    maxScore = 9000000000000000
+
+    /** 4列消し */
+    isTetris = false
+
+    /** 連続消し */
+    ren = 0
+
+    /** 連続4列消し */
+    back2back = false
 
     /** フィールドの横1列の基本の形 */
     baseLine = []
@@ -145,6 +158,9 @@ export default class Tetris {
              *  自動落下と重なって2重に落ちるのを防ぐ
             */
             this.resetInterval()
+
+            this.addScore(1)
+
 
             this.droppingTheBlock()
         } else {
@@ -370,7 +386,7 @@ export default class Tetris {
         }
 
         /** 揃った列をスコアとして足す */
-        this.score += countOfAlignedRow
+        this.scoreCalculation(countOfAlignedRow)
 
         /** ゲームオーバーになってないか確認 */
         if (this.checkIsGameOver()) {
@@ -387,6 +403,59 @@ export default class Tetris {
 
         /** 新しいブロックを落とす */
         this.startDropping(this.nextTetriminos.shift())
+    }
+
+    /** 計算 */
+    scoreCalculation(countOfAlignedRow){
+        let ScoreToAdd = 0
+
+        // 揃った列の数
+
+        /** 一列も揃ってない時はさっさと返す */
+        if (countOfAlignedRow == 0) {
+            this.back2back = false
+            this.ren = 0
+            return 
+        }
+
+        this.addScore(countOfAlignedRow * countOfAlignedRow * this.level * 10)
+
+        if (countOfAlignedRow == 4) {
+            this.isTetris = true
+
+            // これは表示用なので数秒たったら消す
+            setTimeout(()=> {
+                this.isTetris = false
+            },2000) ;
+        }
+
+        // b2b
+        this.addScore(50 * this.level)
+
+        // ren
+        this.addScore(this.ren * 10 * this.level)
+        
+        // renを加える
+        this.ren += 1
+
+    }
+
+    /** スコアを加える
+     * オーバーフローしないように処理するため別関数
+     */
+    addScore(ScoreToAdd=0){
+        try {
+            this.score += ScoreToAdd
+            // 限界値超えないように
+            if (this.score >= this.maxScore) { this.score = this.maxScore }
+
+
+        } catch (error) {
+            console.log(error);
+
+            // おそらくエラーが起きるのはオーバーフローした時だと思うので最大値設定
+            this.score = this.maxScore
+        }
     }
 
     /** 列を削除する */
