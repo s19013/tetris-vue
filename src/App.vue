@@ -3,7 +3,7 @@ import Tetris from '@/Tetris.js'
 import Field from './components/Field.vue'
 import Next from './components/Next.vue'
 import Hold from './components/Hold.vue'
-import GameOver from './components/GameOver.vue'
+import GameEnd from './components/GameEnd.vue'
 
 
 export default{
@@ -11,7 +11,7 @@ export default{
     Field,
     Next,
     Hold,
-    GameOver
+    GameEnd,
   },
   data() {
     return {
@@ -123,7 +123,7 @@ export default{
 
 <template>
   <main>
-    <GameOver v-if="isGameOver" score:score/>
+    <GameEnd v-if="isGameOver" :score="score"/>
     <h1>動きに癖がある非公式テトリス </h1>
     <a href="https://github.com/s19013/tetris-vue">コード</a>
     <div class="game">
