@@ -9,6 +9,10 @@ export default{
     gameOver:{
         type:Boolean
     }
+    score:{
+      type:Number,
+      default:0
+    }
   },
   methods:{
     reload(){
@@ -23,6 +27,7 @@ export default{
   <div class="GameOver">
     <div class="contaner">
         <p>Game Over</p>
+        <p>最終スコア:{{ score }}</p>
         <button @click="reload()">ReTry</button>
     </div>
   </div>
