@@ -124,7 +124,7 @@ export default{
 <template>
   <main>
     <GameOver v-if="isGameOver" score:score/>
-    <p>動きに癖がある非公式テトリス </p>
+    <h1>動きに癖がある非公式テトリス </h1>
     <a href="https://github.com/s19013/tetris-vue">コード</a>
     <div class="coution">
       <p v-show="ojyamaCountDown <= 3000">Danger!!</p>
