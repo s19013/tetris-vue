@@ -23,7 +23,7 @@ export default{
       score:0,
       ren:0,
       level:0,
-      countOfLinesErased:0,
+      countOfLinesVanished:0,
       timer:0,
       min:0,
       sec:0,
@@ -81,7 +81,7 @@ export default{
       this.ren = this.tetris.ren
       this.isTetris = this.tetris.isTetris
       this.level = this.tetris.level
-      this.countOfLinesErased = this.tetris.countOfLinesErased
+      this.countOfLinesVanished = this.tetris.countOfLinesVanished
       this.timer = this.tetris.time
       this.ojyamaCountDown = this.tetris.ojyamaCountDown
     }
@@ -135,7 +135,7 @@ export default{
       <p class="Score">{{ score }}</p>
       <div class="LeftInfo">
         <p>レベル:{{ level }} </p>
-        <p>列数:{{ countOfLinesErased }}</p>
+        <p>列数:{{ countOfLinesVanished }}</p>
         <p>時間:{{ time }}</p>
       </div>
       <div class="RightInfo">
