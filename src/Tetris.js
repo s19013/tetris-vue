@@ -13,7 +13,7 @@ export default class Tetris {
     ojyamaId = null
     score = 0
     level = 1
-    countOfLinesErased = 0
+    countOfLinesVanished = 0
 
     /** jsの最大整数値 */
     maxScore = 9000000000000000
@@ -402,7 +402,10 @@ export default class Tetris {
         this.scoreCalculation(countOfAlignedRow)
 
         /** 消した列を足す */
-        this.countOfLinesErased += countOfAlignedRow
+        this.countOfLinesVanished += countOfAlignedRow
+
+        /** レベル */
+        this.checkLevel()
 
         /** ゲームオーバーになってないか確認 */
         if (this.checkIsGameOver()) {
@@ -562,6 +565,75 @@ export default class Tetris {
     resetInterval(){
         this.deleteInterval()
         this.startInterval()
+    }
+
+    /** レベル計測 
+     *  1000ms秒ずつ短くしたいけど良い書き方が思い浮かばない
+     * 単純に書くと効果が重複するし
+    */
+    checkLevel(){
+        if (this.countOfLinesVanished >= 270) { 
+            this.level = 10
+            this.autoDropInterval = 1100
+            this.ojyamaInterval = 6000
+            return 
+        }
+
+        if (this.countOfLinesVanished >= 216) { 
+            this.level = 9
+            this.autoDropInterval = 1200
+            this.ojyamaInterval = 7000
+            return 
+        }
+
+        if (this.countOfLinesVanished >= 168) { 
+            this.level = 8
+            this.autoDropInterval = 1300
+            this.ojyamaInterval = 8000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 126) { 
+            this.level = 7
+            this.autoDropInterval = 1400
+            this.ojyamaInterval = 9000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 90) { 
+            this.level = 6
+            this.autoDropInterval = 1500
+            this.ojyamaInterval = 10000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 60) { 
+            this.level = 5
+            this.autoDropInterval = 1600
+            this.ojyamaInterval = 11000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 36) { 
+            this.level = 4
+            this.autoDropInterval = 1700
+            this.ojyamaInterval = 12000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 18) { 
+            this.level = 3
+            this.autoDropInterval = 1800
+            this.ojyamaInterval = 13000
+            return
+        }
+
+        if (this.countOfLinesVanished >= 6) { 
+            this.level = 2
+            this.autoDropInterval = 1900
+            this.ojyamaInterval = 14000
+            return
+        }
     }
 
 
