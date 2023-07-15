@@ -75,7 +75,7 @@ export default class Tetrimino{
             {x:4,y:1},
             {x:3,y:1},
         ],
-        clockwiseAxis:1,
+        clockwiseAxis:2,
         counterClockwiseAxis:1
     }
 
@@ -87,7 +87,7 @@ export default class Tetrimino{
             {x:4,y:0},
             {x:3,y:0},
         ],
-        clockwiseAxis:2,
+        clockwiseAxis:1,
         counterClockwiseAxis:2
     }
 
