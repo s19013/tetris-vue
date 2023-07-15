@@ -123,7 +123,7 @@ export default{
 
 <template>
   <main>
-    <GameOver v-if="isGameOver" />
+    <GameOver v-if="isGameOver" score:score/>
     <p>動きに癖がある非公式テトリス</p>
     <div class="coution">
       <p v-show="ojyamaCountDown <= 3000">Danger!!</p>
