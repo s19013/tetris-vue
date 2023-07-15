@@ -22,6 +22,11 @@ export default{
       isGameOver:false,
       score:0,
       ren:0,
+      level:0,
+      countOfLinesErased:0,
+      timer:0,
+      min:0,
+      sec:0,
       isTetris:false,
       reRendIntervalId:0
     }
@@ -74,6 +79,17 @@ export default{
       this.score = this.tetris.score
       this.ren = this.tetris.ren
       this.isTetris = this.tetris.isTetris
+      this.level = this.tetris.level
+      this.countOfLinesErased = this.tetris.countOfLinesErased
+      this.timer = this.tetris.time
+    }
+  },
+  computed:{
+    time:function(){
+      let m = Math.floor(this.timer /60)
+      let s = this.timer % 60
+
+      return `${m}m ${s}s`
     }
   },
   watch:{
@@ -111,8 +127,15 @@ export default{
       <Field :field="field"/>
       <Next :next="next"/>
       <p class="Score">{{ score }}</p>
-      <p class="Ren" v-show="ren > 0">Ren:{{ ren }}</p>
-      <p class="isTetris" v-show="isTetris">Tetris!</p>
+      <div class="LeftInfo">
+        <p>レベル:{{ level }} </p>
+        <p>列数:{{ countOfLinesErased }}</p>
+        <p>時間:{{ time }}</p>
+      </div>
+      <div class="RightInfo">
+        <p class="Ren" v-show="ren > 0">Ren:{{ ren }}</p>
+        <p class="isTetris" v-show="isTetris">Tetris!</p>
+      </div>
     </div>
     <div class="controller">
         <button @click="keyEvents({code:'KeyJ'})">左回転</button>
@@ -179,6 +202,7 @@ export default{
     .Hold{
       grid-column: 1/2;
       grid-row: 1/2;
+      justify-content: right;
     }
     .Field{
       grid-column:2/3;
@@ -192,12 +216,15 @@ export default{
       grid-column:2/3;
       grid-row: 3/4;
     }
-    .isTetris{
-      grid-column: 3/4;
-      grid-row: 2/3;
-    }
-    .Ren{
+    .LeftInfo{
+      text-align:left;
+      justify-content: left;
       grid-column: 1/2;
+      grid-row: 2/3;
+      min-width: 2rem;
+    }
+    .RightInfo{
+      grid-column: 3/4;
       grid-row: 2/3;
     }
 }
