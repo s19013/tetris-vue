@@ -108,6 +108,39 @@ export default class Tetris {
         // this.Field[13][3].isFill = true
         // this.Field[13][2].isFill = true
         
+        // this.Field[19][9].isFill = true
+        // this.Field[19][8].isFill = true
+        // this.Field[19][6].isFill = true
+        // this.Field[18][9].isFill = true
+        // this.Field[18][8].isFill = true
+        // this.Field[18][6].isFill = true
+        // this.Field[17][9].isFill = true
+        // this.Field[16][9].isFill = true
+        // this.Field[16][6].isFill = true
+        // this.Field[15][9].isFill = true
+        // this.Field[15][8].isFill = true
+        // this.Field[15][6].isFill = true
+        // this.Field[14][6].isFill = true
+        // this.Field[13][6].isFill = true
+        // this.Field[13][7].isFill = true
+
+        // this.Field[19][9].isFill = true
+        // this.Field[19][8].isFill = true
+        // this.Field[19][6].isFill = true
+        // this.Field[18][9].isFill = true
+        // this.Field[18][8].isFill = true
+        // this.Field[18][6].isFill = true
+        // this.Field[17][9].isFill = true
+        // this.Field[17][6].isFill = true
+        // this.Field[16][9].isFill = true
+        // this.Field[16][8].isFill = true
+        // this.Field[16][6].isFill = true
+        // this.Field[15][6].isFill = true
+        // this.Field[14][6].isFill = true
+        // this.Field[14][7].isFill = true
+
+        // this.Field[19][2].isFill = true
+        // this.Field[18][2].isFill = true
 
     }
 
@@ -143,7 +176,7 @@ export default class Tetris {
         // console.log("up");
         // デバック用
         // if (this.checkCanMove.up({
-        //         Field:this.Field,
+        //         Field:JSON.parse(JSON.stringify(this.Field)),
         //         tetrimino:this.tetrimino
         //     })
         // ) {
@@ -163,14 +196,14 @@ export default class Tetris {
         // console.log("down");
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.down({
-                Field:this.Field,
+                Field:JSON.parse(JSON.stringify(this.Field)),
                 tetrimino:this.tetrimino
             })
         ) {
             /** 自動落下のインターバルリセット 
              *  自動落下と重なって2重に落ちるのを防ぐ
             */
-            this.resetInterval()
+            // this.resetInterval()
 
             this.addScore(1)
 
@@ -187,7 +220,7 @@ export default class Tetris {
         // console.log("left");
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.left({
-                Field:this.Field,
+                Field:JSON.parse(JSON.stringify(this.Field)),
                 tetrimino:this.tetrimino
             })
         ) {
@@ -206,7 +239,7 @@ export default class Tetris {
     keyDownRight(){
         // console.log("right");
         if (this.checkCanMove.right({
-                Field:this.Field,
+                Field:JSON.parse(JSON.stringify(this.Field)),
                 tetrimino:this.tetrimino
             })
         ) {
@@ -236,7 +269,7 @@ export default class Tetris {
         /** Iミノは回し方が特殊 */
         if (this.tetrimino.type == "I") {
             this.tetrimino = this.rotater.rotation({
-                Field:this.Field,
+                Field:JSON.parse(JSON.stringify(this.Field)),
                 direction:"counterClockwise",
                 tetrimino:this.tetrimino
             })
@@ -246,7 +279,7 @@ export default class Tetris {
 
         /** 回転した後の位置を更新 */
         this.tetrimino = this.rotater.rotation({
-            Field:this.Field,
+            Field:JSON.parse(JSON.stringify(this.Field)),
             direction:"clockwise",
             tetrimino:this.tetrimino
         })
@@ -269,7 +302,7 @@ export default class Tetris {
         /** Iミノは回し方が逆 */
         if (this.tetrimino.type == "I") {
             this.tetrimino = this.rotater.rotation({
-                Field:this.Field,
+                Field:JSON.parse(JSON.stringify(this.Field)),
                 direction:"clockwise",
                 tetrimino:this.tetrimino
             })
@@ -279,7 +312,7 @@ export default class Tetris {
 
         /** 回転した後の位置を更新 */
         this.tetrimino = this.rotater.rotation({
-            Field:this.Field,
+            Field:JSON.parse(JSON.stringify(this.Field)),
             direction:"counterClockwise",
             tetrimino:this.tetrimino
         })
@@ -326,7 +359,7 @@ export default class Tetris {
          *  下記のコードは自動落下用
         */
         if (this.checkCanMove.down({
-                Field:this.Field,
+                Field:JSON.parse(JSON.stringify(this.Field)),
                 tetrimino:this.tetrimino
             })
             == false
@@ -357,8 +390,12 @@ export default class Tetris {
 
         /** 新しい場所に描写 */
         for (let block of this.tetrimino.Coordinate) {
-            this.Field[block.y][block.x].isFill = true
-            this.Field[block.y][block.x].isMoving = true
+            try {
+                this.Field[block.y][block.x].isFill = true
+                this.Field[block.y][block.x].isMoving = true
+            } catch (error) {
+                console.log(error);
+            }
         }
 
     }
