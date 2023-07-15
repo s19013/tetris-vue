@@ -124,7 +124,8 @@ export default{
 <template>
   <main>
     <GameOver v-if="isGameOver" score:score/>
-    <p>動きに癖がある非公式テトリス</p>
+    <p>動きに癖がある非公式テトリス </p>
+    <a href="https://github.com/s19013/tetris-vue">コード</a>
     <div class="coution">
       <p v-show="ojyamaCountDown <= 3000">Danger!!</p>
     </div>
@@ -190,7 +191,6 @@ export default{
         <p>Tスピンボーナス</p>
       </div>
     </div>
-    <a href="https://github.com/s19013/tetris-vue">コード</a>
     <!-- <pre>{{ field }}</pre> -->
     <!-- <div class="deb">
       <p v-for="(line,index) in field" :key = index>
