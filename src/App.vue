@@ -20,6 +20,9 @@ export default{
       next:[],
       hold:null,
       isGameOver:false,
+      score:0,
+      ren:0,
+      isTetris:false,
       reRendIntervalId:0
     }
   },
@@ -68,6 +71,9 @@ export default{
       this.next  = JSON.parse(JSON.stringify(this.tetris.nextTetriminos))
       this.hold  = this.tetris.holdTetrimino
       this.isGameOver = this.tetris.isGameOver
+      this.score = this.tetris.score
+      this.ren = this.tetris.ren
+      this.isTetris = this.tetris.isTetris
     }
   },
   watch:{
@@ -104,6 +110,9 @@ export default{
       <Hold :hold="hold"/>
       <Field :field="field"/>
       <Next :next="next"/>
+      <p class="Score">{{ score }}</p>
+      <p class="Ren" v-show="ren > 0">Ren:{{ ren }}</p>
+      <p class="isTetris" v-show="isTetris">Tetris!</p>
     </div>
     <div class="controller">
         <button @click="keyEvents({code:'KeyJ'})">左回転</button>
@@ -161,10 +170,36 @@ export default{
 <style lang="scss" scoped>
 .game{
     display: grid;
+    grid-template-rows: auto auto  0.2fr 0.2fr;
     grid-template-columns: auto auto auto;
     gap:1rem;
     text-align:center;
     justify-content: center;
+
+    .Hold{
+      grid-column: 1/2;
+      grid-row: 1/2;
+    }
+    .Field{
+      grid-column:2/3;
+      grid-row: 1/3;
+    }
+    .Next{
+      grid-column: 3/4;
+      grid-row: 1/2;
+    }
+    .Score{
+      grid-column:2/3;
+      grid-row: 3/4;
+    }
+    .isTetris{
+      grid-column: 3/4;
+      grid-row: 2/3;
+    }
+    .Ren{
+      grid-column: 1/2;
+      grid-row: 2/3;
+    }
 }
 .messages{
     margin-top: 1rem;
