@@ -162,6 +162,7 @@ export default class Tetris {
 
     /** ボタン押された時の処理たち */
     keyDownUp(){
+        this.hardDrop()
         // デバック用
         // if (this.checkCanMove.up({
         //         Field:JSON.parse(JSON.stringify(this.Field)),
@@ -387,6 +388,26 @@ export default class Tetris {
 
         // this.moveGhost() 重くなるしほぼ意味ない
         this.moveTetrimino()
+    }
+
+    hardDrop(){
+        /** 今の位置を古い情報として保存 */
+        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+        this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
+
+
+        // 何ます動かすかしらべる(スコアで使う)
+        let countOfMove = Math.abs(this.ghost.Coordinate[0].y - this.tetrimino.Coordinate[0].y)
+        this.addScore(countOfMove * 2)
+
+        // ゴーストの位置に移動する
+        this.tetrimino = JSON.parse(JSON.stringify(this.ghost));
+
+        this.moveTetrimino()
+        this.moveGhost()
+
+        // 固定化
+        this.immobilization()
     }
 
     moveTetrimino(){
