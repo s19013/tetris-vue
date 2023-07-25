@@ -77,6 +77,10 @@ export default class Tetris {
 
     isGameOver = false
 
+    // ゴースト
+    ghost = null
+    oldGhost = null
+
     constructor(){
         // 10*10のリストにblockクラスを入れる
 
@@ -145,18 +149,20 @@ export default class Tetris {
 
         /** 落ちてくるのをセット */
         this.tetrimino = next
+        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino))
+        this.ghost = JSON.parse(JSON.stringify(this.tetrimino))
+        this.oldGhost = JSON.parse(JSON.stringify(this.tetrimino))
 
         // 落ちてくるブロックをフィールドに出現させる
-        for (let block of this.tetrimino.Coordinate) {
-            this.Field[block.y][block.x].isFill = true
-            this.Field[block.y][block.x].isMoving = true
-        }
+        this.moveTetrimino()
+        this.moveGhost()
 
     }
 
 
     /** ボタン押された時の処理たち */
     keyDownUp(){
+        this.hardDrop()
         // デバック用
         // if (this.checkCanMove.up({
         //         Field:JSON.parse(JSON.stringify(this.Field)),
@@ -207,13 +213,13 @@ export default class Tetris {
         ) {
             /** 今の位置を古い情報として保存 */
             this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+            this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
 
             /** 位置を更新 */
-            for (let block of this.tetrimino.Coordinate) {
-                block.x -= 1
-            }
+            for (let block of this.tetrimino.Coordinate) { block.x -= 1 }
 
             this.moveTetrimino()
+            this.moveGhost()
         }
     }
 
@@ -225,24 +231,27 @@ export default class Tetris {
         ) {
             /** 今の位置を古い情報として保存 */
             this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+            this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
 
             /** 位置を更新 */
-            for (let block of this.tetrimino.Coordinate) {
-                block.x += 1
-            }
+            for (let block of this.tetrimino.Coordinate) { block.x += 1 }
+
             this.moveTetrimino()
+            this.moveGhost()
         }
     }
 
     keyDownL(){
         /** 今の位置を古い情報として保存 */
         this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+        this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
 
         /** Oミノはそもそも回さない */
         if (this.tetrimino.type == "O") {
 
             // 再描画するだけで早期リターン
             this.moveTetrimino()
+            this.moveGhost()
             return 
         }
 
@@ -254,7 +263,8 @@ export default class Tetris {
                 tetrimino:this.tetrimino
             })
             this.moveTetrimino()
-            return 
+            this.moveGhost()
+            return
         }
 
         /** 回転した後の位置を更新 */
@@ -263,19 +273,21 @@ export default class Tetris {
             direction:"clockwise",
             tetrimino:this.tetrimino
         })
-        
         this.moveTetrimino()
+        this.moveGhost()
     }
 
     keyDownJ(){
 
         this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+        this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
 
         /** Oミノはそもそも回さない */
         if (this.tetrimino.type == "O") {
 
             // 再描画するだけで早期リターン
             this.moveTetrimino()
+            this.moveGhost()
             return 
         }
 
@@ -287,6 +299,7 @@ export default class Tetris {
                 tetrimino:this.tetrimino
             })
             this.moveTetrimino()
+            this.moveGhost()
             return 
         }
 
@@ -296,8 +309,8 @@ export default class Tetris {
             direction:"counterClockwise",
             tetrimino:this.tetrimino
         })
-        
         this.moveTetrimino()
+        this.moveGhost()
 
     }
 
@@ -309,6 +322,17 @@ export default class Tetris {
     hold(){
         /** 今の位置を古い情報として保存 */
         this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+        this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
+
+        // 古い場所のブロックやゴーストを消しとく
+        for (let block of this.oldGhost.Coordinate) {
+            this.Field[block.y][block.x].ghost = false
+        }
+
+        for (let block of this.oldTetrimino.Coordinate) {
+            this.Field[block.y][block.x].isFill = false
+            this.Field[block.y][block.x].isMoving = false
+        }
 
         // ホールドしてるのを取り出す
         let holded = this.holdTetrimino
@@ -328,8 +352,12 @@ export default class Tetris {
              if (holded == "J") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.J)) }
         }
 
+        // ゴーストも更新
+        this.ghost = JSON.parse(JSON.stringify(this.tetrimino));
+
         this.holdLock = true
         this.moveTetrimino()
+        this.moveGhost()
     }
 
     droppingTheBlock(){
@@ -351,14 +379,35 @@ export default class Tetris {
         /** 動かせるようなら下に動かす */
         /** 今の位置を古い情報として保存 */
         this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
-        
+        this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
 
         /** 位置を更新 */
         for (let block of this.tetrimino.Coordinate) {
             block.y += 1
         }
 
+        // this.moveGhost() 重くなるしほぼ意味ない
         this.moveTetrimino()
+    }
+
+    hardDrop(){
+        /** 今の位置を古い情報として保存 */
+        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+        this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
+
+
+        // 何ます動かすかしらべる(スコアで使う)
+        let countOfMove = Math.abs(this.ghost.Coordinate[0].y - this.tetrimino.Coordinate[0].y)
+        this.addScore(countOfMove * 2)
+
+        // ゴーストの位置に移動する
+        this.tetrimino = JSON.parse(JSON.stringify(this.ghost));
+
+        this.moveTetrimino()
+        this.moveGhost()
+
+        // 固定化
+        this.immobilization()
     }
 
     moveTetrimino(){
@@ -377,13 +426,46 @@ export default class Tetris {
                 console.log(error);
             }
         }
+    }
 
+    moveGhost(){
+        /** 古い場所のゴーストを消して */
+        for (let block of this.oldGhost.Coordinate) {
+            this.Field[block.y][block.x].ghost = false
+        }
+
+        // ghostを動かす
+        this.ghost = JSON.parse(JSON.stringify(this.tetrimino))
+        // falseが帰ってくるまで回し続ける
+        while (this.checkCanMove.down({
+            Field:JSON.parse(JSON.stringify(this.Field)),
+            tetrimino:JSON.parse(JSON.stringify(this.ghost))
+        })) {
+            // 1つ下に動かす
+            // foreachだと負担かかるかもだから
+            this.ghost.Coordinate[0].y += 1
+            this.ghost.Coordinate[1].y += 1
+            this.ghost.Coordinate[2].y += 1
+            this.ghost.Coordinate[3].y += 1
+        }
+
+
+        /** 新しい場所に描写 */
+        for (let block of this.ghost.Coordinate) {
+            this.Field[block.y][block.x].ghost = true
+        }
     }
 
     /** 動かしているブロックを固定化する */
     immobilization(){
+        // movingを外して固定化(動かせなく)する
         for (let block of this.tetrimino.Coordinate) {
             this.Field[block.y][block.x].isMoving = false
+        }
+        
+        // ゴーストを消す
+        for (let block of this.ghost.Coordinate) {
+            this.Field[block.y][block.x].ghost = false
         }
 
         /** 揃っているかを調べる */
