@@ -3,4 +3,5 @@ export default class Block{
         /** 空かどうか */ this.isFill  = isFill
     }
     /** 動かしているかどうか */ isMoving = false 
+    /** 落とせる場所か(ゴースト) */ ghost = false
 }
