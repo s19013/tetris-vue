@@ -5,66 +5,83 @@ import Next from './components/Next.vue'
 import Hold from './components/Hold.vue'
 import GameEnd from './components/GameEnd.vue'
 
-
-export default{
-  components:{
+export default {
+  components: {
     Field,
     Next,
     Hold,
-    GameEnd,
+    GameEnd
   },
   data() {
     return {
-      tetris:new Tetris(),
-      field:[],
-      next:[],
-      hold:null,
-      isGameOver:false,
-      score:0,
-      ren:0,
-      level:0,
-      countOfLinesVanished:0,
-      timer:0,
-      min:0,
-      sec:0,
-      ojyamaCountDown:10,
-      isTetris:false,
-      reRendIntervalId:0
+      tetris: new Tetris(),
+      field: [],
+      next: [],
+      hold: null,
+      isGameOver: false,
+      score: 0,
+      ren: 0,
+      level: 0,
+      countOfLinesVanished: 0,
+      timer: 0,
+      min: 0,
+      sec: 0,
+      ojyamaCountDown: 10,
+      isTetris: false,
+      reRendIntervalId: 0
     }
   },
-  methods:{
-    keyEvents(event){
+  methods: {
+    keyEvents(event) {
       // _.debounce(,1000)
       try {
-        event.preventDefault();
-      } catch (error) {console.log();}
-      
+        event.preventDefault()
+      } catch (error) {
+        // 例えば右端にいるのに右に移動させようとするとエラーを出すようにしている｡しかしゲームを止めるのではなく､無視させるために特に何もしない
+        console.log()
+      }
+
       let code = event.code
 
       // ゲームオーバーしてたら動かない
-      if (this.isGameOver) { return }
+      if (this.isGameOver) {
+        return
+      }
 
       /** 上 */
-      if (code == "ArrowUp"   || code == "KeyW") { this.tetris.keyDownUp() }
+      if (code == 'ArrowUp' || code == 'KeyW') {
+        this.tetris.keyDownUp()
+      }
 
       /** 下 */
-      if (code == "ArrowDown" || code == "KeyS" ) {this.tetris.keyDownDown()}
+      if (code == 'ArrowDown' || code == 'KeyS') {
+        this.tetris.keyDownDown()
+      }
 
       /** 左 */
-      if (code == "ArrowLeft" || code == "KeyA" ) {this.tetris.keyDownLeft()}
+      if (code == 'ArrowLeft' || code == 'KeyA') {
+        this.tetris.keyDownLeft()
+      }
 
       /** 右 */
-      if (code == "ArrowRight" || code == "KeyD") {this.tetris.keyDownRight()}
+      if (code == 'ArrowRight' || code == 'KeyD') {
+        this.tetris.keyDownRight()
+      }
 
       /** L 時計回り */
-      if (code == "KeyL") {this.tetris.keyDownL()}
+      if (code == 'KeyL') {
+        this.tetris.keyDownL()
+      }
 
       /** J 反時計回り */
-      if (code == "KeyJ") {this.tetris.keyDownJ()}
+      if (code == 'KeyJ') {
+        this.tetris.keyDownJ()
+      }
 
       /** スペース ホールド*/
-      if (code == "Space") {this.tetris.keyDownSpace()}
-
+      if (code == 'Space') {
+        this.tetris.keyDownSpace()
+      }
 
       // デバック用 インターバルを止める
       // if (code == "KeyQ")  {clearInterval(this.reRendIntervalId)}
@@ -72,10 +89,10 @@ export default{
       /** フィールドを再描画 */
       this.reRender()
     },
-    reRender(){
+    reRender() {
       this.field = JSON.parse(JSON.stringify(this.tetris.Field))
-      this.next  = JSON.parse(JSON.stringify(this.tetris.nextTetriminos))
-      this.hold  = this.tetris.holdTetrimino
+      this.next = JSON.parse(JSON.stringify(this.tetris.nextTetriminos))
+      this.hold = this.tetris.holdTetrimino
       this.isGameOver = this.tetris.isGameOver
       this.score = this.tetris.score
       this.ren = this.tetris.ren
@@ -86,49 +103,43 @@ export default{
       this.ojyamaCountDown = this.tetris.ojyamaCountDown
     }
   },
-  computed:{
-    time:function(){
-      let m = Math.floor(this.timer /60)
+  computed: {
+    time: function () {
+      let m = Math.floor(this.timer / 60)
       let s = this.timer % 60
 
       return `${m}m ${s}s`
     }
   },
-  watch:{
-
-  },
-  beforeMount(){
+  watch: {},
+  beforeMount() {
     // タイミングの問題でここ
     // mountedだと遅すぎてエラーになる
-    this.next  = this.tetris.nextTetriminos
+    this.next = this.tetris.nextTetriminos
   },
   mounted() {
     // 定期的再描画
-    this.reRendIntervalId = setInterval(this.reRender, 100);
-    this.$nextTick(function () {
-    })
+    this.reRendIntervalId = setInterval(this.reRender, 100)
+    this.$nextTick(function () {})
     /** キーボード受付 */
     document.addEventListener('keydown', this.keyEvents)
-
-    
-
   },
   beforeUnmount() {
     /** キーボードによる動作の削除(副作用みたいエラーがでるため) */
     clearInterval(this.reRendIntervalId)
-    document.removeEventListener("keydown", this.keyEvents);
+    document.removeEventListener('keydown', this.keyEvents)
   }
 }
 </script>
 
 <template>
   <main>
-    <GameEnd v-if="isGameOver" :score="score"/>
-    <h1>動きに癖がある非公式テトリス </h1>
+    <GameEnd v-if="isGameOver" :score="score" />
+    <h1>動きに癖がある非公式テトリス</h1>
     <a href="https://github.com/s19013/tetris-vue">コード</a>
     <div class="game">
       <div class="LeftInfo">
-        <Hold :hold="hold"/>
+        <Hold :hold="hold" />
         <div class="coution">
           <p v-show="ojyamaCountDown <= 3000">Danger!!</p>
         </div>
@@ -136,11 +147,11 @@ export default{
         <p class="isTetris" v-show="isTetris">Tetris!</p>
       </div>
       <div class="Center">
-        <Field :field="field"/>
+        <Field :field="field" />
         <p class="Score">{{ score }}</p>
       </div>
       <div class="RightInfo">
-        <Next :next="next"/>
+        <Next :next="next" />
         <table border="1">
           <tr>
             <td>レベル</td>
@@ -158,15 +169,15 @@ export default{
       </div>
     </div>
     <div class="controller">
-        <button @click="keyEvents({code:'KeyJ'})">左回転</button>
-        <button @click="keyEvents({})">↑</button>
-        <button @click="keyEvents({code:'KeyL'})">右回転</button>
+      <button @click="keyEvents({ code: 'KeyJ' })">左回転</button>
+      <button @click="keyEvents({})">↑</button>
+      <button @click="keyEvents({ code: 'KeyL' })">右回転</button>
 
-        <button @click="keyEvents({code:'KeyA'})">←</button>
-        <button @click="keyEvents({code:'KeyS'})">↓</button>
-        <button @click="keyEvents({code:'KeyD'})">→</button>
+      <button @click="keyEvents({ code: 'KeyA' })">←</button>
+      <button @click="keyEvents({ code: 'KeyS' })">↓</button>
+      <button @click="keyEvents({ code: 'KeyD' })">→</button>
 
-        <button @click="keyEvents({code:'Space'})">ホールド</button>
+      <button @click="keyEvents({ code: 'Space' })">ホールド</button>
     </div>
     <div class="messages">
       <div class="howToPlay">
@@ -211,59 +222,66 @@ export default{
         </template>
       </p>
     </div> -->
-
   </main>
 </template>
 
 <style lang="scss" scoped>
-.coution{
-  text-align:center;
+.coution {
+  text-align: center;
   min-height: 2rem;
 }
-.game{
-    display: flex;
-    gap:1rem;
-    text-align:center;
+.game {
+  display: flex;
+  gap: 1rem;
+  text-align: center;
+  justify-content: center;
+  .Score {
+    text-align: center;
     justify-content: center;
-    .Score{
-      text-align:center;
-      justify-content: center;
-    }
-    .LeftInfo{
-      .Hold{margin-left: auto;}
-    }
-    .Center{
-    }
-    .RightInfo{
-      table{
-        margin-top:1rem;
-        width: 10rem
-      }
-    }
-}
-.messages{
-    margin-top: 1rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr ;
-    gap:1rem;
-    justify-content: center;
-    .howToPlay{
-      margin-right: 0;
+  }
+  .LeftInfo {
+    .Hold {
       margin-left: auto;
-      td{padding:0.5rem}
     }
+  }
+  .Center {
+  }
+  .RightInfo {
+    table {
+      margin-top: 1rem;
+      width: 10rem;
+    }
+  }
+}
+.messages {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  justify-content: center;
+  .howToPlay {
+    margin-right: 0;
+    margin-left: auto;
+    td {
+      padding: 0.5rem;
+    }
+  }
 }
 
-.controller{
-  @media (min-width: 961px){
+.controller {
+  @media (min-width: 961px) {
     display: none;
   }
   display: grid;
-  margin-top:1rem;
+  margin-top: 1rem;
   grid-template-rows: 1fr 1fr 1fr;
   grid-template-columns: 1fr 1fr 1fr;
   justify-content: center;
-  button{padding: 1rem;}
-  :nth-child(7){grid-column: 1/4;}
+  button {
+    padding: 1rem;
+  }
+  :nth-child(7) {
+    grid-column: 1/4;
+  }
 }
 </style>
