@@ -24,8 +24,6 @@ export default {
       level: 0,
       countOfLinesVanished: 0,
       timer: 0,
-      min: 0,
-      sec: 0,
       ojyamaCountDown: 10,
       isTetris: false,
       reRendIntervalId: 0
