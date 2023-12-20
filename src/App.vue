@@ -37,7 +37,6 @@ export default {
       try {
         event.preventDefault()
       } catch (error) {
-        // 例えば右端にいるのに右に移動させようとするとエラーを出すようにしている｡しかしゲームを止めるのではなく､無視させるために特に何もしない
         console.log()
       }
 
