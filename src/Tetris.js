@@ -32,7 +32,7 @@ export default class Tetris {
 
     fieldWidth   = 10
     fieldHeight  = 30
-    /** ユーザーから見える天井 */
+    /** ユーザーから見える天井(上からの数字) */
     effectiveRoof = 10 
 
     checkCanMove = new CheckCanMove({
@@ -46,7 +46,7 @@ export default class Tetris {
         checkCanMove:this.checkCanMove
     })
 
-    ojyama = new Ojyama(this.fieldWidth)
+    ojyamaFactory = new Ojyama(this.fieldWidth)
 
     tetriminoFactory = new Tetrimino(this.effectiveRoof)
 
@@ -82,10 +82,8 @@ export default class Tetris {
     oldGhost = null
 
     constructor(){
-        // 10*10のリストにblockクラスを入れる
-
         /** 横1列を生成 */
-        // こえを使えば毎度毎度1列を生成する必要がなくなる
+        // これを使えば毎度毎度1ブロックずつを生成する必要がなくなる
         for (let n = 0; n < this.fieldWidth; n++) {
             this.baseLine.push(new Block())
         }
@@ -600,7 +598,7 @@ export default class Tetris {
         */
         this.Field.splice(0, 1); 
 
-        this.Field.push(JSON.parse(JSON.stringify(this.ojyama.createOjyama())))
+        this.Field.push(JSON.parse(JSON.stringify(this.ojyamaFactory.createOjyama())))
     }
 
     /** nextを補充するかどうか */
