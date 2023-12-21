@@ -338,16 +338,17 @@ export default class Tetris {
         // 保存
         this.holdTetrimino = this.tetrimino.type
 
+        // swichだと長いのでひたすらifで良いと思う
         /** 最初のホールドだけ動きが違う */
         if (holded == "none") { this.startDropping(this.nextTetriminos.shift()) }
         else {
-             if (holded == "O") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.O)) }
-             if (holded == "I") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.I)) }
-             if (holded == "T") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.T)) }
-             if (holded == "S") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.S)) }
-             if (holded == "Z") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.Z)) }
-             if (holded == "L") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.L)) }
-             if (holded == "J") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.J)) }
+            if (holded == "O") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.O)) }
+            else if (holded == "I") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.I)) }
+            else if (holded == "T") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.T)) }
+            else if (holded == "S") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.S)) }
+            else if (holded == "Z") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.Z)) }
+            else if (holded == "L") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.L)) }
+            else if (holded == "J") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.J)) }
         }
 
         // ゴーストも更新
