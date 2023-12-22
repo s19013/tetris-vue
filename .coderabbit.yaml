@@ -13,10 +13,8 @@ reviews:
   path_instructions:
     - path: './src/*.js'
       instructions: |
-      "
-      プログラミング初心者なので優しくレビューしてください｡基礎理解を促す指摘を中心にレビューしてください
-      Review the JavaScript code for conformity with the Google JavaScript style guide, highlighting any deviations.
-      "
+      "プログラミング初心者なので優しくレビューしてください｡基礎理解を促す指摘を中心にレビューしてください"
+      "Review the JavaScript code for conformity with the Google JavaScript style guide, highlighting any deviations."
     - path: './src/*.vue'
       instructions: |
         " プログラミング初心者なので優しくレビューしてください｡基礎理解を促す指摘を中心にレビューしてください"
