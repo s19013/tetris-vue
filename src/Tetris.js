@@ -32,7 +32,7 @@ export default class Tetris {
 
     fieldWidth   = 10
     fieldHeight  = 30
-    /** ユーザーから見える天井 */
+    /** ユーザーから見える天井(上からの数字) */
     effectiveRoof = 10 
 
     checkCanMove = new CheckCanMove({
@@ -46,7 +46,7 @@ export default class Tetris {
         checkCanMove:this.checkCanMove
     })
 
-    ojyama = new Ojyama(this.fieldWidth)
+    ojyamaFactory = new Ojyama(this.fieldWidth)
 
     tetriminoFactory = new Tetrimino(this.effectiveRoof)
 
@@ -82,10 +82,8 @@ export default class Tetris {
     oldGhost = null
 
     constructor(){
-        // 10*10のリストにblockクラスを入れる
-
         /** 横1列を生成 */
-        // こえを使えば毎度毎度1列を生成する必要がなくなる
+        // これを使えば毎度毎度1ブロックずつを生成する必要がなくなる
         for (let n = 0; n < this.fieldWidth; n++) {
             this.baseLine.push(new Block())
         }
@@ -340,16 +338,17 @@ export default class Tetris {
         // 保存
         this.holdTetrimino = this.tetrimino.type
 
+        // swichだと長いのでひたすらifで良いと思う
         /** 最初のホールドだけ動きが違う */
         if (holded == "none") { this.startDropping(this.nextTetriminos.shift()) }
         else {
-             if (holded == "O") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.O)) }
-             if (holded == "I") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.I)) }
-             if (holded == "T") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.T)) }
-             if (holded == "S") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.S)) }
-             if (holded == "Z") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.Z)) }
-             if (holded == "L") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.L)) }
-             if (holded == "J") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.J)) }
+            if (holded == "O") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.O)) }
+            else if (holded == "I") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.I)) }
+            else if (holded == "T") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.T)) }
+            else if (holded == "S") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.S)) }
+            else if (holded == "Z") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.Z)) }
+            else if (holded == "L") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.L)) }
+            else if (holded == "J") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.J)) }
         }
 
         // ゴーストも更新
@@ -600,7 +599,7 @@ export default class Tetris {
         */
         this.Field.splice(0, 1); 
 
-        this.Field.push(JSON.parse(JSON.stringify(this.ojyama.createOjyama())))
+        this.Field.push(JSON.parse(JSON.stringify(this.ojyamaFactory.createOjyama())))
     }
 
     /** nextを補充するかどうか */

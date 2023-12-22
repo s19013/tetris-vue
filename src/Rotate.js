@@ -348,6 +348,7 @@ export default class Rotate {
         return tetriminoCoordinate
     }
 
+    // 天井と床からおし出す
     ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate){
         /** 天井 */
         tetriminoCoordinate = this.PushOutFromTheFloor(JSON.parse(JSON.stringify(tetriminoCoordinate)))
@@ -358,45 +359,47 @@ export default class Rotate {
         return tetriminoCoordinate
     }
 
+    // 左右の壁から出して上にずらす
     ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftUp({
         Field,
         tetriminoCoordinate
     }){
-    /** 左の壁 */
-    let hidarikabe = this.PushOutFromTheLeftWall(
-        JSON.parse(JSON.stringify(tetriminoCoordinate))
-    )
+        /** 左の壁 */
+        let hidarikabe = this.PushOutFromTheLeftWall(
+            JSON.parse(JSON.stringify(tetriminoCoordinate))
+        )
 
-    tetriminoCoordinate = JSON.parse(JSON.stringify(hidarikabe.tetriminoCoordinate))
+        tetriminoCoordinate = JSON.parse(JSON.stringify(hidarikabe.tetriminoCoordinate))
 
-    /** 壁から出したあとにおいてあるブロックと被っていたら1つ上げる */
-    if (hidarikabe.moved) {
-        tetriminoCoordinate= this.MoveVerticallyFromCoveringBlock({
-            Field:JSON.parse(JSON.stringify(Field)),
-            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
-            amountOfMoveY:-1
-        })
+        /** 壁から出したあとにおいてあるブロックと被っていたら1つ上げる */
+        if (hidarikabe.moved) {
+            tetriminoCoordinate= this.MoveVerticallyFromCoveringBlock({
+                Field:JSON.parse(JSON.stringify(Field)),
+                tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+                amountOfMoveY:-1
+            })
+        }
+
+        /** 右の壁 */
+        let migikabe = this.PushOutFromTheRightWall(
+            JSON.parse(JSON.stringify(tetriminoCoordinate))
+        )
+
+        tetriminoCoordinate = JSON.parse(JSON.stringify(migikabe.tetriminoCoordinate))
+
+        /** 壁から出したあとにおいてあるブロックと被っていたら1つ上げる */
+        if (migikabe.moved) {
+            tetriminoCoordinate = this.MoveVerticallyFromCoveringBlock({
+                Field:JSON.parse(JSON.stringify(Field)),
+                tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+                amountOfMoveY:-1
+            })
+        }
+
+        return tetriminoCoordinate
     }
 
-    /** 右の壁 */
-    let migikabe = this.PushOutFromTheRightWall(
-        JSON.parse(JSON.stringify(tetriminoCoordinate))
-    )
-
-    tetriminoCoordinate = JSON.parse(JSON.stringify(migikabe.tetriminoCoordinate))
-
-    /** 壁から出したあとにおいてあるブロックと被っていたら1つ上げる */
-    if (migikabe.moved) {
-        tetriminoCoordinate = this.MoveVerticallyFromCoveringBlock({
-            Field:JSON.parse(JSON.stringify(Field)),
-            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
-            amountOfMoveY:-1
-        })
-    }
-
-    return tetriminoCoordinate
-}
-
+    // 左右の壁から出して下にずらす
     ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftDown({
             Field,
             tetriminoCoordinate
