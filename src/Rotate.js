@@ -47,7 +47,7 @@ export default class Rotate {
                 rotationIndex:tetrimino.clockwiseAxis
             })
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             /** エラーが起きた
              * つまり回せなかったのでそのまま帰す 
              */
@@ -81,7 +81,7 @@ export default class Rotate {
                 rotationIndex:tetrimino.counterClockwiseAxis
             })
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             /** エラーが起きた
              * つまり回せなかったのでそのまま帰す 
              */
