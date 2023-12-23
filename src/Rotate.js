@@ -1,18 +1,15 @@
 import RotateCalculations from "./RotateCalculations";
+import PushOut from "./PushOut";
 import lodash from 'lodash';
 
 export default class Rotate {
 
     constructor({
-        fieldWidth,
-        fieldHeight,
         checkCanMove
     }) {
-        // indexとかの関係で - 1する
-        this.fieldWidth   = fieldWidth - 1
-        this.fieldHeight  = fieldHeight - 1;
         this.checkCanMove = checkCanMove
         this.rotateCalculations = new RotateCalculations()
+        this.pushOut = new PushOut()
     }
 
     // ここで全部受け取ってシュミレーションさせたりするか
@@ -295,10 +292,10 @@ export default class Rotate {
     // 天井と床からおし出す
     ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate){
         /** 天井 */
-        tetriminoCoordinate = this.PushOutFromTheFloor(lodash.cloneDeep(tetriminoCoordinate))
+        tetriminoCoordinate = this.pushOut.FromTheFloor(lodash.cloneDeep(tetriminoCoordinate))
 
         /** 床 */
-        tetriminoCoordinate = this.PushOutFromTheFloor(lodash.cloneDeep(tetriminoCoordinate))
+        tetriminoCoordinate = this.pushOut.FromTheFloor(lodash.cloneDeep(tetriminoCoordinate))
 
         return tetriminoCoordinate
     }
@@ -309,7 +306,7 @@ export default class Rotate {
         tetriminoCoordinate
     }){
         /** 左の壁 */
-        let hidarikabe = this.PushOutFromTheLeftWall(
+        let hidarikabe = this.pushOut.FromTheLeftWall(
             lodash.cloneDeep(tetriminoCoordinate)
         )
 
@@ -325,7 +322,7 @@ export default class Rotate {
         }
 
         /** 右の壁 */
-        let migikabe = this.PushOutFromTheRightWall(
+        let migikabe = this.pushOut.FromTheRightWall(
             lodash.cloneDeep(tetriminoCoordinate)
         )
 
@@ -349,7 +346,7 @@ export default class Rotate {
             tetriminoCoordinate
         }){
         /** 左の壁 */
-        let hidarikabe = this.PushOutFromTheLeftWall(
+        let hidarikabe = this.pushOut.FromTheLeftWall(
             lodash.cloneDeep(tetriminoCoordinate)
         )
 
@@ -365,7 +362,7 @@ export default class Rotate {
         }
 
         /** 右の壁 */
-        let migikabe = this.PushOutFromTheRightWall(
+        let migikabe = this.pushOut.FromTheRightWall(
             lodash.cloneDeep(tetriminoCoordinate)
         )
 
@@ -381,58 +378,6 @@ export default class Rotate {
         }
 
         return tetriminoCoordinate
-    }
-
-    /** 完全に出てくるまで繰り返すためwhile */
-
-    PushOutFromTheFloor(tetriminoCoordinate){
-        for (let tentativeBlock of tetriminoCoordinate) {
-            while (tentativeBlock.y > this.fieldHeight) {
-                tetriminoCoordinate.forEach(block => { block.y -= 1 });
-            }
-        }
-
-        return tetriminoCoordinate
-    }
-
-    PushOutFromTheRoof(tetriminoCoordinate){
-        for (let tentativeBlock of tetriminoCoordinate) {
-            while (tentativeBlock.y < 0) {
-                tetriminoCoordinate.forEach(block => { block.y += 1 });
-            }
-        }
-
-        return tetriminoCoordinate
-    }
-
-    PushOutFromTheLeftWall(tetriminoCoordinate){
-        let moved = false
-        for (let tentativeBlock of tetriminoCoordinate) {
-            while (tentativeBlock.x < 0) {
-                tetriminoCoordinate.forEach(block => { block.x += 1 });
-                moved = true
-            }
-        }
-
-        return {
-            tetriminoCoordinate:tetriminoCoordinate,
-            moved:moved
-        }
-    }
-
-    PushOutFromTheRightWall(tetriminoCoordinate){
-        let moved = false
-        for (let tentativeBlock of tetriminoCoordinate) {
-            while (tentativeBlock.x > this.fieldWidth) {
-                tetriminoCoordinate.forEach(block => { block.x -= 1 });
-                moved = true
-            }
-        }
-
-        return {
-            tetriminoCoordinate:tetriminoCoordinate,
-            moved:moved
-        }
     }
 
     /**
