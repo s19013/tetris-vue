@@ -3,6 +3,7 @@ import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
 import Tetrimino from "./Tetrimino"
 import Ojyama from "./Ojyama"
+import {fieldWidth,fieldHeight,effectiveRoof} from "./Config"
 import lodash from 'lodash';
 
 // 時間に関する数字は全部ミリ秒
@@ -31,25 +32,15 @@ export default class Tetris {
     /** フィールドの横1列の基本の形 */
     baseLine = []
 
-    fieldWidth   = 10
-    fieldHeight  = 30
-    /** ユーザーから見える天井(上からの数字) */
-    effectiveRoof = 10 
-
-    checkCanMove = new CheckCanMove({
-        fieldWidth:this.fieldWidth,
-        fieldHeight:this.fieldHeight
-    })
+    checkCanMove = new CheckCanMove()
 
     rotater = new Rotate({
-        fieldWidth:this.fieldWidth,
-        fieldHeight:this.fieldHeight,
         checkCanMove:this.checkCanMove
     })
 
-    ojyamaFactory = new Ojyama(this.fieldWidth)
+    ojyamaFactory = new Ojyama(fieldWidth)
 
-    tetriminoFactory = new Tetrimino(this.effectiveRoof)
+    tetriminoFactory = new Tetrimino(effectiveRoof)
 
     /** 放置してると勝手にブロックが落ちる感覚 */
     autoDropInterval = 2000 //ms
@@ -85,12 +76,12 @@ export default class Tetris {
     constructor(){
         /** 横1列を生成 */
         // これを使えば毎度毎度1ブロックずつを生成する必要がなくなる
-        for (let n = 0; n < this.fieldWidth; n++) {
+        for (let n = 0; n < fieldWidth; n++) {
             this.baseLine.push(new Block())
         }
 
         /** 縦を生成 */
-        for (let i = 0; i < this.fieldHeight; i++) {
+        for (let i = 0; i < fieldHeight; i++) {
             this.Field.push(lodash.cloneDeep(this.baseLine))
         }
 
@@ -613,19 +604,19 @@ export default class Tetris {
          * 一番上の天井 y = 0の部分にブロックがある
          */
 
-        for (let index = 0; index < this.fieldWidth; index++) {
+        for (let index = 0; index < fieldWidth; index++) {
             if (this.Field[0][index].isFill) { return true }
         }
 
         /** 
          * ゲームオーバーになる条件2
-         * {x:3,y:this.effectiveRoof} ~ {x:6,y:this.effectiveRoof}
-         * {x:3,y:this.effectiveRoof - 1} ~ {x:6,y:this.effectiveRoof - 1}
+         * {x:3,y:effectiveRoof} ~ {x:6,y:effectiveRoof}
+         * {x:3,y:effectiveRoof - 1} ~ {x:6,y:effectiveRoof - 1}
          * の範囲にブロックがある
          */
         for (let index = 3; index < 6; index++) {
-            if (this.Field[this.effectiveRoof][index].isFill) { return true }
-            if (this.Field[this.effectiveRoof - 1][index].isFill) { return true }
+            if (this.Field[effectiveRoof][index].isFill) { return true }
+            if (this.Field[effectiveRoof - 1][index].isFill) { return true }
         }
         return false
     }
@@ -747,9 +738,9 @@ export default class Tetris {
         /** n:横 */
 
         let temp = []
-        for (let i = 0; i < this.fieldHeight; i++) {
+        for (let i = 0; i < fieldHeight; i++) {
             let line = []
-            for (let n = 0; n < this.fieldWidth; n++) {
+            for (let n = 0; n < fieldWidth; n++) {
                 line.push(Number(this.Field[i][n].isFill))
             }
             temp.push(line)

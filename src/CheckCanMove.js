@@ -1,9 +1,8 @@
+import {fieldWidth,fieldHeight} from "./Config"
+
 /** 動かせるかどうかチェック */
 export default class checkCanMove {
-    constructor({
-        fieldWidth,
-        fieldHeight
-    }) {
+    constructor() {
         // indexとかの関係で - 1する
         this.fieldWidth   = fieldWidth - 1
         this.fieldHeight  = fieldHeight - 1;
