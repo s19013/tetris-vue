@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 export default class Tetrimino{
     constructor(roof){
         /** 落とし初めて良い場所の最大値 */
@@ -119,5 +120,5 @@ export default class Tetrimino{
     }
 
     // 1セットを返す
-    passSet(){ return this.shuffle(JSON.parse(JSON.stringify(this.base))) }
+    passSet(){ return this.shuffle(lodash.cloneDeep(this.base)) }
 }

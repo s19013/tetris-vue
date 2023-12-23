@@ -1,4 +1,5 @@
 import RotateCalculations from "./RotateCalculations";
+import lodash from 'lodash';
 
 export default class Rotate {
 
@@ -109,17 +110,17 @@ export default class Rotate {
     }){
         // そのまま使うと参照元が変わってしまうため｡
         /** また別の仮の状態の変数 */
-        let tentativeCoordinate = JSON.parse(JSON.stringify(tetriminoCoordinate))
+        let tentativeCoordinate = lodash.cloneDeep(tetriminoCoordinate)
         // console.log("before",JSON.stringify(tentativeCoordinate))
 
         // 主に下にずらすパターン
         let shiftedDown = this.shiftToDown({
-            Field:JSON.parse(JSON.stringify(Field)),
-            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+            Field:lodash.cloneDeep(Field),
+            tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
             rotationIndex:rotationIndex
         })
 
-        tentativeCoordinate = JSON.parse(JSON.stringify(shiftedDown))
+        tentativeCoordinate = lodash.cloneDeep(shiftedDown)
 
         // 確認する順番が問題になる(主に右回転で起きる)
         // とりあえず今は強引に2回確認?
@@ -136,12 +137,12 @@ export default class Rotate {
         
         // 強引に更にもう一度する
         shiftedDown = this.shiftToDown({
-            Field:JSON.parse(JSON.stringify(Field)),
-            tetriminoCoordinate:JSON.parse(JSON.stringify(tentativeCoordinate)), //編集したやつを入れる
+            Field:lodash.cloneDeep(Field),
+            tetriminoCoordinate:lodash.cloneDeep(tentativeCoordinate), //編集したやつを入れる
             rotationIndex:rotationIndex
         })
 
-        tentativeCoordinate = JSON.parse(JSON.stringify(shiftedDown))
+        tentativeCoordinate = lodash.cloneDeep(shiftedDown)
 
         /** 
          * 下にずらしたパターンでまだ被っているかどうか確認する
@@ -160,12 +161,12 @@ export default class Rotate {
         if (noProblem) { return tentativeCoordinate }
 
         let shiftedUp = this.shiftToUp({
-            Field:JSON.parse(JSON.stringify(Field)),
-            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+            Field:lodash.cloneDeep(Field),
+            tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
             rotationIndex:rotationIndex
         })
 
-        tentativeCoordinate = JSON.parse(JSON.stringify(shiftedUp))
+        tentativeCoordinate = lodash.cloneDeep(shiftedUp)
 
         // ここまで来てだめな場合は回せなかったってこと
         for (let tentativeBlock of tentativeCoordinate) {
@@ -194,8 +195,8 @@ export default class Rotate {
 
         // 左右確認
         tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftUp({
-            Field:JSON.parse(JSON.stringify(Field)),
-            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate))
+            Field:lodash.cloneDeep(Field),
+            tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate)
         })
         /** おいてあるブロックと被っているようなら移動する  */
         for (let tentativeBlock of tetriminoCoordinate) {
@@ -230,8 +231,8 @@ export default class Rotate {
 
         // もう一度左右確認
         tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftUp({
-            Field:JSON.parse(JSON.stringify(Field)),
-            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate))
+            Field:lodash.cloneDeep(Field),
+            tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate)
         })
 
         return tetriminoCoordinate
@@ -247,8 +248,8 @@ export default class Rotate {
 
         // 左右確認
         tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftDown({
-            Field:JSON.parse(JSON.stringify(Field)),
-            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate))
+            Field:lodash.cloneDeep(Field),
+            tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate)
         })
         
         /** おいてあるブロックと被っているようなら移動する  */
@@ -284,8 +285,8 @@ export default class Rotate {
 
         // もう一度左右確認
         tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftDown({
-            Field:JSON.parse(JSON.stringify(Field)),
-            tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate))
+            Field:lodash.cloneDeep(Field),
+            tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate)
         })
 
         return tetriminoCoordinate
@@ -294,10 +295,10 @@ export default class Rotate {
     // 天井と床からおし出す
     ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate){
         /** 天井 */
-        tetriminoCoordinate = this.PushOutFromTheFloor(JSON.parse(JSON.stringify(tetriminoCoordinate)))
+        tetriminoCoordinate = this.PushOutFromTheFloor(lodash.cloneDeep(tetriminoCoordinate))
 
         /** 床 */
-        tetriminoCoordinate = this.PushOutFromTheFloor(JSON.parse(JSON.stringify(tetriminoCoordinate)))
+        tetriminoCoordinate = this.PushOutFromTheFloor(lodash.cloneDeep(tetriminoCoordinate))
 
         return tetriminoCoordinate
     }
@@ -309,32 +310,32 @@ export default class Rotate {
     }){
         /** 左の壁 */
         let hidarikabe = this.PushOutFromTheLeftWall(
-            JSON.parse(JSON.stringify(tetriminoCoordinate))
+            lodash.cloneDeep(tetriminoCoordinate)
         )
 
-        tetriminoCoordinate = JSON.parse(JSON.stringify(hidarikabe.tetriminoCoordinate))
+        tetriminoCoordinate = lodash.cloneDeep(hidarikabe.tetriminoCoordinate)
 
         /** 壁から出したあとにおいてあるブロックと被っていたら1つ上げる */
         if (hidarikabe.moved) {
             tetriminoCoordinate= this.MoveVerticallyFromCoveringBlock({
-                Field:JSON.parse(JSON.stringify(Field)),
-                tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+                Field:lodash.cloneDeep(Field),
+                tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
                 amountOfMoveY:-1
             })
         }
 
         /** 右の壁 */
         let migikabe = this.PushOutFromTheRightWall(
-            JSON.parse(JSON.stringify(tetriminoCoordinate))
+            lodash.cloneDeep(tetriminoCoordinate)
         )
 
-        tetriminoCoordinate = JSON.parse(JSON.stringify(migikabe.tetriminoCoordinate))
+        tetriminoCoordinate = lodash.cloneDeep(migikabe.tetriminoCoordinate)
 
         /** 壁から出したあとにおいてあるブロックと被っていたら1つ上げる */
         if (migikabe.moved) {
             tetriminoCoordinate = this.MoveVerticallyFromCoveringBlock({
-                Field:JSON.parse(JSON.stringify(Field)),
-                tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+                Field:lodash.cloneDeep(Field),
+                tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
                 amountOfMoveY:-1
             })
         }
@@ -349,32 +350,32 @@ export default class Rotate {
         }){
         /** 左の壁 */
         let hidarikabe = this.PushOutFromTheLeftWall(
-            JSON.parse(JSON.stringify(tetriminoCoordinate))
+            lodash.cloneDeep(tetriminoCoordinate)
         )
 
-        tetriminoCoordinate = JSON.parse(JSON.stringify(hidarikabe.tetriminoCoordinate))
+        tetriminoCoordinate = lodash.cloneDeep(hidarikabe.tetriminoCoordinate)
 
         /** 壁から出したあとにおいてあるブロックと被っていたら1つ下げる */
         if (hidarikabe.moved) {
             tetriminoCoordinate= this.MoveVerticallyFromCoveringBlock({
-                Field:JSON.parse(JSON.stringify(Field)),
-                tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+                Field:lodash.cloneDeep(Field),
+                tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
                 amountOfMoveY:1
             })
         }
 
         /** 右の壁 */
         let migikabe = this.PushOutFromTheRightWall(
-            JSON.parse(JSON.stringify(tetriminoCoordinate))
+            lodash.cloneDeep(tetriminoCoordinate)
         )
 
-        tetriminoCoordinate = JSON.parse(JSON.stringify(migikabe.tetriminoCoordinate))
+        tetriminoCoordinate = lodash.cloneDeep(migikabe.tetriminoCoordinate)
 
         /** 壁から出したあとにおいてあるブロックと被っていたら1つ下げる */
         if (migikabe.moved) {
             tetriminoCoordinate = this.MoveVerticallyFromCoveringBlock({
-                Field:JSON.parse(JSON.stringify(Field)),
-                tetriminoCoordinate:JSON.parse(JSON.stringify(tetriminoCoordinate)),
+                Field:lodash.cloneDeep(Field),
+                tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
                 amountOfMoveY:1
             })
         }
@@ -446,7 +447,7 @@ export default class Rotate {
         tetriminoCoordinate,
         amountOfMoveX
     }){
-        let tentativeCoordinate = JSON.parse(JSON.stringify(tetriminoCoordinate));
+        let tentativeCoordinate = lodash.cloneDeep(tetriminoCoordinate);
         for (let tentativeBlock of tentativeCoordinate){
             if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&

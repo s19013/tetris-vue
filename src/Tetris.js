@@ -3,6 +3,7 @@ import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
 import Tetrimino from "./Tetrimino"
 import Ojyama from "./Ojyama"
+import lodash from 'lodash';
 
 // 時間に関する数字は全部ミリ秒
 
@@ -90,7 +91,7 @@ export default class Tetris {
 
         /** 縦を生成 */
         for (let i = 0; i < this.fieldHeight; i++) {
-            this.Field.push(JSON.parse(JSON.stringify(this.baseLine)))
+            this.Field.push(lodash.cloneDeep(this.baseLine))
         }
 
         this.gameStart()
@@ -147,9 +148,9 @@ export default class Tetris {
 
         /** 落ちてくるのをセット */
         this.tetrimino = next
-        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino))
-        this.ghost = JSON.parse(JSON.stringify(this.tetrimino))
-        this.oldGhost = JSON.parse(JSON.stringify(this.tetrimino))
+        this.oldTetrimino = lodash.cloneDeep(this.tetrimino)
+        this.ghost = lodash.cloneDeep(this.tetrimino)
+        this.oldGhost = lodash.cloneDeep(this.tetrimino)
 
         // 落ちてくるブロックをフィールドに出現させる
         this.moveTetrimino()
@@ -163,12 +164,12 @@ export default class Tetris {
         this.hardDrop()
         // デバック用
         // if (this.checkCanMove.up({
-        //         Field:JSON.parse(JSON.stringify(this.Field)),
+        //         Field:lodash.cloneDeep(this.Field),
         //         tetrimino:this.tetrimino
         //     })
         // ) {
         //     /** 今の位置を古い情報として保存 */
-        //     this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
+        //     this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
 
         //     /** 位置を更新 */
         //     for (let block of this.tetrimino.Coordinate) {
@@ -182,7 +183,7 @@ export default class Tetris {
     keyDownDown(){
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.down({
-                Field:JSON.parse(JSON.stringify(this.Field)),
+                Field:lodash.cloneDeep(this.Field),
                 tetrimino:this.tetrimino
             })
         ) {
@@ -205,13 +206,13 @@ export default class Tetris {
     keyDownLeft(){
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.left({
-                Field:JSON.parse(JSON.stringify(this.Field)),
+                Field:lodash.cloneDeep(this.Field),
                 tetrimino:this.tetrimino
             })
         ) {
             /** 今の位置を古い情報として保存 */
-            this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
-            this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
+            this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
+            this.oldGhost = lodash.cloneDeep(this.ghost);
 
             /** 位置を更新 */
             for (let block of this.tetrimino.Coordinate) { block.x -= 1 }
@@ -223,13 +224,13 @@ export default class Tetris {
 
     keyDownRight(){
         if (this.checkCanMove.right({
-                Field:JSON.parse(JSON.stringify(this.Field)),
+                Field:lodash.cloneDeep(this.Field),
                 tetrimino:this.tetrimino
             })
         ) {
             /** 今の位置を古い情報として保存 */
-            this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
-            this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
+            this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
+            this.oldGhost = lodash.cloneDeep(this.ghost);
 
             /** 位置を更新 */
             for (let block of this.tetrimino.Coordinate) { block.x += 1 }
@@ -241,8 +242,8 @@ export default class Tetris {
 
     keyDownL(){
         /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
-        this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
+        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
+        this.oldGhost = lodash.cloneDeep(this.ghost);
 
         /** Oミノはそもそも回さない */
         if (this.tetrimino.type == "O") {
@@ -256,7 +257,7 @@ export default class Tetris {
         /** Iミノは回し方が特殊 */
         if (this.tetrimino.type == "I") {
             this.tetrimino = this.rotater.counterClockwise({
-                Field:JSON.parse(JSON.stringify(this.Field)),
+                Field:lodash.cloneDeep(this.Field),
                 tetrimino:this.tetrimino
             })
             this.moveTetrimino()
@@ -266,7 +267,7 @@ export default class Tetris {
 
         /** 回転した後の位置を更新 */
         this.tetrimino = this.rotater.clockwise({
-            Field:JSON.parse(JSON.stringify(this.Field)),
+            Field:lodash.cloneDeep(this.Field),
             tetrimino:this.tetrimino
         })
         
@@ -276,8 +277,8 @@ export default class Tetris {
 
     keyDownJ(){
 
-        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
-        this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
+        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
+        this.oldGhost = lodash.cloneDeep(this.ghost);
 
         /** Oミノはそもそも回さない */
         if (this.tetrimino.type == "O") {
@@ -291,7 +292,7 @@ export default class Tetris {
         /** Iミノは回し方が逆 */
         if (this.tetrimino.type == "I") {
             this.tetrimino = this.rotater.clockwise({
-                Field:JSON.parse(JSON.stringify(this.Field)),
+                Field:lodash.cloneDeep(this.Field),
                 tetrimino:this.tetrimino
             })
             this.moveTetrimino()
@@ -301,7 +302,7 @@ export default class Tetris {
 
         /** 回転した後の位置を更新 */
         this.tetrimino = this.rotater.counterClockwise({
-            Field:JSON.parse(JSON.stringify(this.Field)),
+            Field:lodash.cloneDeep(this.Field),
             tetrimino:this.tetrimino
         })
         this.moveTetrimino()
@@ -316,8 +317,8 @@ export default class Tetris {
 
     hold(){
         /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
-        this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
+        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
+        this.oldGhost = lodash.cloneDeep(this.ghost);
 
         // 古い場所のブロックやゴーストを消しとく
         for (let block of this.oldGhost.Coordinate) {
@@ -339,17 +340,17 @@ export default class Tetris {
         /** 最初のホールドだけ動きが違う */
         if (holded == "none") { this.startDropping(this.nextTetriminos.shift()) }
         else {
-            if (holded == "O") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.O)) }
-            else if (holded == "I") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.I)) }
-            else if (holded == "T") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.T)) }
-            else if (holded == "S") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.S)) }
-            else if (holded == "Z") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.Z)) }
-            else if (holded == "L") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.L)) }
-            else if (holded == "J") { this.tetrimino = JSON.parse(JSON.stringify(this.tetriminoFactory.J)) }
+            if (holded == "O") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.O) }
+            else if (holded == "I") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.I) }
+            else if (holded == "T") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.T) }
+            else if (holded == "S") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.S) }
+            else if (holded == "Z") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.Z) }
+            else if (holded == "L") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.L) }
+            else if (holded == "J") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.J) }
         }
 
         // ゴーストも更新
-        this.ghost = JSON.parse(JSON.stringify(this.tetrimino));
+        this.ghost = lodash.cloneDeep(this.tetrimino);
 
         this.holdLock = true
         this.moveTetrimino()
@@ -363,7 +364,7 @@ export default class Tetris {
          *  下記のコードは自動落下用
         */
         if (this.checkCanMove.down({
-                Field:JSON.parse(JSON.stringify(this.Field)),
+                Field:lodash.cloneDeep(this.Field),
                 tetrimino:this.tetrimino
             })
             == false
@@ -374,8 +375,8 @@ export default class Tetris {
 
         /** 動かせるようなら下に動かす */
         /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
-        this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
+        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
+        this.oldGhost = lodash.cloneDeep(this.ghost);
 
         /** 位置を更新 */
         for (let block of this.tetrimino.Coordinate) {
@@ -388,8 +389,8 @@ export default class Tetris {
 
     hardDrop(){
         /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = JSON.parse(JSON.stringify(this.tetrimino));
-        this.oldGhost = JSON.parse(JSON.stringify(this.ghost));
+        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
+        this.oldGhost = lodash.cloneDeep(this.ghost);
 
 
         // 何ます動かすかしらべる(スコアで使う)
@@ -397,7 +398,7 @@ export default class Tetris {
         this.addScore(countOfMove * 2)
 
         // ゴーストの位置に移動する
-        this.tetrimino = JSON.parse(JSON.stringify(this.ghost));
+        this.tetrimino = lodash.cloneDeep(this.ghost);
 
         this.moveTetrimino()
         this.moveGhost()
@@ -431,11 +432,11 @@ export default class Tetris {
         }
 
         // ghostを動かす
-        this.ghost = JSON.parse(JSON.stringify(this.tetrimino))
+        this.ghost = lodash.cloneDeep(this.tetrimino)
         // falseが帰ってくるまで回し続ける
         while (this.checkCanMove.down({
-            Field:JSON.parse(JSON.stringify(this.Field)),
-            tetrimino:JSON.parse(JSON.stringify(this.ghost))
+            Field:lodash.cloneDeep(this.Field),
+            tetrimino:lodash.cloneDeep(this.ghost)
         })) {
             // 1つ下に動かす
             // foreachだと負担かかるかもだから
@@ -586,7 +587,7 @@ export default class Tetris {
         this.Field.splice(lineIndex, 1); 
 
         /** 消した分だけ上に加える */
-        this.Field.unshift(JSON.parse(JSON.stringify(this.baseLine)))
+        this.Field.unshift(lodash.cloneDeep(this.baseLine))
     }
 
     // お邪魔発動
@@ -596,7 +597,7 @@ export default class Tetris {
         */
         this.Field.splice(0, 1); 
 
-        this.Field.push(JSON.parse(JSON.stringify(this.ojyamaFactory.createOjyama())))
+        this.Field.push(lodash.cloneDeep(this.ojyamaFactory.createOjyama()))
     }
 
     /** nextを補充するかどうか */
