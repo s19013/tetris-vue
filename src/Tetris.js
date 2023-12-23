@@ -255,9 +255,8 @@ export default class Tetris {
 
         /** Iミノは回し方が特殊 */
         if (this.tetrimino.type == "I") {
-            this.tetrimino = this.rotater.rotation({
+            this.tetrimino = this.rotater.counterClockwise({
                 Field:JSON.parse(JSON.stringify(this.Field)),
-                direction:"counterClockwise",
                 tetrimino:this.tetrimino
             })
             this.moveTetrimino()
@@ -266,11 +265,11 @@ export default class Tetris {
         }
 
         /** 回転した後の位置を更新 */
-        this.tetrimino = this.rotater.rotation({
+        this.tetrimino = this.rotater.clockwise({
             Field:JSON.parse(JSON.stringify(this.Field)),
-            direction:"clockwise",
             tetrimino:this.tetrimino
         })
+        
         this.moveTetrimino()
         this.moveGhost()
     }
@@ -291,9 +290,8 @@ export default class Tetris {
 
         /** Iミノは回し方が逆 */
         if (this.tetrimino.type == "I") {
-            this.tetrimino = this.rotater.rotation({
+            this.tetrimino = this.rotater.clockwise({
                 Field:JSON.parse(JSON.stringify(this.Field)),
-                direction:"clockwise",
                 tetrimino:this.tetrimino
             })
             this.moveTetrimino()
@@ -302,9 +300,8 @@ export default class Tetris {
         }
 
         /** 回転した後の位置を更新 */
-        this.tetrimino = this.rotater.rotation({
+        this.tetrimino = this.rotater.counterClockwise({
             Field:JSON.parse(JSON.stringify(this.Field)),
-            direction:"counterClockwise",
             tetrimino:this.tetrimino
         })
         this.moveTetrimino()

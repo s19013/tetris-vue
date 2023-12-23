@@ -14,7 +14,6 @@ export default class Rotate {
         this.rotateCalculations = new RotateCalculations()
     }
 
-    
     // ここで全部受け取ってシュミレーションさせたりするか
     // 回転軸さえいじればtスピン行けそう
 
@@ -23,9 +22,8 @@ export default class Rotate {
      * @param direction 回転の方向
      * @param tetrimino 今のブロックの状態
      */
-    rotation({
+    clockwise({
         Field,
-        direction,
         tetrimino
     }){
         // 色々回してみてシュミレーションしていく
@@ -34,53 +32,61 @@ export default class Rotate {
          */
         let tentativeCoordinate = null
 
-        if (direction == "clockwise" ) {
-            // 回したのを代入
-            tentativeCoordinate = tetrimino.Coordinate.map(block => {
-                return this.rotateCalculations.clockwise({
-                    rotationPoint:tetrimino.Coordinate[tetrimino.clockwiseAxis],
-                    beforeRotation:block
-                })
+        tentativeCoordinate = tetrimino.Coordinate.map(block => {
+            return this.rotateCalculations.clockwise({
+                rotationPoint:tetrimino.Coordinate[tetrimino.clockwiseAxis],
+                beforeRotation:block
             })
+        })
 
-            /** 回転したブロックが壁や床､既存のブロックと被っているかどうか調べる */
-            try {
-                tentativeCoordinate = this.checkIfThereIsACoveredBlock({
-                    Field:Field,
-                    tetriminoCoordinate:tentativeCoordinate,
-                    rotationIndex:tetrimino.clockwiseAxis
-                })
-            } catch (error) {
-                console.log(error);
-                /** エラーが起きた
-                 * つまり回せなかったのでそのまま帰す 
-                 */
-                return tetrimino
-            }
-
-        } else {
-            tentativeCoordinate = tetrimino.Coordinate.map(block => {
-                return this.rotateCalculations.counterClockwise({
-                    rotationPoint:tetrimino.Coordinate[tetrimino.counterClockwiseAxis],
-                    beforeRotation:block
-                })
+        /** 回転したブロックが壁や床､既存のブロックと被っているかどうか調べる */
+        try {
+            tentativeCoordinate = this.checkIfThereIsACoveredBlock({
+                Field:Field,
+                tetriminoCoordinate:tentativeCoordinate,
+                rotationIndex:tetrimino.clockwiseAxis
             })
+        } catch (error) {
+            console.log(error);
+            /** エラーが起きた
+             * つまり回せなかったのでそのまま帰す 
+             */
+            return tetrimino
+        }
 
-            /** 回転したブロックが壁や床､既存のブロックと被っているかどうか調べる */
-            try {
-                tentativeCoordinate = this.checkIfThereIsACoveredBlock({
-                    Field:Field,
-                    tetriminoCoordinate:tentativeCoordinate,
-                    rotationIndex:tetrimino.counterClockwiseAxis
-                })
-            } catch (error) {
-                console.log(error);
-                /** エラーが起きた
-                 * つまり回せなかったのでそのまま帰す 
-                 */
-                return tetrimino
-            }
-        } 
+        /** 位置を更新 */
+        tetrimino.Coordinate = tentativeCoordinate
+
+        return tetrimino
+    }
+
+    counterClockwise({
+        Field,
+        tetrimino
+    }){
+        let tentativeCoordinate = null
+
+        tentativeCoordinate = tetrimino.Coordinate.map(block => {
+            return this.rotateCalculations.counterClockwise({
+                rotationPoint:tetrimino.Coordinate[tetrimino.counterClockwiseAxis],
+                beforeRotation:block
+            })
+        })
+        
+        /** 回転したブロックが壁や床､既存のブロックと被っているかどうか調べる */
+        try {
+            tentativeCoordinate = this.checkIfThereIsACoveredBlock({
+                Field:Field,
+                tetriminoCoordinate:tentativeCoordinate,
+                rotationIndex:tetrimino.counterClockwiseAxis
+            })
+        } catch (error) {
+            console.log(error);
+            /** エラーが起きた
+             * つまり回せなかったのでそのまま帰す 
+             */
+            return tetrimino
+        }
 
         /** 位置を更新 */
         tetrimino.Coordinate = tentativeCoordinate
