@@ -3,7 +3,7 @@ import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
 import Tetrimino from "./Tetrimino"
 import Ojyama from "./Ojyama"
-import {levelCalculation} from "./Level.js"
+import {levelConfig} from "./Level.js"
 import {fieldWidth,fieldHeight,effectiveRoof} from "./Config"
 import lodash from 'lodash';
 
@@ -495,10 +495,10 @@ export default class Tetris {
         this.countOfLinesVanished += countOfAlignedRow
 
         /** レベル計算 */
-        const levelTemp = levelCalculation(this.countOfLinesVanished)
-        this.level = levelTemp.level
-        this.autoDropInterval = levelTemp.autoDropInterval
-        this.ojyamaInterval = levelTemp.ojyamaInterval
+        const currentLevel = levelConfig.find(config => this.countOfLinesVanished >= config.threshold);
+        this.level = currentLevel.level
+        this.autoDropInterval = currentLevel.autoDropInterval
+        this.ojyamaInterval = currentLevel.ojyamaInterval
 
         /** お邪魔 */
         if (this.ojyamaCountDown <= 0) {
