@@ -3,6 +3,7 @@ import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
 import Tetrimino from "./Tetrimino"
 import Ojyama from "./Ojyama"
+import {levelCalculation} from "./Level.js"
 import {fieldWidth,fieldHeight,effectiveRoof} from "./Config"
 import lodash from 'lodash';
 
@@ -32,6 +33,8 @@ export default class Tetris {
     /** フィールドの横1列の基本の形 */
     baseLine = []
 
+    // new する奴ら
+
     checkCanMove = new CheckCanMove()
 
     rotater = new Rotate({
@@ -46,7 +49,7 @@ export default class Tetris {
     autoDropInterval = 2000 //ms
 
     /** 下からせり上がるまでの時間 */
-    ojyamaInterval = 10000 //ms
+    ojyamaInterval = 15000 //ms
 
     /** ゲームを初めてからの時間 */
     time = 0
@@ -491,8 +494,11 @@ export default class Tetris {
         /** 消した列を足す */
         this.countOfLinesVanished += countOfAlignedRow
 
-        /** レベル */
-        this.checkLevel()
+        /** レベル計算 */
+        const levelTemp = levelCalculation(this.countOfLinesVanished)
+        this.level = levelTemp.level
+        this.autoDropInterval = levelTemp.autoDropInterval
+        this.ojyamaInterval = levelTemp.ojyamaInterval
 
         /** お邪魔 */
         if (this.ojyamaCountDown <= 0) {
@@ -660,75 +666,6 @@ export default class Tetris {
     resetInterval(){
         this.deleteInterval()
         this.startInterval()
-    }
-
-    /** レベル計測 
-     *  1000ms秒ずつ短くしたいけど良い書き方が思い浮かばない
-     * 単純に書くと効果が重複するし
-    */
-    checkLevel(){
-        if (this.countOfLinesVanished >= 270) { 
-            this.level = 10
-            this.autoDropInterval = 1100
-            this.ojyamaInterval = 6000
-            return 
-        }
-
-        if (this.countOfLinesVanished >= 216) { 
-            this.level = 9
-            this.autoDropInterval = 1200
-            this.ojyamaInterval = 7000
-            return 
-        }
-
-        if (this.countOfLinesVanished >= 168) { 
-            this.level = 8
-            this.autoDropInterval = 1300
-            this.ojyamaInterval = 8000
-            return
-        }
-
-        if (this.countOfLinesVanished >= 126) { 
-            this.level = 7
-            this.autoDropInterval = 1400
-            this.ojyamaInterval = 9000
-            return
-        }
-
-        if (this.countOfLinesVanished >= 90) { 
-            this.level = 6
-            this.autoDropInterval = 1500
-            this.ojyamaInterval = 10000
-            return
-        }
-
-        if (this.countOfLinesVanished >= 60) { 
-            this.level = 5
-            this.autoDropInterval = 1600
-            this.ojyamaInterval = 11000
-            return
-        }
-
-        if (this.countOfLinesVanished >= 36) { 
-            this.level = 4
-            this.autoDropInterval = 1700
-            this.ojyamaInterval = 12000
-            return
-        }
-
-        if (this.countOfLinesVanished >= 18) { 
-            this.level = 3
-            this.autoDropInterval = 1800
-            this.ojyamaInterval = 13000
-            return
-        }
-
-        if (this.countOfLinesVanished >= 6) { 
-            this.level = 2
-            this.autoDropInterval = 1900
-            this.ojyamaInterval = 14000
-            return
-        }
     }
 
 
