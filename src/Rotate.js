@@ -381,7 +381,7 @@ export default class Rotate {
     }
 
     /**
-     * X軸にずらした座標を返す 
+     * X軸に移動させた座標を返す 
      * @param  Field フィールドの状態
      * @param  tetriminoCoordinate ブロックの座標
      * @param  amountOfMoveX 移動量 
@@ -405,7 +405,7 @@ export default class Rotate {
     }
 
     /**
-     * Y軸にずらした座標を返す 
+     * Y軸に移動させた座標を返す 
      * @param  Field フィールドの状態
      * @param  tetriminoCoordinate ブロックの座標
      * @param  amountOfMoveY 移動量 
