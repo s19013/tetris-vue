@@ -153,22 +153,6 @@ export default class Tetris {
     /** ボタン押された時の処理たち */
     keyDownUp(){
         this.hardDrop()
-        // デバック用
-        // if (this.checkCanMove.up({
-        //         Field:lodash.cloneDeep(this.Field),
-        //         tetrimino:this.tetrimino
-        //     })
-        // ) {
-        //     /** 今の位置を古い情報として保存 */
-        //     this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-
-        //     /** 位置を更新 */
-        //     for (let block of this.tetrimino.Coordinate) {
-        //         block.y -= 1
-        //     }
-
-        //     this.moveTetrimino()
-        // }
     }
 
     keyDownDown(){
@@ -302,9 +286,7 @@ export default class Tetris {
         this.saveCurrentPosition()
 
         // 古い場所のブロックやゴーストを消しとく
-        for (let block of this.oldGhost.Coordinate) {
-            this.Field[block.y][block.x].ghost = false
-        }
+        this.Field = Utils.undisplayGhost({Field:this.Field,ghost:this.oldGhost})
 
         for (let block of this.oldTetrimino.Coordinate) {
             this.Field[block.y][block.x].isFill = false
@@ -403,9 +385,7 @@ export default class Tetris {
 
     moveGhost(){
         /** 古い場所のゴーストを消して */
-        for (let block of this.oldGhost.Coordinate) {
-            this.Field[block.y][block.x].ghost = false
-        }
+        this.Field = Utils.undisplayGhost({Field:this.Field,ghost:this.oldGhost})
 
         // ghostを動かす
         this.ghost = lodash.cloneDeep(this.tetrimino)
@@ -438,10 +418,7 @@ export default class Tetris {
             this.Field[block.y][block.x].isMoving = false
         }
         
-        // ゴーストを消す
-        for (let block of this.ghost.Coordinate) {
-            this.Field[block.y][block.x].ghost = false
-        }
+        this.Field = Utils.undisplayGhost({Field:this.Field,ghost:this.ghost})
 
         /** 揃っているかを調べる */
         this.isColumnsAligned()
