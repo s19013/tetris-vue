@@ -142,9 +142,8 @@ export default class Tetris {
 
         /** 落ちてくるのをセット */
         this.tetrimino = next
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino)
         this.ghost = lodash.cloneDeep(this.tetrimino)
-        this.oldGhost = lodash.cloneDeep(this.tetrimino)
+        this.saveCurrentPosition()
 
         // 落ちてくるブロックをフィールドに出現させる
         this.moveTetrimino()
@@ -204,9 +203,7 @@ export default class Tetris {
                 tetrimino:this.tetrimino
             })
         ) {
-            /** 今の位置を古い情報として保存 */
-            this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-            this.oldGhost = lodash.cloneDeep(this.ghost);
+            this.saveCurrentPosition()
 
             /** 位置を更新 */
             for (let block of this.tetrimino.Coordinate) { block.x -= 1 }
@@ -222,9 +219,7 @@ export default class Tetris {
                 tetrimino:this.tetrimino
             })
         ) {
-            /** 今の位置を古い情報として保存 */
-            this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-            this.oldGhost = lodash.cloneDeep(this.ghost);
+            this.saveCurrentPosition()
 
             /** 位置を更新 */
             for (let block of this.tetrimino.Coordinate) { block.x += 1 }
@@ -235,9 +230,7 @@ export default class Tetris {
     }
 
     keyDownL(){
-        /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
+        this.saveCurrentPosition()
 
         /** Oミノはそもそも回さない */
         if (this.tetrimino.type == "O") {
@@ -270,9 +263,7 @@ export default class Tetris {
     }
 
     keyDownJ(){
-
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
+        this.saveCurrentPosition()
 
         /** Oミノはそもそも回さない */
         if (this.tetrimino.type == "O") {
@@ -310,9 +301,7 @@ export default class Tetris {
     }
 
     hold(){
-        /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
+        this.saveCurrentPosition()
 
         // 古い場所のブロックやゴーストを消しとく
         for (let block of this.oldGhost.Coordinate) {
@@ -368,9 +357,7 @@ export default class Tetris {
         }
 
         /** 動かせるようなら下に動かす */
-        /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
+        this.saveCurrentPosition()
 
         /** 位置を更新 */
         for (let block of this.tetrimino.Coordinate) {
@@ -382,10 +369,7 @@ export default class Tetris {
     }
 
     hardDrop(){
-        /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
-
+        this.saveCurrentPosition()
 
         // 何ます動かすかしらべる(スコアで使う)
         let countOfMove = Math.abs(this.ghost.Coordinate[0].y - this.tetrimino.Coordinate[0].y)
@@ -556,7 +540,7 @@ export default class Tetris {
         this.addScore(this.ren * 10 * this.level)
         
         // renを加える
-        this.ren += 1
+        this.ren += countOfAlignedRow
 
     }
 
@@ -666,6 +650,12 @@ export default class Tetris {
     resetInterval(){
         this.deleteInterval()
         this.startInterval()
+    }
+
+    /** 今の位置を古い情報として保存 */
+    saveCurrentPosition(){
+        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
+        this.oldGhost = lodash.cloneDeep(this.ghost);
     }
 
 
