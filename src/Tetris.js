@@ -411,6 +411,8 @@ export default class Tetris {
 
         // ghostを動かす
         this.ghost = lodash.cloneDeep(this.tetrimino)
+
+        // どこまでブロックを下ろせるか調べる
         // falseが帰ってくるまで回し続ける
         while (this.checkCanMove.down({
             Field:lodash.cloneDeep(this.Field),
