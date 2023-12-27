@@ -2,9 +2,9 @@ import Block from "./Block"
 import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
 import Tetrimino from "./Tetrimino"
-import Ojyama from "./Ojyama"
 import {levelConfig} from "./Level.js"
 import {fieldWidth,fieldHeight,effectiveRoof} from "./Config"
+import * as Utils from  './TetrisUtils'
 import lodash from 'lodash';
 
 // 時間に関する数字は全部ミリ秒
@@ -40,8 +40,6 @@ export default class Tetris {
     rotater = new Rotate({
         checkCanMove:this.checkCanMove
     })
-
-    ojyamaFactory = new Ojyama(fieldWidth)
 
     tetriminoFactory = new Tetrimino(effectiveRoof)
 
@@ -142,9 +140,8 @@ export default class Tetris {
 
         /** 落ちてくるのをセット */
         this.tetrimino = next
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino)
         this.ghost = lodash.cloneDeep(this.tetrimino)
-        this.oldGhost = lodash.cloneDeep(this.tetrimino)
+        this.saveCurrentPosition()
 
         // 落ちてくるブロックをフィールドに出現させる
         this.moveTetrimino()
@@ -204,9 +201,7 @@ export default class Tetris {
                 tetrimino:this.tetrimino
             })
         ) {
-            /** 今の位置を古い情報として保存 */
-            this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-            this.oldGhost = lodash.cloneDeep(this.ghost);
+            this.saveCurrentPosition()
 
             /** 位置を更新 */
             for (let block of this.tetrimino.Coordinate) { block.x -= 1 }
@@ -222,9 +217,7 @@ export default class Tetris {
                 tetrimino:this.tetrimino
             })
         ) {
-            /** 今の位置を古い情報として保存 */
-            this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-            this.oldGhost = lodash.cloneDeep(this.ghost);
+            this.saveCurrentPosition()
 
             /** 位置を更新 */
             for (let block of this.tetrimino.Coordinate) { block.x += 1 }
@@ -235,9 +228,7 @@ export default class Tetris {
     }
 
     keyDownL(){
-        /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
+        this.saveCurrentPosition()
 
         /** Oミノはそもそも回さない */
         if (this.tetrimino.type == "O") {
@@ -270,9 +261,7 @@ export default class Tetris {
     }
 
     keyDownJ(){
-
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
+        this.saveCurrentPosition()
 
         /** Oミノはそもそも回さない */
         if (this.tetrimino.type == "O") {
@@ -310,9 +299,7 @@ export default class Tetris {
     }
 
     hold(){
-        /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
+        this.saveCurrentPosition()
 
         // 古い場所のブロックやゴーストを消しとく
         for (let block of this.oldGhost.Coordinate) {
@@ -368,9 +355,7 @@ export default class Tetris {
         }
 
         /** 動かせるようなら下に動かす */
-        /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
+        this.saveCurrentPosition()
 
         /** 位置を更新 */
         for (let block of this.tetrimino.Coordinate) {
@@ -382,10 +367,7 @@ export default class Tetris {
     }
 
     hardDrop(){
-        /** 今の位置を古い情報として保存 */
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
-
+        this.saveCurrentPosition()
 
         // 何ます動かすかしらべる(スコアで使う)
         let countOfMove = Math.abs(this.ghost.Coordinate[0].y - this.tetrimino.Coordinate[0].y)
@@ -427,6 +409,8 @@ export default class Tetris {
 
         // ghostを動かす
         this.ghost = lodash.cloneDeep(this.tetrimino)
+
+        // どこまでブロックを下ろせるか調べる
         // falseが帰ってくるまで回し続ける
         while (this.checkCanMove.down({
             Field:lodash.cloneDeep(this.Field),
@@ -502,14 +486,19 @@ export default class Tetris {
 
         /** お邪魔 */
         if (this.ojyamaCountDown <= 0) {
-            this.triggeringOjyama()
+            // お邪魔発動 
+            // シミュレートしないから直接入れて大丈夫なはず
+            this.Field = Utils.insertOjyama(this.Field)
 
             // 時間再設定
             this.ojyamaCountDown = this.ojyamaInterval
         }
 
         /** ゲームオーバーになってないか確認 */
-        if (this.checkIsGameOver()) {
+        if (
+            Utils.gameOverCondition1(lodash.cloneDeep(this.Field)) ||
+            Utils.gameOverCondition2(lodash.cloneDeep(this.Field))
+            ) {
             // ゲーム終了
             this.isGameOver = true
             this.gameOver()
@@ -556,7 +545,7 @@ export default class Tetris {
         this.addScore(this.ren * 10 * this.level)
         
         // renを加える
-        this.ren += 1
+        this.ren += countOfAlignedRow
 
     }
 
@@ -587,44 +576,11 @@ export default class Tetris {
         this.Field.unshift(lodash.cloneDeep(this.baseLine))
     }
 
-    // お邪魔発動
-    triggeringOjyama(){
-        /** 一番上を消してしまう 
-         * 縦のマス数が増えないように
-        */
-        this.Field.splice(0, 1); 
-
-        this.Field.push(lodash.cloneDeep(this.ojyamaFactory.createOjyama()))
-    }
-
     /** nextを補充するかどうか */
     shouldItReplenish(){
         if (this.nextTetriminos.length < 7) {
             this.nextTetriminos = this.nextTetriminos.concat(this.tetriminoFactory.passSet())
         }
-    }
-
-    // 
-    checkIsGameOver(){
-        /** ゲームオーバーになる条件2
-         * 一番上の天井 y = 0の部分にブロックがある
-         */
-
-        for (let index = 0; index < fieldWidth; index++) {
-            if (this.Field[0][index].isFill) { return true }
-        }
-
-        /** 
-         * ゲームオーバーになる条件2
-         * {x:3,y:effectiveRoof} ~ {x:6,y:effectiveRoof}
-         * {x:3,y:effectiveRoof - 1} ~ {x:6,y:effectiveRoof - 1}
-         * の範囲にブロックがある
-         */
-        for (let index = 3; index < 6; index++) {
-            if (this.Field[effectiveRoof][index].isFill) { return true }
-            if (this.Field[effectiveRoof - 1][index].isFill) { return true }
-        }
-        return false
     }
 
     gameOver(){
@@ -666,6 +622,12 @@ export default class Tetris {
     resetInterval(){
         this.deleteInterval()
         this.startInterval()
+    }
+
+    /** 今の位置を古い情報として保存 */
+    saveCurrentPosition(){
+        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
+        this.oldGhost = lodash.cloneDeep(this.ghost);
     }
 
 
