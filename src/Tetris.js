@@ -215,13 +215,7 @@ export default class Tetris {
         this.saveCurrentPosition()
 
         /** Oミノはそもそも回さない */
-        if (this.tetrimino.type == "O") {
-
-            // 再描画するだけで早期リターン
-            this.moveTetrimino()
-            this.moveGhost()
-            return 
-        }
+        if (this.tetrimino.type == "O") { return }
 
         /** Iミノは回し方が特殊 */
         if (this.tetrimino.type == "I") {
@@ -229,17 +223,14 @@ export default class Tetris {
                 Field:lodash.cloneDeep(this.Field),
                 tetrimino:this.tetrimino
             })
-            this.moveTetrimino()
-            this.moveGhost()
-            return
+        } else {
+            /** 回転した後の位置を更新 */
+            this.tetrimino = this.rotater.clockwise({
+                Field:lodash.cloneDeep(this.Field),
+                tetrimino:this.tetrimino
+            })
         }
 
-        /** 回転した後の位置を更新 */
-        this.tetrimino = this.rotater.clockwise({
-            Field:lodash.cloneDeep(this.Field),
-            tetrimino:this.tetrimino
-        })
-        
         this.moveTetrimino()
         this.moveGhost()
     }
@@ -248,13 +239,7 @@ export default class Tetris {
         this.saveCurrentPosition()
 
         /** Oミノはそもそも回さない */
-        if (this.tetrimino.type == "O") {
-
-            // 再描画するだけで早期リターン
-            this.moveTetrimino()
-            this.moveGhost()
-            return 
-        }
+        if (this.tetrimino.type == "O") {return }
 
         /** Iミノは回し方が逆 */
         if (this.tetrimino.type == "I") {
@@ -262,16 +247,14 @@ export default class Tetris {
                 Field:lodash.cloneDeep(this.Field),
                 tetrimino:this.tetrimino
             })
-            this.moveTetrimino()
-            this.moveGhost()
-            return 
+        } else {
+            /** 回転した後の位置を更新 */
+            this.tetrimino = this.rotater.counterClockwise({
+                Field:lodash.cloneDeep(this.Field),
+                tetrimino:this.tetrimino
+            })
         }
 
-        /** 回転した後の位置を更新 */
-        this.tetrimino = this.rotater.counterClockwise({
-            Field:lodash.cloneDeep(this.Field),
-            tetrimino:this.tetrimino
-        })
         this.moveTetrimino()
         this.moveGhost()
 
