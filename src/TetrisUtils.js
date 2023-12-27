@@ -20,7 +20,7 @@ export function insertOjyama(Field){
     Field.splice(0, 1);
 
     // お邪魔の列を一番うしろに消す
-    Field.push(lodash.cloneDeep(this.createOjyama()))
+    Field.push(lodash.cloneDeep(createOjyama()))
     return Field
 }
 
@@ -45,5 +45,14 @@ export function gameOverCondition2(Field){
     }
 
     return false
+}
+
+// シミュレートしなくても直接参照でも大丈夫なはず
+export function undisplayGhost({Field,ghost}){
+    for (let block of ghost.Coordinate) {
+        Field[block.y][block.x].ghost = false
+    }
+    
+    return Field
 }
 
