@@ -2,9 +2,9 @@ import Block from "./Block"
 import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
 import Tetrimino from "./Tetrimino"
-import Ojyama from "./Ojyama"
 import {levelConfig} from "./Level.js"
 import {fieldWidth,fieldHeight,effectiveRoof} from "./Config"
+import * as Utils from  './TetrisUtils'
 import lodash from 'lodash';
 
 // 時間に関する数字は全部ミリ秒
@@ -40,8 +40,6 @@ export default class Tetris {
     rotater = new Rotate({
         checkCanMove:this.checkCanMove
     })
-
-    ojyamaFactory = new Ojyama(fieldWidth)
 
     tetriminoFactory = new Tetrimino(effectiveRoof)
 
@@ -488,14 +486,19 @@ export default class Tetris {
 
         /** お邪魔 */
         if (this.ojyamaCountDown <= 0) {
-            this.triggeringOjyama()
+            // お邪魔発動 
+            // シミュレートしないから直接入れて大丈夫なはず
+            this.Field = Utils.insertOjyama(this.Field)
 
             // 時間再設定
             this.ojyamaCountDown = this.ojyamaInterval
         }
 
         /** ゲームオーバーになってないか確認 */
-        if (this.checkIsGameOver()) {
+        if (
+            Utils.gameOverCondition1(lodash.cloneDeep(this.Field)) ||
+            Utils.gameOverCondition2(lodash.cloneDeep(this.Field))
+            ) {
             // ゲーム終了
             this.isGameOver = true
             this.gameOver()
@@ -573,44 +576,11 @@ export default class Tetris {
         this.Field.unshift(lodash.cloneDeep(this.baseLine))
     }
 
-    // お邪魔発動
-    triggeringOjyama(){
-        /** 一番上を消してしまう 
-         * 縦のマス数が増えないように
-        */
-        this.Field.splice(0, 1); 
-
-        this.Field.push(lodash.cloneDeep(this.ojyamaFactory.createOjyama()))
-    }
-
     /** nextを補充するかどうか */
     shouldItReplenish(){
         if (this.nextTetriminos.length < 7) {
             this.nextTetriminos = this.nextTetriminos.concat(this.tetriminoFactory.passSet())
         }
-    }
-
-    // 
-    checkIsGameOver(){
-        /** ゲームオーバーになる条件2
-         * 一番上の天井 y = 0の部分にブロックがある
-         */
-
-        for (let index = 0; index < fieldWidth; index++) {
-            if (this.Field[0][index].isFill) { return true }
-        }
-
-        /** 
-         * ゲームオーバーになる条件2
-         * {x:3,y:effectiveRoof} ~ {x:6,y:effectiveRoof}
-         * {x:3,y:effectiveRoof - 1} ~ {x:6,y:effectiveRoof - 1}
-         * の範囲にブロックがある
-         */
-        for (let index = 3; index < 6; index++) {
-            if (this.Field[effectiveRoof][index].isFill) { return true }
-            if (this.Field[effectiveRoof - 1][index].isFill) { return true }
-        }
-        return false
     }
 
     gameOver(){
