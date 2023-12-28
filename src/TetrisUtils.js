@@ -17,7 +17,7 @@ export function insertOjyama(Field){
     /** 一番上を消してしまう 
      * 縦のマス数が増えないように
     */
-    Field.splice(0, 1);
+    Field.shift();
 
     // お邪魔の列を一番うしろに消す
     Field.push(lodash.cloneDeep(createOjyama()))
@@ -41,7 +41,6 @@ export function gameOverCondition2(Field){
     // 一番上の天井 y = 0~1 の部分にブロックがあるかどうか
     for (let index = 0; index < fieldWidth; index++) {
         if (Field[0][index].isFill) { return true }
-        if (Field[1][index].isFill) { return true }
     }
 
     return false
