@@ -438,8 +438,14 @@ export default class Tetris {
         /** 消した列を足す */
         this.countOfLinesVanished += countOfAlignedRow
 
+        /** レベル計算 */
         this.calculateLevel()
+
+        /** おじゃまを発動できるか調べる */
         this.checkWhetherToExecuteOjyama()
+
+        /** ゲームオーバーになっているかどうか調べる */
+        // trueが帰ってきたら､次のテトリミノを落とさない
         if (this.checkIsItGameOver()) {return }
         this.dropNextTetrimino()
     }
