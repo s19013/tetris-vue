@@ -17,6 +17,7 @@ export default class Tetris {
     score = 0
     level = 1
     countOfLinesVanished = 0
+    sleeping = false
 
     /** jsの最大整数値 */
     maxScore = 9000000000000000
@@ -155,7 +156,7 @@ export default class Tetris {
         this.hardDrop()
     }
 
-    keyDownDown(){
+    async keyDownDown(){
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.down({
                 Field:lodash.cloneDeep(this.Field),
@@ -173,7 +174,7 @@ export default class Tetris {
             this.droppingTheBlock()
         } else {
             /** 動かせないなら固定化 */
-            this.immobilization()
+            await this.immobilization()
         }
 
     }
@@ -303,7 +304,7 @@ export default class Tetris {
         this.moveGhost()
     }
 
-    droppingTheBlock(){
+    async droppingTheBlock(){
         // このロジックmoveTetriminoに分けたほうがよい?
 
         /** 動かせないなら固定化する 
@@ -315,7 +316,7 @@ export default class Tetris {
             })
             == false
         ) {
-            this.immobilization()
+            await this.immobilization()
             return 
         }
 
@@ -395,7 +396,7 @@ export default class Tetris {
     }
 
     /** 動かしているブロックを固定化する */
-    immobilization(){
+    async immobilization(){
         // movingを外して固定化(動かせなく)する
         for (let block of this.tetrimino.Coordinate) {
             this.Field[block.y][block.x].isMoving = false
@@ -403,8 +404,32 @@ export default class Tetris {
         
         this.Field = Utils.undisplayGhost({Field:this.Field,ghost:this.ghost})
 
+        await this.EnableLined()
+
         /** 揃っているかを調べる */
         this.isColumnsAligned()
+    }
+
+    async EnableLined(){
+        let sleepSwtich = false // 有効な列が1つでもあったらtrueにする
+        for (let line of this.Field) {
+            /** 配列の中身を全部足す */
+            let sum =  line.reduce((a,b) => {
+                return a + Number(b.isFill);
+            },0);
+
+            // 揃っていたらlinedプロパティをtrueにする
+            if (sum == 10) { 
+                sleepSwtich = true
+                for (const block of line) { block.lined = true } 
+            }
+        }
+
+        if (sleepSwtich) {
+            this.sleeping = true
+            await Utils.sleep(800) 
+            this.sleeping = false
+        }
     }
 
     /** 列が揃っているか */
@@ -575,6 +600,7 @@ export default class Tetris {
 
     startOjyamaInterval(){
         this.ojyamaId = setInterval(() => {
+            if(this.sleeping){ return }
             this.ojyamaCountDown -= 100 //ms
         },100)
     }
@@ -594,7 +620,10 @@ export default class Tetris {
 
     startInterval(){
         // .bind(this)でコールバック内でもthis.が使えるようになる
-        this.autoDropIntervalId = setInterval(this.droppingTheBlock.bind(this), this.autoDropInterval);
+        this.autoDropIntervalId = setInterval(() => {
+            if(this.sleeping){ return }
+            this.droppingTheBlock()
+        }, this.autoDropInterval);
     }
 
     deleteInterval(){ clearInterval(this.autoDropIntervalId) }

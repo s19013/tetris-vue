@@ -55,3 +55,4 @@ export function undisplayGhost({Field,ghost}){
     return Field
 }
 
+export const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
