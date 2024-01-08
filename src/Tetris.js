@@ -284,7 +284,7 @@ export default class Tetris {
 
         // swichだと長いのでひたすらifで良いと思う
         /** 最初のホールドだけ動きが違う */
-        if (holded == "none") { this.startDropping(this.nextTetriminos.shift()) }
+        if (holded == "none") { this.dropNextTetrimino() }
         else {
             if (holded == "O") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.O) }
             else if (holded == "I") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.I) }
@@ -438,41 +438,10 @@ export default class Tetris {
         /** 消した列を足す */
         this.countOfLinesVanished += countOfAlignedRow
 
-        /** レベル計算 */
-        const currentLevel = levelConfig.find(config => this.countOfLinesVanished >= config.threshold);
-        this.level = currentLevel.level
-        this.autoDropInterval = currentLevel.autoDropInterval
-        this.ojyamaInterval = currentLevel.ojyamaInterval
-
-        /** お邪魔 */
-        if (this.ojyamaCountDown <= 0) {
-            // お邪魔発動 
-            // シミュレートしないから直接入れて大丈夫なはず
-            this.Field = Utils.insertOjyama(this.Field)
-
-            // 時間再設定
-            this.ojyamaCountDown = this.ojyamaInterval
-        }
-
-        /** ゲームオーバーになってないか確認 */
-        if (
-            Utils.gameOverCondition1(lodash.cloneDeep(this.Field)) ||
-            Utils.gameOverCondition2(lodash.cloneDeep(this.Field))
-            ) {
-            // ゲーム終了
-            this.isGameOver = true
-            this.gameOver()
-            return //このあとの処理はしない
-        }
-
-        /** 補充確認 */
-        this.shouldItReplenish()
-
-        /** ホールドのロックを解除 */
-        this.holdLock = false
-
-        /** 新しいブロックを落とす */
-        this.startDropping(this.nextTetriminos.shift())
+        this.calculateLevel()
+        this.checkWhetherToExecuteOjyama()
+        if (this.checkIsItGameOver()) {return }
+        this.dropNextTetrimino()
     }
 
     /** 計算 */
@@ -525,6 +494,51 @@ export default class Tetris {
             // おそらくエラーが起きるのはオーバーフローした時だと思うので最大値設定
             this.score = this.maxScore
         }
+    }
+
+    // レベル計算
+    calculateLevel(){
+        const currentLevel = levelConfig.find(config => this.countOfLinesVanished >= config.threshold);
+        this.level = currentLevel.level
+        this.autoDropInterval = currentLevel.autoDropInterval
+        this.ojyamaInterval = currentLevel.ojyamaInterval
+    }
+
+    /** お邪魔を実行するか確認 */
+    checkWhetherToExecuteOjyama(){
+        if (this.ojyamaCountDown <= 0) {
+            // お邪魔発動 
+            // シミュレートしないから直接入れて大丈夫なはず
+            this.Field = Utils.insertOjyama(this.Field)
+
+            // 時間再設定
+            this.ojyamaCountDown = this.ojyamaInterval
+        }
+    }
+
+    /** ゲームオーバーになってないか確認 */
+    checkIsItGameOver(){
+        if (
+            Utils.gameOverCondition1(lodash.cloneDeep(this.Field)) ||
+            Utils.gameOverCondition2(lodash.cloneDeep(this.Field))
+            ) {
+            // ゲーム終了
+            this.isGameOver = true
+            this.gameOver()
+            return true //ゲームオーバーならこのあとの処理はしない
+        }
+    }
+
+    /** 次のテトリミノを落とす */
+    dropNextTetrimino(){
+        /** 補充確認 */
+        this.shouldItReplenish()
+
+        /** ホールドのロックを解除 */
+        this.holdLock = false
+
+        /** 新しいブロックを落とす */
+        this.startDropping(this.nextTetriminos.shift())
     }
 
     /** 列を削除する */
