@@ -19,6 +19,7 @@ export default {
       next: [],
       hold: null,
       isGameOver: false,
+      sleeping: false,
       score: 0,
       ren: 0,
       level: 0,
@@ -30,7 +31,7 @@ export default {
     }
   },
   methods: {
-    keyEvents(event) {
+    async keyEvents(event) {
       // _.debounce(,1000)
       try {
         event.preventDefault()
@@ -41,18 +42,18 @@ export default {
       let code = event.code
 
       // ゲームオーバーしてたら動かない
-      if (this.isGameOver) {
+      if (this.isGameOver || this.sleeping) {
         return
       }
 
       /** 上 */
       if (code == 'ArrowUp' || code == 'KeyW') {
-        this.tetris.keyDownUp()
+        await this.tetris.keyDownUp()
       }
 
       /** 下 */
       if (code == 'ArrowDown' || code == 'KeyS') {
-        this.tetris.keyDownDown()
+        await this.tetris.keyDownDown()
       }
 
       /** 左 */
@@ -91,6 +92,7 @@ export default {
       this.next = JSON.parse(JSON.stringify(this.tetris.nextTetriminos))
       this.hold = this.tetris.holdTetrimino
       this.isGameOver = this.tetris.isGameOver
+      this.sleeping = this.tetris.sleeping
       this.score = this.tetris.score
       this.ren = this.tetris.ren
       this.isTetris = this.tetris.isTetris
@@ -114,12 +116,12 @@ export default {
     // mountedだと遅すぎてエラーになる
     this.next = this.tetris.nextTetriminos
   },
-  mounted() {
+  async mounted() {
     // 定期的再描画
     this.reRendIntervalId = setInterval(this.reRender, 100)
     this.$nextTick(function () {})
     /** キーボード受付 */
-    document.addEventListener('keydown', this.keyEvents)
+    await document.addEventListener('keydown', this.keyEvents)
   },
   beforeUnmount() {
     /** キーボードによる動作の削除(副作用みたいエラーがでるため) */
