@@ -31,7 +31,7 @@ export default {
     }
   },
   methods: {
-    async keyEvents(event) {
+    keyEvents(event) {
       // _.debounce(,1000)
       try {
         event.preventDefault()
@@ -48,12 +48,12 @@ export default {
 
       /** 上 */
       if (code == 'ArrowUp' || code == 'KeyW') {
-        await this.tetris.keyDownUp()
+        this.tetris.keyDownUp()
       }
 
       /** 下 */
       if (code == 'ArrowDown' || code == 'KeyS') {
-        await this.tetris.keyDownDown()
+        this.tetris.keyDownDown()
       }
 
       /** 左 */
@@ -116,12 +116,12 @@ export default {
     // mountedだと遅すぎてエラーになる
     this.next = this.tetris.nextTetriminos
   },
-  async mounted() {
+  mounted() {
     // 定期的再描画
     this.reRendIntervalId = setInterval(this.reRender, 100)
     this.$nextTick(function () {})
     /** キーボード受付 */
-    await document.addEventListener('keydown', this.keyEvents)
+    document.addEventListener('keydown', this.keyEvents)
   },
   beforeUnmount() {
     /** キーボードによる動作の削除(副作用みたいエラーがでるため) */
