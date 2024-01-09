@@ -166,7 +166,7 @@ export default class Tetris {
             /** 自動落下のインターバルリセット 
              *  自動落下と重なって2重に落ちるのを防ぐ
             */
-            // this.resetInterval()
+            this.resetInterval()
 
             this.addScore(1)
 
