@@ -427,14 +427,13 @@ export default class Tetris {
 
         if (sleepSwtich) {
             this.sleeping = true
-            console.log("b");
             await Utils.sleep(800) 
-            console.log("a");
             this.sleeping = false
         }
     }
 
     /** 列が揃っているか */
+    // この関数名は不適切になってきた｡新しいやり方を考えないと
     isColumnsAligned(){
         /** 列の合計が
          * 0 :空行
