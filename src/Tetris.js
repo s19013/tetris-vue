@@ -156,7 +156,7 @@ export default class Tetris {
         this.hardDrop()
     }
 
-    async keyDownDown(){
+    keyDownDown(){
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.down({
                 Field:lodash.cloneDeep(this.Field),
@@ -174,7 +174,7 @@ export default class Tetris {
             this.droppingTheBlock()
         } else {
             /** 動かせないなら固定化 */
-            await this.immobilization()
+            this.immobilization()
         }
 
     }
@@ -304,7 +304,7 @@ export default class Tetris {
         this.moveGhost()
     }
 
-    async droppingTheBlock(){
+    droppingTheBlock(){
         // このロジックmoveTetriminoに分けたほうがよい?
 
         /** 動かせないなら固定化する 
@@ -316,7 +316,7 @@ export default class Tetris {
             })
             == false
         ) {
-            await this.immobilization()
+            this.immobilization()
             return 
         }
 
@@ -427,7 +427,9 @@ export default class Tetris {
 
         if (sleepSwtich) {
             this.sleeping = true
+            console.log("b");
             await Utils.sleep(800) 
+            console.log("a");
             this.sleeping = false
         }
     }
