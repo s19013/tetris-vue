@@ -11,13 +11,20 @@ import lodash from 'lodash';
 
 export default class Tetris {
     Field = []
+
     autoDropIntervalId = null
     timerId = null
     ojyamaId = null
+
     score = 0
     level = 1
     countOfLinesVanished = 0
+
     sleeping = false
+
+    /** 各列の状態 埋まっているブロックの数 */
+    rowStatus = []
+
 
     /** jsの最大整数値 */
     maxScore = 9000000000000000
@@ -76,6 +83,11 @@ export default class Tetris {
     oldGhost = null
 
     constructor(){
+        // rowStatusを全部0で埋める
+        for (let index = 0; index < fieldHeight; index++) {
+            this.rowStatus.push(0)
+        }
+
         /** 横1列を生成 */
         // これを使えば毎度毎度1ブロックずつを生成する必要がなくなる
         for (let n = 0; n < fieldWidth; n++) {
@@ -88,39 +100,6 @@ export default class Tetris {
         }
 
         this.gameStart()
-
-        // this.Field[19][0].isFill = true
-        // this.Field[19][1].isFill = true
-        // this.Field[19][3].isFill = true
-        // this.Field[18][0].isFill = true
-        // this.Field[18][1].isFill = true
-        // this.Field[18][3].isFill = true
-        // this.Field[17][0].isFill = true
-        // this.Field[16][0].isFill = true
-        // this.Field[16][3].isFill = true
-        // this.Field[15][0].isFill = true
-        // this.Field[15][1].isFill = true
-        // this.Field[15][3].isFill = true
-        // this.Field[14][3].isFill = true
-        // this.Field[13][3].isFill = true
-        // this.Field[13][2].isFill = true
-        
-        // this.Field[19][9].isFill = true
-        // this.Field[19][8].isFill = true
-        // this.Field[19][6].isFill = true
-        // this.Field[18][9].isFill = true
-        // this.Field[18][8].isFill = true
-        // this.Field[18][6].isFill = true
-        // this.Field[17][9].isFill = true
-        // this.Field[16][9].isFill = true
-        // this.Field[16][6].isFill = true
-        // this.Field[15][9].isFill = true
-        // this.Field[15][8].isFill = true
-        // this.Field[15][6].isFill = true
-        // this.Field[14][6].isFill = true
-        // this.Field[13][6].isFill = true
-        // this.Field[13][7].isFill = true
-
     }
 
     /** ゲームスタートの処理 */
@@ -404,59 +383,19 @@ export default class Tetris {
         
         this.Field = Utils.undisplayGhost({Field:this.Field,ghost:this.ghost})
 
-        await this.EnableLined()
+        this.ProcessingAfterImmobilization()
+    }
+
+    /** 固定化した後にする処理を全部まとめた */
+    async ProcessingAfterImmobilization(){
+        this.updateRowStatus()
 
         /** 揃っているかを調べる */
-        this.isColumnsAligned()
-    }
-
-    async EnableLined(){
-        let sleepSwtich = false // 有効な列が1つでもあったらtrueにする
-        for (let line of this.Field) {
-            /** 配列の中身を全部足す */
-            let sum =  line.reduce((a,b) => {
-                return a + Number(b.isFill);
-            },0);
-
-            // 揃っていたらlinedプロパティをtrueにする
-            if (sum == 10) { 
-                sleepSwtich = true
-                for (const block of line) { block.lined = true } 
-            }
-        }
-
-        if (sleepSwtich) {
-            this.sleeping = true
-            await Utils.sleep(800) 
-            this.sleeping = false
-        }
-    }
-
-    /** 列が揃っているか */
-    // この関数名は不適切になってきた｡新しいやり方を考えないと
-    isColumnsAligned(){
-        /** 列の合計が
-         * 0 :空行
-         * 10:1列揃っている
-         */
-
-        /** 揃った列の数 */
-        let countOfAlignedRow = 0
-
-        for (let line of this.Field) {
-            /** 配列の中身を全部足す */
-            let sum =  line.reduce((a,b) => {
-                return a + Number(b.isFill);
-            },0);
-
-            // 揃っていたら消す
-            if (sum == 10) { 
-                countOfAlignedRow += 1
-
-                // 番号を直接していするのではなく､上から巡に探していって揃っている列のindexを参照するようにした
-                this.vanishTheLine(this.Field.indexOf(line))
-            }
-        }
+        let countOfAlignedRow = this.rowStatus.reduce((count,status)=>{
+            // 要素がフィールド幅と一緒だった時 -> 1列に全部埋まっている時
+            if(status == fieldWidth){ count += 1 } 
+            return count
+          }, 0)
 
         /** 揃った列をスコアとして足す */
         this.scoreCalculation(countOfAlignedRow)
@@ -464,8 +403,20 @@ export default class Tetris {
         /** 消した列を足す */
         this.countOfLinesVanished += countOfAlignedRow
 
-        /** レベル計算 */
-        this.calculateLevel()
+        if (countOfAlignedRow > 0) {
+            this.EnableLined()
+
+            // 演出の関係上一旦処理を止める
+            this.sleeping = true
+            await Utils.sleep(800) 
+            this.sleeping = false
+
+            /** 揃っている列を消す */
+            this.vanishAlignedRows()
+
+            /** レベル計算 */
+            this.calculateLevel()
+        }
 
         /** おじゃまを発動できるか調べる */
         this.checkWhetherToExecuteOjyama()
@@ -473,13 +424,33 @@ export default class Tetris {
         /** ゲームオーバーになっているかどうか調べる */
         // trueが帰ってきたら､次のテトリミノを落とさない
         if (this.checkIsItGameOver()) {return }
+
+        // 次のテトリミノを落とす
         this.dropNextTetrimino()
+    }
+
+    /** 各列が何マス埋まっているのか確認する */
+    updateRowStatus(){
+        for (let index = 0; index < fieldHeight; index++) {
+            /** 配列の中身を全部足す */
+            this.rowStatus[index] = this.Field[index].reduce((a,b) => {
+                return a + Number(b.isFill);
+            },0);
+        }
+    }
+
+    // 揃っている列に色を塗る
+    EnableLined(){
+        for (let index = 0; index < fieldHeight; index++) {
+            // 揃っていたらlinedプロパティをtrueにする
+            if (this.rowStatus[index] == fieldWidth) { 
+                for (const block of this.Field[index]) { block.lined = true } 
+            }
+        }
     }
 
     /** 計算 */
     scoreCalculation(countOfAlignedRow){
-
-        // 揃った列の数
 
         /** 一列も揃ってない時はさっさと返す */
         if (countOfAlignedRow == 0) {
@@ -559,6 +530,7 @@ export default class Tetris {
             this.gameOver()
             return true //ゲームオーバーならこのあとの処理はしない
         }
+        return false
     }
 
     /** 次のテトリミノを落とす */
@@ -574,12 +546,26 @@ export default class Tetris {
     }
 
     /** 列を削除する */
-    vanishTheLine(lineIndex){
-        /** 揃った列自体を消してしまう */
-        this.Field.splice(lineIndex, 1); 
+    vanishAlignedRows(){
+        // 4列以上揃うのはありえないのでループする最大の数を設定
+        for (let index = 0; index < 4; index++) {
 
-        /** 消した分だけ上に加える */
-        this.Field.unshift(lodash.cloneDeep(this.baseLine))
+            // 全部埋まっている行を探す
+            let FoundedIndex = this.rowStatus.indexOf(fieldWidth)
+
+            // 見つからなかったら -1が帰ってくるのでそれ以外の値なら良い
+            if (FoundedIndex > -1) {
+                /** 揃った列自体を消してしまう */
+                this.Field.splice(FoundedIndex, 1);
+
+                /** 消した分だけ上に加える */
+                this.Field.unshift(lodash.cloneDeep(this.baseLine))
+
+                // rowStatusの情報が古いままだと同じindex番号を削除し続けてしまうから
+                // 列を削除したら都度更新する必要がある
+                this.updateRowStatus()
+            } else { break }
+        }
     }
 
     /** nextを補充するかどうか */
