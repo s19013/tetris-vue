@@ -32,7 +32,7 @@ export default class Rotate {
 
         tentativeCoordinate = tetrimino.Coordinate.map(block => {
             return this.rotateCalculations.clockwise({
-                rotationPoint:tetrimino.Coordinate[tetrimino.clockwiseAxis],
+                rotationPoint:tetrimino.Coordinate[tetrimino.axis],
                 beforeRotation:block
             })
         })
@@ -42,7 +42,7 @@ export default class Rotate {
             tentativeCoordinate = this.checkIfThereIsACoveredBlock({
                 Field:Field,
                 tetriminoCoordinate:tentativeCoordinate,
-                rotationIndex:tetrimino.clockwiseAxis
+                rotationIndex:tetrimino.axis
             })
         } catch (error) {
             // console.log(error);
@@ -66,7 +66,7 @@ export default class Rotate {
 
         tentativeCoordinate = tetrimino.Coordinate.map(block => {
             return this.rotateCalculations.counterClockwise({
-                rotationPoint:tetrimino.Coordinate[tetrimino.counterClockwiseAxis],
+                rotationPoint:tetrimino.Coordinate[tetrimino.axis],
                 beforeRotation:block
             })
         })
@@ -76,7 +76,7 @@ export default class Rotate {
             tentativeCoordinate = this.checkIfThereIsACoveredBlock({
                 Field:Field,
                 tetriminoCoordinate:tentativeCoordinate,
-                rotationIndex:tetrimino.counterClockwiseAxis
+                rotationIndex:tetrimino.axis
             })
         } catch (error) {
             // console.log(error);
