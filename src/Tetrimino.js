@@ -7,8 +7,7 @@ export default class Tetrimino{
         /**
      * type ブロックの形
      * Coordinate 一番最初に現れる位置
-     * clockwiseAxis 時計回りのときの中心点 (自分自身を参照するのが難しいようなのでindex番号で)
-     * counterClockwiseAxis 反時計回りのときの中心点
+     * axis 回転する時の中心点 (自分自身を参照するのが難しいようなのでindex番号で)
      */
 
         this.O = {
@@ -19,8 +18,7 @@ export default class Tetrimino{
                 {x:5,y:this.roof + 1},
                 {x:5,y:this.roof},
             ],
-            clockwiseAxis:null,
-            counterClockwiseAxis:null
+            axis:null,
         }
 
     // Iは色々特殊
@@ -32,8 +30,7 @@ export default class Tetrimino{
                 {x:5,y:this.roof + 1},
                 {x:6,y:this.roof + 1},
             ],
-            clockwiseAxis:2,
-            counterClockwiseAxis:1
+            axis:1,
         }
 
         this.T = {
@@ -44,8 +41,7 @@ export default class Tetrimino{
                 {x:4,y:this.roof + 1},
                 {x:5,y:this.roof + 1},
             ],
-            clockwiseAxis:2,
-            counterClockwiseAxis:2
+            axis:2,
         }
 
         this.L = {
@@ -56,8 +52,7 @@ export default class Tetrimino{
                 {x:4,y:this.roof + 1},
                 {x:3,y:this.roof + 1},
             ],
-            clockwiseAxis:2,
-            counterClockwiseAxis:2
+            axis:2,
         }
 
         this.J = {
@@ -68,8 +63,7 @@ export default class Tetrimino{
                 {x:4,y:this.roof + 1},
                 {x:5,y:this.roof + 1},
             ],
-            clockwiseAxis:2,
-            counterClockwiseAxis:2
+            axis:2,
         }
 
         this.S = {
@@ -80,8 +74,7 @@ export default class Tetrimino{
                 {x:4,y:this.roof + 1},
                 {x:3,y:this.roof + 1},
             ],
-            clockwiseAxis:1, //2
-            counterClockwiseAxis:1 //1
+            axis:1,
         }
 
         this.Z = {
@@ -92,8 +85,7 @@ export default class Tetrimino{
                 {x:4,y:this.roof},
                 {x:3,y:this.roof},
             ],
-            clockwiseAxis:1, //1
-            counterClockwiseAxis:1 //2
+            axis:1,
         }
 
         this.base = [this.O,this.I,this.T,this.L,this.J,this.S,this.Z]

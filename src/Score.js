@@ -19,18 +19,11 @@ export default class Score{
      * オーバーフローしないように処理するため別関数
      */
     addScore(ScoreToAdd=0){
-        try {
-            this.score += ScoreToAdd
-            // 限界値超えないように
-            if (this.score >= this.maxScore) { this.score = this.maxScore }
-
-
-        } catch (error) {
-            console.log(error);
-
-            // おそらくエラーが起きるのはオーバーフローした時だと思うので最大値設定
-            this.score = this.maxScore
-        }
+        // aiが提示してくれたやり方をさいよう
+            // ScoreToAddが数値であることを確認するためにtypeofを使用する
+            // Math.min関数を使用して、this.scoreにScoreToAddを加算した結果がthis.maxScoreを超えないようにする。
+         if (typeof ScoreToAdd === 'number') { this.score = Math.min(this.score + ScoreToAdd, this.maxScore); } 
+         else { console.error('Invalid score addition: ', ScoreToAdd); }
     }
 
     /** 計算 */
