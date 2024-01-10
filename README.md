@@ -58,3 +58,4 @@ Iミノの癖が強い
 * https://codelikes.com/javascript-throw/
 * https://pisuke-code.com/js-correct-way-of-array-copy/
 * https://www.freecodecamp.org/japanese/news/how-to-clone-an-array-in-javascript-1d3183468f6a/
+* https://pisuke-code.com/js-examples-of-array-reduce-usage/
