@@ -4,6 +4,7 @@ import Rotate from "./Rotate"
 import Tetrimino from "./Tetrimino"
 import {levelConfig} from "./Level.js"
 import {fieldWidth,fieldHeight,effectiveRoof} from "./Config"
+import Score from "./Score.js"
 import * as Utils from  './TetrisUtils'
 import lodash from 'lodash';
 
@@ -16,7 +17,6 @@ export default class Tetris {
     timerId = null
     ojyamaId = null
 
-    score = 0
     level = 1
     countOfLinesVanished = 0
 
@@ -24,19 +24,6 @@ export default class Tetris {
 
     /** 各列の状態 埋まっているブロックの数 */
     rowStatus = []
-
-
-    /** jsの最大整数値 */
-    maxScore = 9000000000000000
-
-    /** 4列消し */
-    isTetris = false
-
-    /** 連続消し */
-    ren = 0
-
-    /** 連続4列消し */
-    back2back = false
 
     /** フィールドの横1列の基本の形 */
     baseLine = []
@@ -50,6 +37,8 @@ export default class Tetris {
     })
 
     tetriminoFactory = new Tetrimino(effectiveRoof)
+
+    score = new Score()
 
     /** 放置してると勝手にブロックが落ちる感覚 */
     autoDropInterval = 2000 //ms
@@ -147,7 +136,7 @@ export default class Tetris {
             */
             this.resetInterval()
 
-            this.addScore(1)
+            this.score.addScore(1)
 
 
             this.droppingTheBlock()
@@ -316,7 +305,7 @@ export default class Tetris {
 
         // 何ます動かすかしらべる(スコアで使う)
         let countOfMove = Math.abs(this.ghost.Coordinate[0].y - this.tetrimino.Coordinate[0].y)
-        this.addScore(countOfMove * 2)
+        this.score.addScore(countOfMove * 2)
 
         // ゴーストの位置に移動する
         this.tetrimino = lodash.cloneDeep(this.ghost);
@@ -398,7 +387,10 @@ export default class Tetris {
           }, 0)
 
         /** 揃った列をスコアとして足す */
-        this.scoreCalculation(countOfAlignedRow)
+        this.score.calculation({
+            countOfAlignedRow:countOfAlignedRow,
+            level:this.level
+        })
 
         /** 消した列を足す */
         this.countOfLinesVanished += countOfAlignedRow
@@ -446,56 +438,6 @@ export default class Tetris {
             if (this.rowStatus[index] == fieldWidth) { 
                 for (const block of this.Field[index]) { block.lined = true } 
             }
-        }
-    }
-
-    /** 計算 */
-    scoreCalculation(countOfAlignedRow){
-
-        /** 一列も揃ってない時はさっさと返す */
-        if (countOfAlignedRow == 0) {
-            this.back2back = false
-            this.ren = 0
-            return 
-        }
-
-        this.addScore(countOfAlignedRow * countOfAlignedRow * this.level * 10)
-
-        if (countOfAlignedRow == 4) {
-            this.isTetris = true
-
-            // これは表示用なので数秒たったら消す
-            setTimeout(()=> {
-                this.isTetris = false
-            },2000) ;
-        }
-
-        // b2b
-        // this.addScore(50 * this.level)
-
-        // ren
-        this.addScore(this.ren * 10 * this.level)
-        
-        // renを加える
-        this.ren += countOfAlignedRow
-
-    }
-
-    /** スコアを加える
-     * オーバーフローしないように処理するため別関数
-     */
-    addScore(ScoreToAdd=0){
-        try {
-            this.score += ScoreToAdd
-            // 限界値超えないように
-            if (this.score >= this.maxScore) { this.score = this.maxScore }
-
-
-        } catch (error) {
-            console.log(error);
-
-            // おそらくエラーが起きるのはオーバーフローした時だと思うので最大値設定
-            this.score = this.maxScore
         }
     }
 
@@ -588,7 +530,7 @@ export default class Tetris {
         this.deleteOjyamaInterval()
 
         // スコア集計
-        this.addScore(this.time * this.level)
+        this.score.addScore(this.time * this.level)
     }
 
     startOjyamaInterval(){

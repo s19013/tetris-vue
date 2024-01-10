@@ -93,9 +93,9 @@ export default {
       this.hold = this.tetris.holdTetrimino
       this.isGameOver = this.tetris.isGameOver
       this.sleeping = this.tetris.sleeping
-      this.score = this.tetris.score
-      this.ren = this.tetris.ren
-      this.isTetris = this.tetris.isTetris
+      this.score = this.tetris.score.score
+      this.ren = this.tetris.score.ren
+      this.isTetris = this.tetris.score.isTetris
       this.level = this.tetris.level
       this.countOfLinesVanished = this.tetris.countOfLinesVanished
       this.timer = this.tetris.time
