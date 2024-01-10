@@ -568,6 +568,12 @@ export default class Tetris {
         }
     }
 
+    /** 今の位置を古い情報として保存 */
+    saveCurrentPosition(){
+        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
+        this.oldGhost = lodash.cloneDeep(this.ghost);
+    }
+
     /** nextを補充するかどうか */
     shouldItReplenish(){
         if (this.nextTetriminos.length < 7) {
@@ -618,11 +624,5 @@ export default class Tetris {
     resetInterval(){
         this.deleteInterval()
         this.startInterval()
-    }
-
-    /** 今の位置を古い情報として保存 */
-    saveCurrentPosition(){
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
     }
 }
