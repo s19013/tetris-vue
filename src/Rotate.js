@@ -50,13 +50,11 @@ export default class Rotate {
             /** エラーが起きた
              * つまり回せなかったのでそのまま帰す 
              */
-            return tetrimino
+            return Cordinate
         }
 
-        /** 位置を更新 */
-        Cordinate = tentativeCordinate
-
-        return Cordinate
+        /** シミュレーションした位置を返す */
+        return tentativeCordinate
     }
 
     counterClockwise({
@@ -85,13 +83,11 @@ export default class Rotate {
             /** エラーが起きた
              * つまり回せなかったのでそのまま帰す 
              */
-            return tetrimino
+            return Cordinate
         }
 
-        /** 位置を更新 */
-        Cordinate = tentativeCordinate
-
-        return Cordinate
+        /** シミュレーションした位置を返す */
+        return tentativeCordinate
     }
 
     /** すでにおいているぶつかるようだったらちょっと移動する
