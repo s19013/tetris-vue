@@ -17,12 +17,13 @@ export default class Rotate {
 
     /**
      * @param Field 今現在のフィールド
-     * @param direction 回転の方向
-     * @param tetrimino 今のブロックの状態
+     * @param Cordinate 回転の方向
+     * @param rotationPoint 今のブロックの状態
      */
     clockwise({
         Field,
-        tetrimino
+        Cordinate
+        rotationPoint
     }){
         // 色々回してみてシュミレーションしていく
         /** 実際にまわしてみた状態
@@ -30,9 +31,9 @@ export default class Rotate {
          */
         let tentativeCoordinate = null
 
-        tentativeCoordinate = tetrimino.Coordinate.map(block => {
+        tentativeCoordinate = Coordinate.map(block => {
             return this.rotateCalculations.clockwise({
-                rotationPoint:tetrimino.Coordinate[tetrimino.axis],
+                rotationPoint:Coordinate[rotationPoint],
                 beforeRotation:block
             })
         })
@@ -42,7 +43,7 @@ export default class Rotate {
             tentativeCoordinate = this.checkIfThereIsACoveredBlock({
                 Field:Field,
                 tetriminoCoordinate:tentativeCoordinate,
-                rotationIndex:tetrimino.axis
+                rotationIndex:rotationPoint
             })
         } catch (error) {
             // console.log(error);
@@ -53,9 +54,9 @@ export default class Rotate {
         }
 
         /** 位置を更新 */
-        tetrimino.Coordinate = tentativeCoordinate
+        Coordinate = tentativeCoordinate
 
-        return tetrimino
+        return Cordinate
     }
 
     counterClockwise({
@@ -64,9 +65,9 @@ export default class Rotate {
     }){
         let tentativeCoordinate = null
 
-        tentativeCoordinate = tetrimino.Coordinate.map(block => {
+        tentativeCoordinate = Coordinate.map(block => {
             return this.rotateCalculations.counterClockwise({
-                rotationPoint:tetrimino.Coordinate[tetrimino.axis],
+                rotationPoint:Coordinate[rotationPoint],
                 beforeRotation:block
             })
         })
@@ -76,7 +77,7 @@ export default class Rotate {
             tentativeCoordinate = this.checkIfThereIsACoveredBlock({
                 Field:Field,
                 tetriminoCoordinate:tentativeCoordinate,
-                rotationIndex:tetrimino.axis
+                rotationIndex:rotationPoint
             })
         } catch (error) {
             // console.log(error);
@@ -87,9 +88,9 @@ export default class Rotate {
         }
 
         /** 位置を更新 */
-        tetrimino.Coordinate = tentativeCoordinate
+        Coordinate = tentativeCoordinate
 
-        return tetrimino
+        return Cordinate
     }
 
     /** すでにおいているぶつかるようだったらちょっと移動する
