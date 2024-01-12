@@ -1,4 +1,4 @@
-import Tetrimino from "../Tetrimino";
+import Tetrimino from "./Tetrimino";
 import { effectiveRoof } from "../Config";
 import Rotate from "../Rotate";
 

@@ -1,4 +1,4 @@
-import Tetrimino from "../Tetrimino";
+import Tetrimino from "./Tetrimino";
 import { effectiveRoof } from "../Config";
 
 export default class Omino extends Tetrimino{
