@@ -6,10 +6,10 @@ export default class Omino extends Tetrimino{
         super({
             type:"O",
             Coordinate:[
+                {x:4,y:effectiveRoof },
+                {x:4,y:effectiveRoof + 1},
                 {x:5,y:effectiveRoof },
                 {x:5,y:effectiveRoof + 1},
-                {x:4,y:effectiveRoof + 1},
-                {x:3,y:effectiveRoof + 1},
             ]
         })
     }
