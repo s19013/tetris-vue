@@ -5,7 +5,7 @@ export default class Omino extends Tetrimino{
     constructor() {
         super({
             type:"L",
-            Cordinate:[
+            Coordinate:[
                 {x:5,y:effectiveRoof },
                 {x:5,y:effectiveRoof + 1},
                 {x:4,y:effectiveRoof + 1},

@@ -6,7 +6,7 @@ export default class Tmino extends Tetrimino{
     constructor() {
         super({
             type:"T",
-            Cordinate:[
+            Coordinate:[
                 {x:3,y:effectiveRoof + 1},
                 {x:4,y:effectiveRoof },
                 {x:4,y:effectiveRoof + 1},
@@ -17,18 +17,18 @@ export default class Tmino extends Tetrimino{
 
     clockwise(Field){
         const rotate = new Rotate()
-        this.Cordinate = rotate.clockwise({
+        this.Coordinate = rotate.clockwise({
             Field:Field,
-            Cordinate:this.Cordinate,
+            Coordinate:this.Coordinate,
             rotationPoint:2
         })
     }
 
     counterClockwise(Field){
         const rotate = new Rotate()
-        this.Cordinate = rotate.counterClockwise({
+        this.Coordinate = rotate.counterClockwise({
             Field:Field,
-            Cordinate:this.Cordinate,
+            Coordinate:this.Coordinate,
             rotationPoint:2
         })
     }

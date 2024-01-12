@@ -6,7 +6,7 @@ export default class Imino extends Tetrimino{
     constructor() {
         super({
             type:"I",
-            Cordinate:[
+            Coordinate:[
                 {x:3,y:effectiveRoof + 1},
                 {x:4,y:effectiveRoof + 1},
                 {x:5,y:effectiveRoof + 1},
@@ -18,18 +18,18 @@ export default class Imino extends Tetrimino{
     clockwise(Field){
         const rotate = new Rotate()
         // テトリミノが縦の時
-        if (this.Cordinate[0].x == this.Cordinate[1].x) {
-            this.Cordinate = rotate.clockwise({
+        if (this.Coordinate[0].x == this.Coordinate[1].x) {
+            this.Coordinate = rotate.clockwise({
                 Field:Field,
-                Cordinate:this.Cordinate,
+                Coordinate:this.Coordinate,
                 rotationPoint:1
             })
         }
         // テトリミノが横の時
         else {
-            this.Cordinate = rotate.counterClockwise({
+            this.Coordinate = rotate.counterClockwise({
                 Field:Field,
-                Cordinate:this.Cordinate,
+                Coordinate:this.Coordinate,
                 rotationPoint:2
             })
         }
@@ -38,18 +38,18 @@ export default class Imino extends Tetrimino{
     counterClockwise(Field){
         const rotate = new Rotate()
         // テトリミノが縦の時
-        if (this.Cordinate[0].x == this.Cordinate[1].x) {
-            this.Cordinate = rotate.counterClockwise({
+        if (this.Coordinate[0].x == this.Coordinate[1].x) {
+            this.Coordinate = rotate.counterClockwise({
                 Field:Field,
-                Cordinate:this.Cordinate,
+                Coordinate:this.Coordinate,
                 rotationPoint:2
             })
         }
         // テトリミノが横の時
         else {
-            this.Cordinate = rotate.clockwise({
+            this.Coordinate = rotate.clockwise({
                 Field:Field,
-                Cordinate:this.Cordinate,
+                Coordinate:this.Coordinate,
                 rotationPoint:1
             })
         }
