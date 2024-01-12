@@ -15,12 +15,12 @@ export default class Imino extends Tetrimino{
         })
     }
 
-    clockwise(Field){
+    clockwise(clonedField){
         const rotate = new Rotate()
         // テトリミノが縦の時
         if (this.Coordinate[0].x == this.Coordinate[1].x) {
             this.Coordinate = rotate.clockwise({
-                Field:Field,
+                clonedField:clonedField,
                 Coordinate:this.Coordinate,
                 rotationPoint:1
             })
@@ -28,19 +28,19 @@ export default class Imino extends Tetrimino{
         // テトリミノが横の時
         else {
             this.Coordinate = rotate.counterClockwise({
-                Field:Field,
+                clonedField:clonedField,
                 Coordinate:this.Coordinate,
                 rotationPoint:2
             })
         }
     }
 
-    counterClockwise(Field){
+    counterClockwise(clonedField){
         const rotate = new Rotate()
         // テトリミノが縦の時
         if (this.Coordinate[0].x == this.Coordinate[1].x) {
             this.Coordinate = rotate.counterClockwise({
-                Field:Field,
+                clonedField:clonedField,
                 Coordinate:this.Coordinate,
                 rotationPoint:2
             })
@@ -48,7 +48,7 @@ export default class Imino extends Tetrimino{
         // テトリミノが横の時
         else {
             this.Coordinate = rotate.clockwise({
-                Field:Field,
+                clonedField:clonedField,
                 Coordinate:this.Coordinate,
                 rotationPoint:1
             })

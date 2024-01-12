@@ -15,14 +15,14 @@ export default class Omino extends Tetrimino{
     }
 
     // 回転する必要がないから即return
-    // 使わないけど全員Fieldを引数として受け取るから受け取っとく
-    clockwise(Field){
+    // 使わないけど全員clonedFieldを引数として受け取るから受け取っとく
+    clockwise(clonedField){
         return
     }
 
     // 回転する必要がないから即return
-    // 使わないけど全員Fieldを引数として受け取るから受け取っとく
-    counterClockwise(Field){
+    // 使わないけど全員clonedFieldを引数として受け取るから受け取っとく
+    counterClockwise(clonedField){
         return 
     }
 }
