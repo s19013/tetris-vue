@@ -89,7 +89,7 @@ export default {
     },
     reRender() {
       this.field = JSON.parse(JSON.stringify(this.tetris.Field))
-      this.next = JSON.parse(JSON.stringify(this.tetris.nextTetriminos))
+      this.next = JSON.parse(JSON.stringify(this.tetris.next.list))
       this.hold = this.tetris.holdTetrimino
       this.isGameOver = this.tetris.isGameOver
       this.sleeping = this.tetris.sleeping
@@ -114,7 +114,7 @@ export default {
   beforeMount() {
     // タイミングの問題でここ
     // mountedだと遅すぎてエラーになる
-    this.next = this.tetris.nextTetriminos
+    this.next = this.tetris.next.list
   },
   mounted() {
     // 定期的再描画
