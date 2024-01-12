@@ -1,5 +1,5 @@
 import Tetrimino from "../Tetrimino";
-import {effectiveRoof} from "./Config"
+import { effectiveRoof } from "../Config";
 import Rotate from "../Rotate";
 
 export default class Tmino extends Tetrimino{
