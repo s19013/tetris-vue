@@ -113,8 +113,8 @@ export default class Tetris {
         this.saveCurrentPosition()
 
         // 落ちてくるブロックをフィールドに出現させる
-        this.moveTetrimino()
-        this.moveGhost()
+        this.reRenderTetrimino()
+        this.reRenderGhost()
 
     }
 
@@ -159,8 +159,8 @@ export default class Tetris {
             /** 位置を更新 */
             for (let block of this.tetrimino.Coordinate) { block.x -= 1 }
 
-            this.moveTetrimino()
-            this.moveGhost()
+            this.reRenderTetrimino()
+            this.reRenderGhost()
         }
     }
 
@@ -175,8 +175,8 @@ export default class Tetris {
             /** 位置を更新 */
             for (let block of this.tetrimino.Coordinate) { block.x += 1 }
 
-            this.moveTetrimino()
-            this.moveGhost()
+            this.reRenderTetrimino()
+            this.reRenderGhost()
         }
     }
 
@@ -192,8 +192,8 @@ export default class Tetris {
             tetrimino:this.tetrimino
         })
 
-        this.moveTetrimino()
-        this.moveGhost()
+        this.reRenderTetrimino()
+        this.reRenderGhost()
     }
 
     keyDownJ(){
@@ -208,8 +208,8 @@ export default class Tetris {
             tetrimino:this.tetrimino
         })
 
-        this.moveTetrimino()
-        this.moveGhost()
+        this.reRenderTetrimino()
+        this.reRenderGhost()
 
     }
 
@@ -252,12 +252,12 @@ export default class Tetris {
         this.ghost = lodash.cloneDeep(this.tetrimino);
 
         this.holdLock = true
-        this.moveTetrimino()
-        this.moveGhost()
+        this.reRenderTetrimino()
+        this.reRenderGhost()
     }
 
     droppingTheBlock(){
-        // このロジックmoveTetriminoに分けたほうがよい?
+        // このロジックreRenderTetriminoに分けたほうがよい?
 
         /** 動かせないなら固定化する 
          *  下記のコードは自動落下用
@@ -280,8 +280,8 @@ export default class Tetris {
             block.y += 1
         }
 
-        // this.moveGhost() 重くなるしほぼ意味ない
-        this.moveTetrimino()
+        // this.reRenderGhost() 重くなるしほぼ意味ない
+        this.reRenderTetrimino()
     }
 
     hardDrop(){
@@ -294,14 +294,14 @@ export default class Tetris {
         // ゴーストの位置に移動する
         this.tetrimino = lodash.cloneDeep(this.ghost);
 
-        this.moveTetrimino()
-        this.moveGhost()
+        this.reRenderTetrimino()
+        this.reRenderGhost()
 
         // 固定化
         this.immobilization()
     }
 
-    moveTetrimino(){
+    reRenderTetrimino(){
         /** 古い場所のブロックを消して */
         for (let block of this.oldTetrimino.Coordinate) {
             this.Field[block.y][block.x].isFill = false
@@ -319,7 +319,7 @@ export default class Tetris {
         }
     }
 
-    moveGhost(){
+    reRenderGhost(){
         /** 古い場所のゴーストを消して */
         this.Field = Utils.undisplayGhost({Field:this.Field,ghost:this.oldGhost})
 
