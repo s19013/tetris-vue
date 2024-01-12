@@ -27,7 +27,7 @@ export default class Imino extends Tetrimino{
         }
         // テトリミノが横の時
         else {
-            this.Coordinate = rotate.counterClockwise({
+            this.Coordinate = rotate.clockwise({
                 clonedField:clonedField,
                 Coordinate:this.Coordinate,
                 rotationPoint:2
@@ -47,7 +47,7 @@ export default class Imino extends Tetrimino{
         }
         // テトリミノが横の時
         else {
-            this.Coordinate = rotate.clockwise({
+            this.Coordinate = rotate.counterClockwise({
                 clonedField:clonedField,
                 Coordinate:this.Coordinate,
                 rotationPoint:1
