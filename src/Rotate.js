@@ -1,13 +1,12 @@
 import RotateCalculations from "./RotateCalculations";
 import PushOut from "./PushOut";
 import lodash from 'lodash';
+import checkCanMove from "./CheckCanMove";
 
 export default class Rotate {
 
-    constructor({
-        checkCanMove
-    }) {
-        this.checkCanMove = checkCanMove
+    constructor() {
+        this.checkCanMove = new checkCanMove()
         this.rotateCalculations = new RotateCalculations()
         this.pushOut = new PushOut()
     }
