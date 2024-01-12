@@ -1,28 +1,28 @@
-import Tetrimino from "../Tetrimino";
+import Tetrimino from "./Tetrimino";
 import { effectiveRoof } from "../Config";
 
 export default class Omino extends Tetrimino{
     constructor() {
         super({
-            type:"L",
-            Cordinate:[
+            type:"O",
+            Coordinate:[
+                {x:4,y:effectiveRoof },
+                {x:4,y:effectiveRoof + 1},
                 {x:5,y:effectiveRoof },
                 {x:5,y:effectiveRoof + 1},
-                {x:4,y:effectiveRoof + 1},
-                {x:3,y:effectiveRoof + 1},
             ]
         })
     }
 
     // 回転する必要がないから即return
-    // 使わないけど全員Fieldを引数として受け取るから受け取っとく
-    clockwise(Field){
+    // 使わないけど全員clonedFieldを引数として受け取るから受け取っとく
+    clockwise(clonedField){
         return
     }
 
     // 回転する必要がないから即return
-    // 使わないけど全員Fieldを引数として受け取るから受け取っとく
-    counterClockwise(Field){
+    // 使わないけど全員clonedFieldを引数として受け取るから受け取っとく
+    counterClockwise(clonedField){
         return 
     }
 }

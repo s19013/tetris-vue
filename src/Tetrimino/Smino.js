@@ -1,4 +1,4 @@
-import Tetrimino from "../Tetrimino";
+import Tetrimino from "./Tetrimino";
 import { effectiveRoof } from "../Config";
 import Rotate from "../Rotate";
 
@@ -6,7 +6,7 @@ export default class Smino extends Tetrimino{
     constructor() {
         super({
             type:"S",
-            Cordinate:[
+            Coordinate:[
                 {x:5,y:effectiveRoof },
                 {x:4,y:effectiveRoof },
                 {x:4,y:effectiveRoof + 1},
@@ -15,20 +15,20 @@ export default class Smino extends Tetrimino{
         })
     }
 
-    clockwise(Field){
+    clockwise(clonedField){
         const rotate = new Rotate()
-        this.Cordinate = rotate.clockwise({
-            Field:Field,
-            Cordinate:this.Cordinate,
+        this.Coordinate = rotate.clockwise({
+            clonedField:clonedField,
+            Coordinate:this.Coordinate,
             rotationPoint:1
         })
     }
 
-    counterClockwise(Field){
+    counterClockwise(clonedField){
         const rotate = new Rotate()
-        this.Cordinate = rotate.counterClockwise({
-            Field:Field,
-            Cordinate:this.Cordinate,
+        this.Coordinate = rotate.counterClockwise({
+            clonedField:clonedField,
+            Coordinate:this.Coordinate,
             rotationPoint:1
         })
     }

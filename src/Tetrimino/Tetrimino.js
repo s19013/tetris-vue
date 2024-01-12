@@ -8,7 +8,7 @@ export default class Tetrimino {
 
     moveRight(){ for (let block of this.Coordinate) { block.x += 1 } }
 
-    moveDown(){ for (let block of this.tetrimino.Coordinate) {block.y += 1} }
+    moveDown(){ for (let block of this.Coordinate) {block.y += 1} }
 
     /** 時計周り回転 */
     // clockwise(Field){}

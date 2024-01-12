@@ -1,4 +1,4 @@
-import Tetrimino from "../Tetrimino";
+import Tetrimino from "./Tetrimino";
 import { effectiveRoof } from "../Config";
 import Rotate from "../Rotate";
 
@@ -6,7 +6,7 @@ export default class Imino extends Tetrimino{
     constructor() {
         super({
             type:"I",
-            Cordinate:[
+            Coordinate:[
                 {x:3,y:effectiveRoof + 1},
                 {x:4,y:effectiveRoof + 1},
                 {x:5,y:effectiveRoof + 1},
@@ -15,41 +15,41 @@ export default class Imino extends Tetrimino{
         })
     }
 
-    clockwise(Field){
+    clockwise(clonedField){
         const rotate = new Rotate()
         // テトリミノが縦の時
-        if (this.Cordinate[0].x == this.Cordinate[1].x) {
-            this.Cordinate = rotate.clockwise({
-                Field:Field,
-                Cordinate:this.Cordinate,
+        if (this.Coordinate[0].x == this.Coordinate[1].x) {
+            this.Coordinate = rotate.clockwise({
+                clonedField:clonedField,
+                Coordinate:this.Coordinate,
                 rotationPoint:1
             })
         }
         // テトリミノが横の時
         else {
-            this.Cordinate = rotate.counterClockwise({
-                Field:Field,
-                Cordinate:this.Cordinate,
+            this.Coordinate = rotate.counterClockwise({
+                clonedField:clonedField,
+                Coordinate:this.Coordinate,
                 rotationPoint:2
             })
         }
     }
 
-    counterClockwise(Field){
+    counterClockwise(clonedField){
         const rotate = new Rotate()
         // テトリミノが縦の時
-        if (this.Cordinate[0].x == this.Cordinate[1].x) {
-            this.Cordinate = rotate.counterClockwise({
-                Field:Field,
-                Cordinate:this.Cordinate,
+        if (this.Coordinate[0].x == this.Coordinate[1].x) {
+            this.Coordinate = rotate.counterClockwise({
+                clonedField:clonedField,
+                Coordinate:this.Coordinate,
                 rotationPoint:2
             })
         }
         // テトリミノが横の時
         else {
-            this.Cordinate = rotate.clockwise({
-                Field:Field,
-                Cordinate:this.Cordinate,
+            this.Coordinate = rotate.clockwise({
+                clonedField:clonedField,
+                Coordinate:this.Coordinate,
                 rotationPoint:1
             })
         }

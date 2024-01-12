@@ -1,13 +1,12 @@
 import RotateCalculations from "./RotateCalculations";
 import PushOut from "./PushOut";
 import lodash from 'lodash';
+import checkCanMove from "./CheckCanMove";
 
 export default class Rotate {
 
-    constructor({
-        checkCanMove
-    }) {
-        this.checkCanMove = checkCanMove
+    constructor() {
+        this.checkCanMove = new checkCanMove()
         this.rotateCalculations = new RotateCalculations()
         this.pushOut = new PushOut()
     }
@@ -16,13 +15,13 @@ export default class Rotate {
     // 回転軸さえいじればtスピン行けそう
 
     /**
-     * @param Field 今現在のフィールド
-     * @param Cordinate 回転の方向
+     * @param clonedField 今現在のフィールド
+     * @param Coordinate 回転の方向
      * @param rotationPoint 今のブロックの状態
      */
     clockwise({
-        Field,
-        Cordinate
+        clonedField,
+        Coordinate,
         rotationPoint
     }){
         // 色々回してみてシュミレーションしていく
@@ -41,7 +40,7 @@ export default class Rotate {
         /** 回転したブロックが壁や床､既存のブロックと被っているかどうか調べる */
         try {
             tentativeCoordinate = this.checkIfThereIsACoveredBlock({
-                Field:Field,
+                clonedField:clonedField,
                 tetriminoCoordinate:tentativeCoordinate,
                 rotationIndex:rotationPoint
             })
@@ -50,18 +49,17 @@ export default class Rotate {
             /** エラーが起きた
              * つまり回せなかったのでそのまま帰す 
              */
-            return tetrimino
+            return Coordinate
         }
 
-        /** 位置を更新 */
-        Coordinate = tentativeCoordinate
-
-        return Cordinate
+        /** シミュレーションした位置を返す */
+        return tentativeCoordinate
     }
 
     counterClockwise({
-        Field,
-        tetrimino
+        clonedField,
+        Coordinate,
+        rotationPoint
     }){
         let tentativeCoordinate = null
 
@@ -75,7 +73,7 @@ export default class Rotate {
         /** 回転したブロックが壁や床､既存のブロックと被っているかどうか調べる */
         try {
             tentativeCoordinate = this.checkIfThereIsACoveredBlock({
-                Field:Field,
+                clonedField:clonedField,
                 tetriminoCoordinate:tentativeCoordinate,
                 rotationIndex:rotationPoint
             })
@@ -84,25 +82,23 @@ export default class Rotate {
             /** エラーが起きた
              * つまり回せなかったのでそのまま帰す 
              */
-            return tetrimino
+            return Coordinate
         }
 
-        /** 位置を更新 */
-        Coordinate = tentativeCoordinate
-
-        return Cordinate
+        /** シミュレーションした位置を返す */
+        return tentativeCoordinate
     }
 
     /** すでにおいているぶつかるようだったらちょっと移動する
      *  すでにおいてあるブロックとかぶらないか確認と被っていた時の処理
      *  絶対に回せない状況ではないことは別の関数で証明された
      * 
-     * @param Field 今現在のフィールド
+     * @param clonedField 今現在のフィールド
      * @param tetriminoCoordinate ブロックの座標
      * @param rotationPoint 回転軸
      */
     checkIfThereIsACoveredBlock({
-        Field,
+        clonedField,
         tetriminoCoordinate,
         rotationIndex,
     }){
@@ -113,7 +109,7 @@ export default class Rotate {
 
         // 主に下にずらすパターン
         let shiftedDown = this.shiftToDown({
-            Field:lodash.cloneDeep(Field),
+            clonedField:lodash.cloneDeep(clonedField),
             tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
             rotationIndex:rotationIndex
         })
@@ -125,9 +121,9 @@ export default class Rotate {
 
         let noProblem = true
         for (let tentativeBlock of tentativeCoordinate) {
-            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+            if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
+                clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false
             ) { noProblem = false }
         }
 
@@ -135,7 +131,7 @@ export default class Rotate {
         
         // 強引に更にもう一度する
         shiftedDown = this.shiftToDown({
-            Field:lodash.cloneDeep(Field),
+            clonedField:lodash.cloneDeep(clonedField),
             tetriminoCoordinate:lodash.cloneDeep(tentativeCoordinate), //編集したやつを入れる
             rotationIndex:rotationIndex
         })
@@ -150,16 +146,16 @@ export default class Rotate {
 
         noProblem = true
         for (let tentativeBlock of tentativeCoordinate) {
-            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+            if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
+                clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false
             ) { noProblem = false }
         }
 
         if (noProblem) { return tentativeCoordinate }
 
         let shiftedUp = this.shiftToUp({
-            Field:lodash.cloneDeep(Field),
+            clonedField:lodash.cloneDeep(clonedField),
             tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
             rotationIndex:rotationIndex
         })
@@ -168,9 +164,9 @@ export default class Rotate {
 
         // ここまで来てだめな場合は回せなかったってこと
         for (let tentativeBlock of tentativeCoordinate) {
-            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+            if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false
+                clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false
             ) {
                 /** 被っている状態 
                  *  本来なら回せない状態だったということので処理を中断させる
@@ -184,24 +180,24 @@ export default class Rotate {
     }
 
     shiftToUp({
-        Field,
+        clonedField,
         tetriminoCoordinate,
         rotationIndex,
     }){
         // 上下確認
-        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate)
+        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheclonedField(tetriminoCoordinate)
 
         // 左右確認
-        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftUp({
-            Field:lodash.cloneDeep(Field),
+        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheclonedField_shiftUp({
+            clonedField:lodash.cloneDeep(clonedField),
             tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate)
         })
         /** おいてあるブロックと被っているようなら移動する  */
         for (let tentativeBlock of tetriminoCoordinate) {
             try {
-                if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+                if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
                     &&
-                    Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+                    clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
     
                     let rotationPoint = tetriminoCoordinate[rotationIndex]
                     // 途中で計算式が狂わないように変数に保存しておく
@@ -225,11 +221,11 @@ export default class Rotate {
         }
 
         // もう一度上下確認
-        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate)
+        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheclonedField(tetriminoCoordinate)
 
         // もう一度左右確認
-        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftUp({
-            Field:lodash.cloneDeep(Field),
+        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheclonedField_shiftUp({
+            clonedField:lodash.cloneDeep(clonedField),
             tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate)
         })
 
@@ -237,25 +233,25 @@ export default class Rotate {
     }
 
     shiftToDown({
-        Field,
+        clonedField,
         tetriminoCoordinate,
         rotationIndex,
     }){
         // 上下確認
-        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate)
+        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheclonedField(tetriminoCoordinate)
 
         // 左右確認
-        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftDown({
-            Field:lodash.cloneDeep(Field),
+        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheclonedField_shiftDown({
+            clonedField:lodash.cloneDeep(clonedField),
             tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate)
         })
         
         /** おいてあるブロックと被っているようなら移動する  */
         for (let tentativeBlock of tetriminoCoordinate) {
             try {
-                if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+                if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
                     &&
-                    Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+                    clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
     
                     let rotationPoint = tetriminoCoordinate[rotationIndex]
                     // 途中で計算式が狂わないように変数に保存しておく
@@ -279,11 +275,11 @@ export default class Rotate {
         }
 
         // もう一度上下確認
-        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate)
+        tetriminoCoordinate = this.ReturnTheTopAndBottomOverhangingBlocksToTheclonedField(tetriminoCoordinate)
 
         // もう一度左右確認
-        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftDown({
-            Field:lodash.cloneDeep(Field),
+        tetriminoCoordinate = this.ReturnTheLeftAndRightOverhangingBlocksToTheclonedField_shiftDown({
+            clonedField:lodash.cloneDeep(clonedField),
             tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate)
         })
 
@@ -291,7 +287,7 @@ export default class Rotate {
     }
 
     // 天井と床からおし出す
-    ReturnTheTopAndBottomOverhangingBlocksToTheField(tetriminoCoordinate){
+    ReturnTheTopAndBottomOverhangingBlocksToTheclonedField(tetriminoCoordinate){
         /** 天井 */
         tetriminoCoordinate = this.pushOut.FromTheFloor(lodash.cloneDeep(tetriminoCoordinate))
 
@@ -302,8 +298,8 @@ export default class Rotate {
     }
 
     // 左右の壁から出して上にずらす
-    ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftUp({
-        Field,
+    ReturnTheLeftAndRightOverhangingBlocksToTheclonedField_shiftUp({
+        clonedField,
         tetriminoCoordinate
     }){
         /** 左の壁 */
@@ -316,7 +312,7 @@ export default class Rotate {
         /** 壁から出したあとにおいてあるブロックと被っていたら1つ上げる */
         if (hidarikabe.moved) {
             tetriminoCoordinate= this.MoveVerticallyFromCoveringBlock({
-                Field:lodash.cloneDeep(Field),
+                clonedField:lodash.cloneDeep(clonedField),
                 tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
                 amountOfMoveY:-1
             })
@@ -332,7 +328,7 @@ export default class Rotate {
         /** 壁から出したあとにおいてあるブロックと被っていたら1つ上げる */
         if (migikabe.moved) {
             tetriminoCoordinate = this.MoveVerticallyFromCoveringBlock({
-                Field:lodash.cloneDeep(Field),
+                clonedField:lodash.cloneDeep(clonedField),
                 tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
                 amountOfMoveY:-1
             })
@@ -342,8 +338,8 @@ export default class Rotate {
     }
 
     // 左右の壁から出して下にずらす
-    ReturnTheLeftAndRightOverhangingBlocksToTheField_shiftDown({
-            Field,
+    ReturnTheLeftAndRightOverhangingBlocksToTheclonedField_shiftDown({
+            clonedField,
             tetriminoCoordinate
         }){
         /** 左の壁 */
@@ -356,7 +352,7 @@ export default class Rotate {
         /** 壁から出したあとにおいてあるブロックと被っていたら1つ下げる */
         if (hidarikabe.moved) {
             tetriminoCoordinate= this.MoveVerticallyFromCoveringBlock({
-                Field:lodash.cloneDeep(Field),
+                clonedField:lodash.cloneDeep(clonedField),
                 tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
                 amountOfMoveY:1
             })
@@ -372,7 +368,7 @@ export default class Rotate {
         /** 壁から出したあとにおいてあるブロックと被っていたら1つ下げる */
         if (migikabe.moved) {
             tetriminoCoordinate = this.MoveVerticallyFromCoveringBlock({
-                Field:lodash.cloneDeep(Field),
+                clonedField:lodash.cloneDeep(clonedField),
                 tetriminoCoordinate:lodash.cloneDeep(tetriminoCoordinate),
                 amountOfMoveY:1
             })
@@ -383,21 +379,21 @@ export default class Rotate {
 
     /**
      * X軸に移動させた座標を返す 
-     * @param  Field フィールドの状態
+     * @param  clonedField フィールドの状態
      * @param  tetriminoCoordinate ブロックの座標
      * @param  amountOfMoveX 移動量 
      * @returns ブロックの座標
      */
     MoveHorizontallyFromCoveringBlock({
-        Field,
+        clonedField,
         tetriminoCoordinate,
         amountOfMoveX
     }){
         let tentativeCoordinate = lodash.cloneDeep(tetriminoCoordinate);
         for (let tentativeBlock of tentativeCoordinate){
-            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+            if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+                clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
                 tentativeCoordinate.forEach(block => { block.x +=  amountOfMoveX});
             }
         }
@@ -407,20 +403,20 @@ export default class Rotate {
 
     /**
      * Y軸に移動させた座標を返す 
-     * @param  Field フィールドの状態
+     * @param  clonedField フィールドの状態
      * @param  tetriminoCoordinate ブロックの座標
      * @param  amountOfMoveY 移動量 
      * @returns ブロックの座標
      */
     MoveVerticallyFromCoveringBlock({
-        Field,
+        clonedField,
         tetriminoCoordinate,
         amountOfMoveY
     }){
         for (let tentativeBlock of tetriminoCoordinate){
-            if (Field[tentativeBlock.y][tentativeBlock.x].isFill == true
+            if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                Field[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+                clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
                 tetriminoCoordinate.forEach(block => { block.y +=  amountOfMoveY});
             }
         }
