@@ -4,7 +4,7 @@ import { effectiveRoof } from "../Config";
 export default class Omino extends Tetrimino{
     constructor() {
         super({
-            type:"L",
+            type:"O",
             Coordinate:[
                 {x:5,y:effectiveRoof },
                 {x:5,y:effectiveRoof + 1},
