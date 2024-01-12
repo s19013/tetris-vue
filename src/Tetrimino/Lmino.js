@@ -2,7 +2,7 @@ import Tetrimino from "../Tetrimino";
 import { effectiveRoof } from "../Config";
 import Rotate from "../Rotate";
 
-export default class Jmino extends Tetrimino{
+export default class Lmino extends Tetrimino{
     constructor() {
         super({
             type:"L",
