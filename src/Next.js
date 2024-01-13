@@ -8,8 +8,7 @@ import Jmino from "./Tetrimino/Jmino.js";
 
 export default class Next{
     constructor(){
-        // あらかじめ2週分用意しとく
-        this.list = [...this.getShuffledArray(),...this.getShuffledArray()]
+        this.list = this.getShuffledArray()
     }
 
     // initialize(){}
@@ -41,7 +40,8 @@ export default class Next{
     /** nextを補充するかどうか */
     checkWhetherToReplenish(){
         if (this.list.length < 7) {
-            this.list = [this.list,...this.getShuffledArray()]
+            // スプレッド構文ではエラーがでた｡why?
+            this.list = this.list.concat(this.getShuffledArray())
         }
     }
 }

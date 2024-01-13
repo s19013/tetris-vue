@@ -1,11 +1,19 @@
+import Imino from "./Tetrimino/Imino.js";
+import Tmino from "./Tetrimino/Tmino.js";
+import Omino from "./Tetrimino/Omino.js";
+import Smino from "./Tetrimino/Smino.js";
+import Zmino from "./Tetrimino/Zmino.js";
+import Lmino from "./Tetrimino/Lmino.js";
+import Jmino from "./Tetrimino/Jmino.js";
+
 import Block from "./Block"
 import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
-import Tetrimino from "./Tetrimino"
-import {levelConfig} from "./Level.js"
-import {fieldWidth,fieldHeight,effectiveRoof} from "./Config"
+import Next, {} from "./Next.js"
 import Score from "./Score.js"
 import * as Utils from  './TetrisUtils'
+import {levelConfig} from "./Level.js"
+import {fieldWidth,fieldHeight} from "./Config"
 import lodash from 'lodash';
 
 // 時間に関する数字は全部ミリ秒
@@ -36,7 +44,8 @@ export default class Tetris {
         checkCanMove:this.checkCanMove
     })
 
-    tetriminoFactory = new Tetrimino(effectiveRoof)
+    /** nextテトリミノ達 */
+    next = new Next()
 
     score = new Score()
 
@@ -52,18 +61,15 @@ export default class Tetris {
     /** お邪魔が発動するまでのカウントダウン */
     ojyamaCountDown = this.ojyamaInterval
 
-    /** nextテトリミノ達 */
-    nextTetriminos = []
-
     /** ホールド */
     holdTetrimino = "none"
     holdLock = false
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
-    tetrimino = null;
+    tetrimino = null
 
     /** 動かす前のブロックの位置 */
-    oldTetrimino = structuredClone(this.tetrimino);
+    oldTetrimino = null
 
     isGameOver = false
 
@@ -93,11 +99,7 @@ export default class Tetris {
 
     /** ゲームスタートの処理 */
     gameStart(){
-        // 2巡分追加しないと行けないのでこうなった
-        let temp = this.tetriminoFactory.passSet()
-        this.nextTetriminos = temp.concat(this.tetriminoFactory.passSet())
-
-        this.startDropping(this.nextTetriminos.shift())
+        this.startDropping(this.next.getNextTetrimino())
         this.startInterval()
         this.startTimer()
         this.startOjyamaInterval()
@@ -157,7 +159,7 @@ export default class Tetris {
             this.saveCurrentPosition()
 
             /** 位置を更新 */
-            for (let block of this.tetrimino.Coordinate) { block.x -= 1 }
+            this.tetrimino.moveLeft()
 
             this.reRenderTetrimino()
             this.reRenderGhost()
@@ -173,7 +175,7 @@ export default class Tetris {
             this.saveCurrentPosition()
 
             /** 位置を更新 */
-            for (let block of this.tetrimino.Coordinate) { block.x += 1 }
+            this.tetrimino.moveRight()
 
             this.reRenderTetrimino()
             this.reRenderGhost()
@@ -183,14 +185,7 @@ export default class Tetris {
     keyDownL(){
         this.saveCurrentPosition()
 
-        /** Oミノはそもそも回さない */
-        if (this.tetrimino.type == "O") { return }
-
-        /** 回転した後の位置を更新 */
-        this.tetrimino = this.rotater.clockwise({
-            Field:lodash.cloneDeep(this.Field),
-            tetrimino:this.tetrimino
-        })
+        this.tetrimino.clockwise(lodash.cloneDeep(this.Field))
 
         this.reRenderTetrimino()
         this.reRenderGhost()
@@ -199,14 +194,7 @@ export default class Tetris {
     keyDownJ(){
         this.saveCurrentPosition()
 
-        /** Oミノはそもそも回さない */
-        if (this.tetrimino.type == "O") {return }
-
-        /** 回転した後の位置を更新 */
-        this.tetrimino = this.rotater.counterClockwise({
-            Field:lodash.cloneDeep(this.Field),
-            tetrimino:this.tetrimino
-        })
+        this.tetrimino.counterClockwise(lodash.cloneDeep(this.Field))
 
         this.reRenderTetrimino()
         this.reRenderGhost()
@@ -239,13 +227,13 @@ export default class Tetris {
         /** 最初のホールドだけ動きが違う */
         if (holded == "none") { this.dropNextTetrimino() }
         else {
-            if (holded == "O") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.O) }
-            else if (holded == "I") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.I) }
-            else if (holded == "T") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.T) }
-            else if (holded == "S") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.S) }
-            else if (holded == "Z") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.Z) }
-            else if (holded == "L") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.L) }
-            else if (holded == "J") { this.tetrimino = lodash.cloneDeep(this.tetriminoFactory.J) }
+            if (holded == "O") { this.tetrimino = new Omino() }
+            else if (holded == "I") { this.tetrimino = new Imino() }
+            else if (holded == "T") { this.tetrimino = new Tmino() }
+            else if (holded == "S") { this.tetrimino = new Smino() }
+            else if (holded == "Z") { this.tetrimino = new Zmino() }
+            else if (holded == "L") { this.tetrimino = new Lmino() }
+            else if (holded == "J") { this.tetrimino = new Lmino() }
         }
 
         // ゴーストも更新
@@ -276,9 +264,7 @@ export default class Tetris {
         this.saveCurrentPosition()
 
         /** 位置を更新 */
-        for (let block of this.tetrimino.Coordinate) {
-            block.y += 1
-        }
+        this.tetrimino.moveDown()
 
         // this.reRenderGhost() 重くなるしほぼ意味ない
         this.reRenderTetrimino()
@@ -314,7 +300,7 @@ export default class Tetris {
                 this.Field[block.y][block.x].isFill = true
                 this.Field[block.y][block.x].isMoving = true
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
         }
     }
@@ -462,13 +448,13 @@ export default class Tetris {
     /** 次のテトリミノを落とす */
     dropNextTetrimino(){
         /** 補充確認 */
-        this.shouldItReplenish()
+        this.next.checkWhetherToReplenish()
 
         /** ホールドのロックを解除 */
         this.holdLock = false
 
         /** 新しいブロックを落とす */
-        this.startDropping(this.nextTetriminos.shift())
+        this.startDropping(this.next.getNextTetrimino())
     }
 
     /** 列を削除する */
@@ -498,13 +484,6 @@ export default class Tetris {
     saveCurrentPosition(){
         this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
         this.oldGhost = lodash.cloneDeep(this.ghost);
-    }
-
-    /** nextを補充するかどうか */
-    shouldItReplenish(){
-        if (this.nextTetriminos.length < 7) {
-            this.nextTetriminos = this.nextTetriminos.concat(this.tetriminoFactory.passSet())
-        }
     }
 
     gameOver(){
