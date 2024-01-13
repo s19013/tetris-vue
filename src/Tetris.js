@@ -217,7 +217,7 @@ export default class Tetris {
         this.hold.lock()
 
         /** 最初だけは保存だけして次のテトリミノ落とす*/
-        if (tetriminoTakenOut.type == null) {
+        if (tetriminoTakenOut.type === null) {
             /** 新しいブロックを落とす */
             this.startDropping(this.next.getNextTetrimino())
         } else {
