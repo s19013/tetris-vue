@@ -25,14 +25,14 @@ export default class Hold {
         this.lock()
 
         // 最初だけはプロパティがnullのTetriminoクラスを返す
-        if (this.holdingTetrimino == null) {return this.tetrimino = new Tetrimino({type:null,Coordinate:null})}
-        if (this.holdingTetrimino == "O") { return this.tetrimino = new Omino() }
-        if (this.holdingTetrimino == "I") { return this.tetrimino = new Imino() }
-        if (this.holdingTetrimino == "T") { return this.tetrimino = new Tmino() }
-        if (this.holdingTetrimino == "S") { return this.tetrimino = new Smino() }
-        if (this.holdingTetrimino == "Z") { return this.tetrimino = new Zmino() }
-        if (this.holdingTetrimino == "L") { return this.tetrimino = new Lmino() }
-        if (this.holdingTetrimino == "J") { return this.tetrimino = new Jmino() }
+        if (this.holdingTetrimino == null) {return new Tetrimino({type:null,Coordinate:null})}
+        if (this.holdingTetrimino == "O") { return new Omino() }
+        if (this.holdingTetrimino == "I") { return new Imino() }
+        if (this.holdingTetrimino == "T") { return new Tmino() }
+        if (this.holdingTetrimino == "S") { return new Smino() }
+        if (this.holdingTetrimino == "Z") { return new Zmino() }
+        if (this.holdingTetrimino == "L") { return new Lmino() }
+        if (this.holdingTetrimino == "J") { return new Jmino() }
     }
 
     lock(){this.cannotHold = true}
