@@ -11,7 +11,6 @@ export default class Hold {
     constructor() {
         this.holding = null
         this.cannotHold = false
-        this.afterTheSecondTime = true
     }
 
     /** 保管 */
@@ -33,6 +32,4 @@ export default class Hold {
     lock(){this.cannotHold = true}
 
     resetCanHold(){ this.cannotHold = false}
-
-    doneFirst(){ this.afterTheSecondTime = false }
 }
