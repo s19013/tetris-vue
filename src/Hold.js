@@ -18,6 +18,10 @@ export default class Hold {
 
     /** 保管しているものを取り出す */
     takeOut(){
+        // ホールドに鍵をかける(取り出しができるのは1回だけ)
+        // わざわざ外から呼び出す必要がないからここで鍵をかける
+        this.lock()
+
         // 最初だけはプロパティがnullのTetriminoクラスを返す
         if (this.holding == null) {return this.tetrimino = new Tetrimino({type:null,Coordinate:null})}
         if (this.holding == "O") { return this.tetrimino = new Omino() }
@@ -31,5 +35,5 @@ export default class Hold {
 
     lock(){this.cannotHold = true}
 
-    resetCanHold(){ this.cannotHold = false}
+    unlock(){ this.cannotHold = false}
 }
