@@ -90,7 +90,7 @@ export default {
     reRender() {
       this.field = JSON.parse(JSON.stringify(this.tetris.Field))
       this.next = JSON.parse(JSON.stringify(this.tetris.next.list))
-      this.hold = this.tetris.hold.holding
+      this.hold = this.tetris.hold.holdingTetrimino
       this.isGameOver = this.tetris.isGameOver
       this.sleeping = this.tetris.sleeping
       this.score = this.tetris.score.score

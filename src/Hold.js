@@ -9,30 +9,33 @@ import Tetrimino from "./Tetrimino/Tetrimino.js";
 
 export default class Hold {
     constructor() {
-        this.holding = null
+        this.holdingTetrimino = null
         this.cannotHold = false
-        this.afterTheSecondTime = true
     }
 
     /** 保管 */
-    doHold(tetrimino) { this.holding = tetrimino.type }
+    doHold(tetrimino) {
+         this.holdingTetrimino = tetrimino.type 
+    }
 
     /** 保管しているものを取り出す */
     takeOut(){
+        // ホールドに鍵をかける(取り出しができるのは1回だけ)
+        // わざわざ外から呼び出す必要がないからここで鍵をかける
+        this.lock()
+
         // 最初だけはプロパティがnullのTetriminoクラスを返す
-        if (this.holding == null) {return this.tetrimino = new Tetrimino({type:null,Coordinate:null})}
-        if (this.holding == "O") { return this.tetrimino = new Omino() }
-        if (this.holding == "I") { return this.tetrimino = new Imino() }
-        if (this.holding == "T") { return this.tetrimino = new Tmino() }
-        if (this.holding == "S") { return this.tetrimino = new Smino() }
-        if (this.holding == "Z") { return this.tetrimino = new Zmino() }
-        if (this.holding == "L") { return this.tetrimino = new Lmino() }
-        if (this.holding == "J") { return this.tetrimino = new Jmino() }
+        if (this.holdingTetrimino == null) {return new Tetrimino({type:null,Coordinate:null})}
+        if (this.holdingTetrimino == "O") { return new Omino() }
+        if (this.holdingTetrimino == "I") { return new Imino() }
+        if (this.holdingTetrimino == "T") { return new Tmino() }
+        if (this.holdingTetrimino == "S") { return new Smino() }
+        if (this.holdingTetrimino == "Z") { return new Zmino() }
+        if (this.holdingTetrimino == "L") { return new Lmino() }
+        if (this.holdingTetrimino == "J") { return new Jmino() }
     }
 
-    rock(){this.cannotHold = true}
+    lock(){this.cannotHold = true}
 
-    resetCanHold(){ this.cannotHold = false}
-
-    doneFirst(){ this.afterTheSecondTime = false }
+    unlock(){ this.cannotHold = false}
 }

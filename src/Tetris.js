@@ -213,11 +213,8 @@ export default class Tetris {
         // 保存
         this.hold.doHold(this.tetrimino)
 
-        // ホールドに鍵をかける
-        this.hold.rock()
-
         /** 最初だけは保存だけして次のテトリミノ落とす*/
-        if (tetriminoTakenOut.type == null) {
+        if (tetriminoTakenOut.type === null) {
             /** 新しいブロックを落とす */
             this.startDropping(this.next.getNextTetrimino())
         } else {
@@ -433,7 +430,7 @@ export default class Tetris {
         this.next.checkWhetherToReplenish()
 
         /** ホールドのロックを解除 */
-        this.hold.resetCanHold()
+        this.hold.unlock()
 
         /** 新しいブロックを落とす */
         this.startDropping(this.next.getNextTetrimino())
