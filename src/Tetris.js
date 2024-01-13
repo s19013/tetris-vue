@@ -1,15 +1,8 @@
-import Imino from "./Tetrimino/Imino.js";
-import Tmino from "./Tetrimino/Tmino.js";
-import Omino from "./Tetrimino/Omino.js";
-import Smino from "./Tetrimino/Smino.js";
-import Zmino from "./Tetrimino/Zmino.js";
-import Lmino from "./Tetrimino/Lmino.js";
-import Jmino from "./Tetrimino/Jmino.js";
-
 import Block from "./Block"
 import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
-import Next, {} from "./Next.js"
+import Next from "./Next.js"
+import Hold from "./Hold.js"
 import Score from "./Score.js"
 import * as Utils from  './TetrisUtils'
 import {levelConfig} from "./Level.js"
@@ -49,6 +42,9 @@ export default class Tetris {
 
     score = new Score()
 
+    /** ホールド */
+    hold = new Hold()
+
     /** 放置してると勝手にブロックが落ちる感覚 */
     autoDropInterval = 2000 //ms
 
@@ -60,10 +56,6 @@ export default class Tetris {
 
     /** お邪魔が発動するまでのカウントダウン */
     ojyamaCountDown = this.ojyamaInterval
-
-    /** ホールド */
-    holdTetrimino = "none"
-    holdLock = false
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
     tetrimino = null
@@ -203,10 +195,8 @@ export default class Tetris {
 
     keyDownSpace(){
         // ロックがかかっていたら入れ替え不可
-        if (!this.holdLock) { this.hold() }
-    }
+        if (this.hold.cannotHold) { return  }
 
-    hold(){
         this.saveCurrentPosition()
 
         // 古い場所のブロックやゴーストを消しとく
@@ -218,30 +208,22 @@ export default class Tetris {
         }
 
         // ホールドしてるのを取り出す
-        let holded = this.holdTetrimino
+        let tetriminoTakenOut = this.hold.takeOut()
 
         // 保存
-        this.holdTetrimino = this.tetrimino.type
+        this.hold.doHold(this.tetrimino)
 
-        // swichだと長いのでひたすらifで良いと思う
-        /** 最初のホールドだけ動きが違う */
-        if (holded == "none") { this.dropNextTetrimino() }
-        else {
-            if (holded == "O") { this.tetrimino = new Omino() }
-            else if (holded == "I") { this.tetrimino = new Imino() }
-            else if (holded == "T") { this.tetrimino = new Tmino() }
-            else if (holded == "S") { this.tetrimino = new Smino() }
-            else if (holded == "Z") { this.tetrimino = new Zmino() }
-            else if (holded == "L") { this.tetrimino = new Lmino() }
-            else if (holded == "J") { this.tetrimino = new Lmino() }
+        // ホールドに鍵をかける
+        this.hold.rock()
+
+        /** 最初だけは保存だけして次のテトリミノ落とす*/
+        if (tetriminoTakenOut.type == null) {
+            /** 新しいブロックを落とす */
+            this.startDropping(this.next.getNextTetrimino())
+        } else {
+            // 取り出したのを落とす
+            this.startDropping(tetriminoTakenOut)
         }
-
-        // ゴーストも更新
-        this.ghost = lodash.cloneDeep(this.tetrimino);
-
-        this.holdLock = true
-        this.reRenderTetrimino()
-        this.reRenderGhost()
     }
 
     droppingTheBlock(){
@@ -451,7 +433,7 @@ export default class Tetris {
         this.next.checkWhetherToReplenish()
 
         /** ホールドのロックを解除 */
-        this.holdLock = false
+        this.hold.resetCanHold()
 
         /** 新しいブロックを落とす */
         this.startDropping(this.next.getNextTetrimino())
