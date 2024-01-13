@@ -9,7 +9,7 @@ import Jmino from "./Tetrimino/Jmino.js";
 import Block from "./Block"
 import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
-import Next, {} from "./Next.js"
+import Next from "./Next.js"
 import Score from "./Score.js"
 import * as Utils from  './TetrisUtils'
 import {levelConfig} from "./Level.js"
@@ -233,7 +233,7 @@ export default class Tetris {
             else if (holded == "S") { this.tetrimino = new Smino() }
             else if (holded == "Z") { this.tetrimino = new Zmino() }
             else if (holded == "L") { this.tetrimino = new Lmino() }
-            else if (holded == "J") { this.tetrimino = new Lmino() }
+            else if (holded == "J") { this.tetrimino = new Jmino() }
         }
 
         // ゴーストも更新
