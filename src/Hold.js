@@ -30,7 +30,7 @@ export default class Hold {
         if (this.holding == "J") { return this.tetrimino = new Jmino() }
     }
 
-    rock(){this.cannotHold = true}
+    lock(){this.cannotHold = true}
 
     resetCanHold(){ this.cannotHold = false}
 

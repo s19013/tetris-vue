@@ -214,7 +214,7 @@ export default class Tetris {
         this.hold.doHold(this.tetrimino)
 
         // ホールドに鍵をかける
-        this.hold.rock()
+        this.hold.lock()
 
         /** 最初だけは保存だけして次のテトリミノ落とす*/
         if (tetriminoTakenOut.type == null) {
