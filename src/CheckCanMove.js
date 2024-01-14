@@ -4,6 +4,7 @@ import {fieldWidth,fieldHeight} from "./Config"
 export default class checkCanMove {
     constructor() {
         // indexとかの関係で - 1する
+        // よくよく考えれば <= じゃなくて <を使えばわざわざこんなことする必要ないや｡
         this.fieldWidth   = fieldWidth - 1
         this.fieldHeight  = fieldHeight - 1;
     }
