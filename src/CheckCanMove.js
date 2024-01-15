@@ -32,10 +32,10 @@ export default class checkCanMove {
             /** 自分の左に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
-            if (Field[block.y][block.x - 1].isMoving) { continue }
+            if (Field.status[block.y][block.x - 1].isMoving) { continue }
 
             /** 自分の左にブロックがないか調べる */
-            if (Field[block.y][block.x - 1].isFill) { return false }
+            if (Field.status[block.y][block.x - 1].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
@@ -62,10 +62,10 @@ export default class checkCanMove {
             /** 自分の右に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
-            if (Field[block.y][block.x + 1].isMoving) { continue }
+            if (Field.status[block.y][block.x + 1].isMoving) { continue }
 
             /** 自分の右にブロックがないか調べる */
-            if (Field[block.y][block.x + 1].isFill) { return false }
+            if (Field.status[block.y][block.x + 1].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
@@ -92,10 +92,10 @@ export default class checkCanMove {
             /** 自分の下に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
-            if (Field[block.y + 1][block.x].isMoving) { continue }
+            if (Field.status[block.y + 1][block.x].isMoving) { continue }
 
             /** 自分の下にブロックがないか調べる */
-            if (Field[block.y + 1][block.x].isFill) { return false }
+            if (Field.status[block.y + 1][block.x].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
@@ -122,10 +122,10 @@ export default class checkCanMove {
             /** 自分の下に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
-            if (Field[block.y - 1][block.x].isMoving) { continue }
+            if (Field.status[block.y - 1][block.x].isMoving) { continue }
 
             /** 自分の上にブロックがないか調べる */
-            if (Field[block.y - 1][block.x].isFill) { return false }
+            if (Field.status[block.y - 1][block.x].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
