@@ -5,30 +5,36 @@ Tetris.jsやTetrisUtils.jsにあるおじゃま関連を外に書き出す｡
 
 # 引っ越しする変数や関数たち
 ## from Tetris.js
-* ~~ojyamaId~~
-* ~~ojyamaInterval~~
-* ~~ojyamaCountDown~~
-* ~~checkWhetherToExecuteOjyama~~
+* - [x] ojyamaId
+* - [x] ojyamaInterval
+* - [x] ojyamaCountDown
+* - [x] checkWhetherToExecuteOjyama()
+* - [x] startOjyamaInterval()
+* - [x] deleteOjyamaInterval()
 
 ## from TetrisUtils.js
-* createOjyama
-* insertOjyama
+* - [x] createOjyama()
+* - [x] insertOjyama()
 
 
 # 修正が必要な部分
+## to Ojyama.js
+ojyamaOOみたいなやつのojyama部分はとって良いな｡
 
 ## to Tetris.js
-* checkWhetherToExecuteOjyamaを削除(331行目)
-* checkWhetherToExecuteOjyamaの呼び出しかた変更(312行目)
+* - [x] 引っ越した変数､関数達を削除
+* - [x] ojyamaインスタンス作成
+* - [x] insertOjyamaを指示するコードを追加
+* - [x] sleeping関係をまとめて動かす関数
+
 
 ## to TetrisUtils.js
-createOjyama,insertOjyamaを削除
+* - [x] createOjyama,insertOjyamaを削除
+
+## to App.vue
+* - [x] `ojyamaCountDown`の参照先変えないと
 
 # 他追加で必要なこと
-sleepはTetris.jsにおいたままにする  
-だとすると､`sleep == true`の時インターバルを止める動作を中で作る必要がある?
 
 
 # その他コメント
-インターバル部分はtetris.jsのままで良いかな?  
--> インターバルは一旦後回しにしよう｡
