@@ -1,5 +1,5 @@
 // gameOverRuleっていうインターフェースがあると良いんだろうけどjsだからそんなの無い｡
-import {effectiveRoof} from "./Config"
+import {effectiveRoof} from "../Config"
 
 export default class Rule1{
     isGameOver(Field) {

@@ -1,4 +1,4 @@
-import {fieldWidth} from "./Config"
+import {fieldWidth} from "../Config"
 export default class Rule2{
     isGameOver(Field){
         // 一番上の天井 y = 0~1 の部分にブロックがあるかどうか
