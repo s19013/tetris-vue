@@ -18,7 +18,7 @@ export default {
       tetris: new Tetris(),
       field: [],
       next: [],
-      hold: null,
+      hold: '',
       isGameOver: false,
       sleeping: false,
       score: 0,
