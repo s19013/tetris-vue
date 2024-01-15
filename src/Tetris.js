@@ -11,9 +11,9 @@ import lodash from 'lodash';
 // 時間に関する数字は全部ミリ秒
 
 export default class Tetris {
-    autoDropIntervalId = null
-    timerId = null
-    ojyamaId = null
+    autoDropIntervalId = 0
+    timerId = 0
+    ojyamaId = 0
 
     level = 1
     countOfLinesVanished = 0
@@ -50,16 +50,16 @@ export default class Tetris {
     ojyamaCountDown = this.ojyamaInterval
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
-    tetrimino = null
+    tetrimino = {}
 
     /** 動かす前のブロックの位置 */
-    oldTetrimino = null
+    oldTetrimino = {}
 
     isGameOver = false
 
     // ゴースト
-    ghost = null
-    oldGhost = null
+    ghost = {}
+    oldGhost = {}
 
     constructor(){
         this.Field.generateField()
@@ -188,7 +188,7 @@ export default class Tetris {
         this.hold.doHold(this.tetrimino)
 
         /** 最初だけは保存だけして次のテトリミノ落とす*/
-        if (tetriminoTakenOut.type === null) {
+        if (tetriminoTakenOut.type === "none") {
             /** 新しいブロックを落とす */
             this.startDropping(this.next.getNextTetrimino())
         } else {

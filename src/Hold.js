@@ -9,7 +9,7 @@ import Tetrimino from "./Tetrimino/Tetrimino.js";
 
 export default class Hold {
     constructor() {
-        this.holdingTetrimino = null
+        this.holdingTetrimino = "none"
         this.cannotHold = false
     }
 
@@ -24,8 +24,8 @@ export default class Hold {
         // わざわざ外から呼び出す必要がないからここで鍵をかける
         this.lock()
 
-        // 最初だけはプロパティがnullのTetriminoクラスを返す
-        if (this.holdingTetrimino == null) {return new Tetrimino({type:null,Coordinate:null})}
+        // 最初だけはプロパティが"none"のTetriminoクラスを返す
+        if (this.holdingTetrimino == "none") {return new Tetrimino({type:"none",Coordinate:{}})}
         if (this.holdingTetrimino == "O") { return new Omino() }
         if (this.holdingTetrimino == "I") { return new Imino() }
         if (this.holdingTetrimino == "T") { return new Tmino() }

@@ -28,7 +28,7 @@ export default class Rotate {
         /** 実際にまわしてみた状態
          *  宣言なので今はコピーしただけの状態
          */
-        let tentativeCoordinate = null
+        let tentativeCoordinate = {}
 
         tentativeCoordinate = Coordinate.map(block => {
             return this.rotateCalculations.clockwise({
@@ -61,7 +61,7 @@ export default class Rotate {
         Coordinate,
         rotationPoint
     }){
-        let tentativeCoordinate = null
+        let tentativeCoordinate = {}
 
         tentativeCoordinate = Coordinate.map(block => {
             return this.rotateCalculations.counterClockwise({
