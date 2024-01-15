@@ -8,7 +8,7 @@ Tetris.jsやTetrisUtils.jsにあるおじゃま関連を外に書き出す｡
 * ~~ojyamaId~~
 * ~~ojyamaInterval~~
 * ~~ojyamaCountDown~~
-* checkWhetherToExecuteOjyama
+* ~~checkWhetherToExecuteOjyama~~
 
 ## from TetrisUtils.js
 * createOjyama
@@ -20,6 +20,9 @@ Tetris.jsやTetrisUtils.jsにあるおじゃま関連を外に書き出す｡
 ## to Tetris.js
 * checkWhetherToExecuteOjyamaを削除(331行目)
 * checkWhetherToExecuteOjyamaの呼び出しかた変更(312行目)
+
+## to TetrisUtils.js
+createOjyama,insertOjyamaを削除
 
 # 他追加で必要なこと
 sleepはTetris.jsにおいたままにする  
