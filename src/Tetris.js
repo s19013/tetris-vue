@@ -1,4 +1,5 @@
 import Field from "./Field.js"
+import Ojyama from "./Ojyama.js"
 import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
 import Next from "./Next.js"
@@ -8,13 +9,12 @@ import * as Utils from  './TetrisUtils'
 import {levelConfig} from "./Level.js"
 import lodash from 'lodash';
 
+
 // 時間に関する数字は全部ミリ秒
 
 export default class Tetris {
     autoDropIntervalId = 0
     timerId = 0
-    ojyamaId = 0
-
     level = 1
     countOfLinesVanished = 0
 
@@ -22,6 +22,8 @@ export default class Tetris {
 
     // new する奴ら
     Field = new Field()
+
+    ojyama = new Ojyama()
 
     checkCanMove = new CheckCanMove()
 
@@ -40,14 +42,8 @@ export default class Tetris {
     /** 放置してると勝手にブロックが落ちる感覚 */
     autoDropInterval = 2000 //ms
 
-    /** 下からせり上がるまでの時間 */
-    ojyamaInterval = 15000 //ms
-
     /** ゲームを初めてからの時間 */
     time = 0
-
-    /** お邪魔が発動するまでのカウントダウン */
-    ojyamaCountDown = this.ojyamaInterval
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
     tetrimino = {}
@@ -72,7 +68,7 @@ export default class Tetris {
         this.startDropping(this.next.getNextTetrimino())
         this.startInterval()
         this.startTimer()
-        this.startOjyamaInterval()
+        this.ojyama.startInterval()
     }
 
     /** ブロックを落とし始める */
@@ -297,9 +293,9 @@ export default class Tetris {
             this.Field.EnableLined()
 
             // 演出の関係上一旦処理を止める
-            this.sleeping = true
+            this.enableSleeping()
             await Utils.sleep(800) 
-            this.sleeping = false
+            this.disableSleeping()
 
             /** 揃っている列を消す */
             this.Field.vanishAlignedRows()
@@ -308,8 +304,10 @@ export default class Tetris {
             this.calculateLevel()
         }
 
-        /** おじゃまを発動できるか調べる */
-        this.checkWhetherToExecuteOjyama()
+        /** おじゃまを発動できるか調べて実行 */
+        if (this.ojyama.checkWhetherToExecuteOjyama()) {
+            this.Field = this.ojyama.insertOjyama(this.Field)
+        }
 
         /** ゲームオーバーになっているかどうか調べる */
         // trueが帰ってきたら､次のテトリミノを落とさない
@@ -324,19 +322,7 @@ export default class Tetris {
         const currentLevel = levelConfig.find(config => this.countOfLinesVanished >= config.threshold);
         this.level = currentLevel.level
         this.autoDropInterval = currentLevel.autoDropInterval
-        this.ojyamaInterval = currentLevel.ojyamaInterval
-    }
-
-    /** お邪魔を実行するか確認 */
-    checkWhetherToExecuteOjyama(){
-        if (this.ojyamaCountDown <= 0) {
-            // お邪魔発動 
-            // シミュレートしないから直接入れて大丈夫なはず
-            this.Field = Utils.insertOjyama(this.Field)
-
-            // 時間再設定
-            this.ojyamaCountDown = this.ojyamaInterval
-        }
+        this.ojyama.predeterminedTimeSetter(currentLevel.ojyamaInterval)
     }
 
     /** ゲームオーバーになってないか確認 */
@@ -375,21 +361,10 @@ export default class Tetris {
         // タイマー止める
         this.stopTimer()
         this.deleteInterval()
-        this.deleteOjyamaInterval()
+        this.ojyama.deleteInterval()
 
         // スコア集計
         this.score.addScore(this.time * this.level)
-    }
-
-    startOjyamaInterval(){
-        this.ojyamaId = setInterval(() => {
-            if(this.sleeping){ return }
-            this.ojyamaCountDown -= 100 //ms
-        },100)
-    }
-
-    deleteOjyamaInterval(){
-        clearInterval(this.ojyamaId)
     }
 
     startTimer(){
@@ -414,5 +389,14 @@ export default class Tetris {
     resetInterval(){
         this.deleteInterval()
         this.startInterval()
+    }
+
+    enableSleeping(){
+        this.sleeping = true
+        this.ojyama.enableSleeping()
+    }
+    disableSleeping(){
+        this.sleeping = false
+        this.ojyama.disableSleeping()
     }
 }

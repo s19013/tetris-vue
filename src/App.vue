@@ -100,7 +100,7 @@ export default {
       this.level = this.tetris.level
       this.countOfLinesVanished = this.tetris.countOfLinesVanished
       this.timer = this.tetris.time
-      this.ojyamaCountDown = this.tetris.ojyamaCountDown
+      this.ojyamaCountDown = this.tetris.ojyama.countDown
     }
   },
   computed: {
