@@ -2,9 +2,9 @@ import Block from "./Block"
 import {fieldWidth,fieldHeight} from "./Config"
 import lodash from 'lodash';
 export default class Field {
-    constructor(status = []) {
+    constructor() {
         /** フィールド自体の状態 */
-        this.status = status
+        this.status = []
         /** 各列の状態 埋まっているブロックの数 */
         this.rowStatus = []
 
@@ -35,6 +35,9 @@ export default class Field {
 
     /** 各列が何マス埋まっているのか確認する */
     updateRowStatus(){
+        // 一番最初の時は空だから飛ばす必要がある
+        if (this.status.length == 0) { return }
+
         for (let index = 0; index < fieldHeight; index++) {
             /** 配列の中身を全部足す */
             this.rowStatus[index] = this.status[index].reduce((a,b) => {
@@ -43,6 +46,14 @@ export default class Field {
         }
     }
     
+    // 揃っている行を数える
+    countAlignedRows(){
+        return this.rowStatus.reduce((count,status)=>{
+            // 要素がフィールド幅と一緒だった時 -> 1列に全部埋まっている時
+            if(status == fieldWidth){ count += 1 } 
+            return count
+        }, 0)
+    }
 
     /** 列を削除する */
     vanishAlignedRows(){
@@ -108,9 +119,9 @@ export default class Field {
     }
 
     /** 動かしているテトリミノを固定化する */
-    immobilization(){
+    immobilization(tetrimino){
         // movingを外して固定化(動かせなく)する
-        for (let block of this.tetrimino.Coordinate) {
+        for (let block of tetrimino.Coordinate) {
             this.status[block.y][block.x].isMoving = false
         }
     }
@@ -119,3 +130,4 @@ export default class Field {
 // baseLineが便利な時
 // 一番最初のフィールド生成する時ぐらいか?
 // わざわざreturn new Field(this.status)しなくてもいいよね
+// 一回わざとreturn する方法しないで､ブランチ切ってからやってみるか｡
