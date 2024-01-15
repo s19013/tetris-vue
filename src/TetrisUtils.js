@@ -1,28 +1,6 @@
-import Block from "./Block"
 import {fieldWidth,effectiveRoof} from "./Config"
-import lodash from 'lodash';
-export function createOjyama(){
-    let hole = Math.floor(Math.random() * fieldWidth)
 
-    let line = []
-    for (let n = 0; n < fieldWidth; n++) {
-        if (hole == n) { line.push(new Block()) }
-        else {line.push(new Block(true))}
-    }
 
-    return line
-}
-
-export function insertOjyama(Field){
-    /** 一番上を消してしまう 
-     * 縦のマス数が増えないように
-    */
-    Field.status.shift();
-
-    // お邪魔の列を一番うしろに消す
-    Field.status.push(lodash.cloneDeep(createOjyama()))
-    return Field
-}
 
 // ゲームオーバー条件1
 export function gameOverCondition1(Field){
