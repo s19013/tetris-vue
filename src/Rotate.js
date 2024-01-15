@@ -121,9 +121,9 @@ export default class Rotate {
 
         let noProblem = true
         for (let tentativeBlock of tentativeCoordinate) {
-            if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
+            if (clonedField.status[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false
+                clonedField.status[tentativeBlock.y][tentativeBlock.x].isMoving == false
             ) { noProblem = false }
         }
 
@@ -146,9 +146,9 @@ export default class Rotate {
 
         noProblem = true
         for (let tentativeBlock of tentativeCoordinate) {
-            if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
+            if (clonedField.status[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false
+                clonedField.status[tentativeBlock.y][tentativeBlock.x].isMoving == false
             ) { noProblem = false }
         }
 
@@ -164,9 +164,9 @@ export default class Rotate {
 
         // ここまで来てだめな場合は回せなかったってこと
         for (let tentativeBlock of tentativeCoordinate) {
-            if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
+            if (clonedField.status[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false
+                clonedField.status[tentativeBlock.y][tentativeBlock.x].isMoving == false
             ) {
                 /** 被っている状態 
                  *  本来なら回せない状態だったということので処理を中断させる
@@ -195,9 +195,9 @@ export default class Rotate {
         /** おいてあるブロックと被っているようなら移動する  */
         for (let tentativeBlock of tetriminoCoordinate) {
             try {
-                if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
+                if (clonedField.status[tentativeBlock.y][tentativeBlock.x].isFill == true
                     &&
-                    clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+                    clonedField.status[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
     
                     let rotationPoint = tetriminoCoordinate[rotationIndex]
                     // 途中で計算式が狂わないように変数に保存しておく
@@ -249,9 +249,9 @@ export default class Rotate {
         /** おいてあるブロックと被っているようなら移動する  */
         for (let tentativeBlock of tetriminoCoordinate) {
             try {
-                if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
+                if (clonedField.status[tentativeBlock.y][tentativeBlock.x].isFill == true
                     &&
-                    clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+                    clonedField.status[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
     
                     let rotationPoint = tetriminoCoordinate[rotationIndex]
                     // 途中で計算式が狂わないように変数に保存しておく
@@ -391,9 +391,9 @@ export default class Rotate {
     }){
         let tentativeCoordinate = lodash.cloneDeep(tetriminoCoordinate);
         for (let tentativeBlock of tentativeCoordinate){
-            if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
+            if (clonedField.status[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+                clonedField.status[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
                 tentativeCoordinate.forEach(block => { block.x +=  amountOfMoveX});
             }
         }
@@ -414,9 +414,9 @@ export default class Rotate {
         amountOfMoveY
     }){
         for (let tentativeBlock of tetriminoCoordinate){
-            if (clonedField[tentativeBlock.y][tentativeBlock.x].isFill == true
+            if (clonedField.status[tentativeBlock.y][tentativeBlock.x].isFill == true
                 &&
-                clonedField[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
+                clonedField.status[tentativeBlock.y][tentativeBlock.x].isMoving == false) {
                 tetriminoCoordinate.forEach(block => { block.y +=  amountOfMoveY});
             }
         }

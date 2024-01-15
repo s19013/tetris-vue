@@ -4,6 +4,7 @@ import Field from './components/Field.vue'
 import Next from './components/Next.vue'
 import Hold from './components/Hold.vue'
 import GameEnd from './components/GameEnd.vue'
+import lodash from 'lodash'
 
 export default {
   components: {
@@ -88,8 +89,8 @@ export default {
       this.reRender()
     },
     reRender() {
-      this.field = JSON.parse(JSON.stringify(this.tetris.Field))
-      this.next = JSON.parse(JSON.stringify(this.tetris.next.list))
+      this.field = lodash.cloneDeep(this.tetris.Field.status)
+      this.next = lodash.cloneDeep(this.tetris.next.list)
       this.hold = this.tetris.hold.holdingTetrimino
       this.isGameOver = this.tetris.isGameOver
       this.sleeping = this.tetris.sleeping

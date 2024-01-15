@@ -1,4 +1,4 @@
-import Block from "./Block"
+import Field from "./Field.js"
 import CheckCanMove from "./CheckCanMove"
 import Rotate from "./Rotate"
 import Next from "./Next.js"
@@ -6,14 +6,11 @@ import Hold from "./Hold.js"
 import Score from "./Score.js"
 import * as Utils from  './TetrisUtils'
 import {levelConfig} from "./Level.js"
-import {fieldWidth,fieldHeight} from "./Config"
 import lodash from 'lodash';
 
 // 時間に関する数字は全部ミリ秒
 
 export default class Tetris {
-    Field = []
-
     autoDropIntervalId = null
     timerId = null
     ojyamaId = null
@@ -23,13 +20,8 @@ export default class Tetris {
 
     sleeping = false
 
-    /** 各列の状態 埋まっているブロックの数 */
-    rowStatus = []
-
-    /** フィールドの横1列の基本の形 */
-    baseLine = []
-
     // new する奴ら
+    Field = new Field()
 
     checkCanMove = new CheckCanMove()
 
@@ -70,21 +62,7 @@ export default class Tetris {
     oldGhost = null
 
     constructor(){
-        // rowStatusを全部0で埋める
-        for (let index = 0; index < fieldHeight; index++) {
-            this.rowStatus.push(0)
-        }
-
-        /** 横1列を生成 */
-        // これを使えば毎度毎度1ブロックずつを生成する必要がなくなる
-        for (let n = 0; n < fieldWidth; n++) {
-            this.baseLine.push(new Block())
-        }
-
-        /** 縦を生成 */
-        for (let i = 0; i < fieldHeight; i++) {
-            this.Field.push(lodash.cloneDeep(this.baseLine))
-        }
+        this.Field.generateField()
 
         this.gameStart()
     }
@@ -199,13 +177,9 @@ export default class Tetris {
 
         this.saveCurrentPosition()
 
-        // 古い場所のブロックやゴーストを消しとく
-        this.Field = Utils.undisplayGhost({Field:this.Field,ghost:this.oldGhost})
-
-        for (let block of this.oldTetrimino.Coordinate) {
-            this.Field[block.y][block.x].isFill = false
-            this.Field[block.y][block.x].isMoving = false
-        }
+        // 古い場所のテトリミノやゴーストを消しとく
+        this.Field.undisplayTetrimino(this.oldTetrimino)
+        this.Field.undisplayGhost(this.oldGhost)
 
         // ホールドしてるのを取り出す
         let tetriminoTakenOut = this.hold.takeOut()
@@ -268,27 +242,17 @@ export default class Tetris {
 
     reRenderTetrimino(){
         /** 古い場所のブロックを消して */
-        for (let block of this.oldTetrimino.Coordinate) {
-            this.Field[block.y][block.x].isFill = false
-            this.Field[block.y][block.x].isMoving = false
-        }
+        this.Field.undisplayTetrimino(this.oldTetrimino)
 
         /** 新しい場所に描写 */
-        for (let block of this.tetrimino.Coordinate) {
-            try {
-                this.Field[block.y][block.x].isFill = true
-                this.Field[block.y][block.x].isMoving = true
-            } catch (error) {
-                console.error(error);
-            }
-        }
+        this.Field.displayTetrimino(this.tetrimino)
     }
 
     reRenderGhost(){
         /** 古い場所のゴーストを消して */
-        this.Field = Utils.undisplayGhost({Field:this.Field,ghost:this.oldGhost})
+        this.Field.undisplayGhost(this.oldGhost)
 
-        // ghostを動かす
+        // ghostを動かすための準備
         this.ghost = lodash.cloneDeep(this.tetrimino)
 
         // どこまでブロックを下ろせるか調べる
@@ -305,35 +269,24 @@ export default class Tetris {
             this.ghost.Coordinate[3].y += 1
         }
 
-
-        /** 新しい場所に描写 */
-        for (let block of this.ghost.Coordinate) {
-            this.Field[block.y][block.x].ghost = true
-        }
+        this.Field.displayGhost(this.ghost)
     }
 
     /** 動かしているブロックを固定化する */
     async immobilization(){
-        // movingを外して固定化(動かせなく)する
-        for (let block of this.tetrimino.Coordinate) {
-            this.Field[block.y][block.x].isMoving = false
-        }
+        this.Field.immobilization(this.tetrimino)
         
-        this.Field = Utils.undisplayGhost({Field:this.Field,ghost:this.ghost})
+        this.Field.undisplayGhost(this.ghost)
 
         this.ProcessingAfterImmobilization()
     }
 
     /** 固定化した後にする処理を全部まとめた */
     async ProcessingAfterImmobilization(){
-        this.updateRowStatus()
+        this.Field.updateRowStatus()
 
         /** 揃っているかを調べる */
-        let countOfAlignedRow = this.rowStatus.reduce((count,status)=>{
-            // 要素がフィールド幅と一緒だった時 -> 1列に全部埋まっている時
-            if(status == fieldWidth){ count += 1 } 
-            return count
-          }, 0)
+        let countOfAlignedRow = this.Field.countAlignedRows()
 
         /** 揃った列をスコアとして足す */
         this.score.calculation({
@@ -345,7 +298,7 @@ export default class Tetris {
         this.countOfLinesVanished += countOfAlignedRow
 
         if (countOfAlignedRow > 0) {
-            this.EnableLined()
+            this.Field.EnableLined()
 
             // 演出の関係上一旦処理を止める
             this.sleeping = true
@@ -353,7 +306,7 @@ export default class Tetris {
             this.sleeping = false
 
             /** 揃っている列を消す */
-            this.vanishAlignedRows()
+            this.Field.vanishAlignedRows()
 
             /** レベル計算 */
             this.calculateLevel()
@@ -368,26 +321,6 @@ export default class Tetris {
 
         // 次のテトリミノを落とす
         this.dropNextTetrimino()
-    }
-
-    /** 各列が何マス埋まっているのか確認する */
-    updateRowStatus(){
-        for (let index = 0; index < fieldHeight; index++) {
-            /** 配列の中身を全部足す */
-            this.rowStatus[index] = this.Field[index].reduce((a,b) => {
-                return a + Number(b.isFill);
-            },0);
-        }
-    }
-
-    // 揃っている列に色を塗る
-    EnableLined(){
-        for (let index = 0; index < fieldHeight; index++) {
-            // 揃っていたらlinedプロパティをtrueにする
-            if (this.rowStatus[index] == fieldWidth) { 
-                for (const block of this.Field[index]) { block.lined = true } 
-            }
-        }
     }
 
     // レベル計算
@@ -434,29 +367,6 @@ export default class Tetris {
 
         /** 新しいブロックを落とす */
         this.startDropping(this.next.getNextTetrimino())
-    }
-
-    /** 列を削除する */
-    vanishAlignedRows(){
-        // 4列以上揃うのはありえないのでループする最大の数を設定
-        for (let index = 0; index < 4; index++) {
-
-            // 全部埋まっている行を探す
-            let FoundedIndex = this.rowStatus.indexOf(fieldWidth)
-
-            // 見つからなかったら -1が帰ってくるのでそれ以外の値なら良い
-            if (FoundedIndex > -1) {
-                /** 揃った列自体を消してしまう */
-                this.Field.splice(FoundedIndex, 1);
-
-                /** 消した分だけ上に加える */
-                this.Field.unshift(lodash.cloneDeep(this.baseLine))
-
-                // rowStatusの情報が古いままだと同じindex番号を削除し続けてしまうから
-                // 列を削除したら都度更新する必要がある
-                this.updateRowStatus()
-            } else { break }
-        }
     }
 
     /** 今の位置を古い情報として保存 */
