@@ -1,5 +1,5 @@
 <script>
-import Tetris from '@/Tetris.js'
+import Tetris from '@/js/Tetris.js'
 import Field from './components/Field.vue'
 import Next from './components/Next.vue'
 import Hold from './components/Hold.vue'
