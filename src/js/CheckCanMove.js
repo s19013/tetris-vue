@@ -18,7 +18,7 @@ export default class checkCanMove {
         /** ブロックにぶつからないかどうか調べる
          *  左隣りにブロックがあるかどうか調べる
          *  自分が属するグループは除外しないとブロックが動かなくなる
-         *  前のif文でleftEdge ≠ 0だと証明できた
+         *  前のif文でブロックの位置 ≠ 0だと証明できた
          */
         
         for (let block of tetrimino.Coordinate ) {
