@@ -2,13 +2,6 @@ import {fieldWidth,fieldHeight} from "./Config"
 
 /** 動かせるかどうかチェック */
 export default class checkCanMove {
-    constructor() {
-        // indexとかの関係で - 1する
-        // よくよく考えれば <= じゃなくて <を使えばわざわざこんなことする必要ないや｡
-        this.fieldWidth   = fieldWidth - 1
-        this.fieldHeight  = fieldHeight - 1;
-    }
-
 
     left({Field,tetrimino}){
 
@@ -43,19 +36,22 @@ export default class checkCanMove {
     }
 
     right({Field,tetrimino}){
+        /** 右端 */
+        const rightEdge = fieldWidth - 1
+
         /** 壁にぶつからないか調べる 
-         *  右に動かすと壁にぶつかるということは今右端のブロックはx = this.fieldWidthの場所,もしくはそれよりも大きい場所にいることになる
+         *  右に動かすと壁にぶつかるということは今右端のブロックはx = this.rightEdgeの場所,もしくはそれよりも大きい場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
 
         for (let block of tetrimino.Coordinate) {
-            if (block.x >= this.fieldWidth) {return false}
+            if (block.x >= rightEdge) {return false}
         }
 
         /** ブロックにぶつからないかどうか調べる
          *  右隣りにブロックがあるかどうか調べる
          *  自分が属するグループは除外しないとブロックが動かなくなる
-         *  前のif文でrightEdge ≠ this.fieldWidth だと証明できた
+         *  前のif文でブロックの位置 >≠ this.rightEdge だと証明できた
          */
 
         for (let block of tetrimino.Coordinate ) {
@@ -73,20 +69,23 @@ export default class checkCanMove {
     }
 
     down({Field,tetrimino}){
+
+        const bottom  = fieldHeight - 1;
+
         /** ぶつかる物が1つでもあれば落ちないようにする */ 
 
         /** 床にぶつからないか調べる 
-         *  下に動かすと床にぶつかるということは今下端のブロックはy = this.fieldHeightの場所,もしくはそれより大きい場所にいることになる
+         *  下に動かすと床にぶつかるということは今下端のブロックはy = this.bottomの場所,もしくはそれより大きい場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
         for (let block of tetrimino.Coordinate) {
-            if (block.y >= this.fieldHeight) {return false}
+            if (block.y >= bottom) {return false}
         }
 
         /** ブロックにぶつからないかどうか調べる
          *  下隣りにブロックがあるかどうか調べる
          *  自分が属するグループは除外しないとブロックが落ちなくなる
-         *  前のif文でlowerEnd ≠ this.fieldHeightだと証明できた
+         *  前のif文でブロックの位置 ≠ this.bottomだと証明できた
          */
         for (let block of tetrimino.Coordinate ) {
             /** 自分の下に属してるグループのブロックがないか調べる
@@ -116,7 +115,7 @@ export default class checkCanMove {
         /** ブロックにぶつからないかどうか調べる
          *  上隣りにブロックがあるかどうか調べる
          *  自分が属するグループは除外しないとブロックが落ちなくなる
-         *  前のif文でtopEdge ≠ this.fieldWidth だと証明できた
+         *  前のif文でブロックの位置 ≠ this.fieldWidth だと証明できた
          */
         for (let block of tetrimino.Coordinate ) {
             /** 自分の下に属してるグループのブロックがないか調べる
@@ -132,4 +131,3 @@ export default class checkCanMove {
         return true;
     }
 }
-// console.log(JSON.stringify(object,array));
