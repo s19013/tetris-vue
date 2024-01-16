@@ -280,8 +280,6 @@ export default class Tetris {
 
     /** 固定化した後にする処理を全部まとめた */
     async ProcessingAfterImmobilization(){
-        this.Field.updateRowStatus()
-
         /** 揃っているかを調べる */
         let countOfAlignedRow = this.Field.countAlignedRows()
 
@@ -291,7 +289,7 @@ export default class Tetris {
             level:this.level
         })
 
-        /** 消した列を足す */
+        /** 消した列の合計に足す */
         this.countOfLinesVanished += countOfAlignedRow
 
         if (countOfAlignedRow > 0) {
