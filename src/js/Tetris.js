@@ -314,7 +314,7 @@ export default class Tetris {
 
         /** ゲームオーバーになっているかどうか調べる */
         // trueが帰ってきたら､次のテトリミノを落とさずゲームオーバー処理に移る
-        if (this.gameOverPolicty.isGameOver(lodash.cloneDeep(this.Field))) {
+        if (this.gameOverPolicty.isGameOver(this.Field)) {
             // ゲームオーバー画面を表示させる
             this.isGameOver = true
             this.gameOver()
