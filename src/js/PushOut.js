@@ -5,15 +5,11 @@ import {fieldWidth,fieldHeight} from "./Config"
  */
 
 export default class PushOut {
-    constructor() {
-        // indexとかの関係で - 1する
-        this.fieldWidth   = fieldWidth - 1
-        this.fieldHeight  = fieldHeight - 1;
-    }
-
     FromTheFloor(tetriminoCoordinate){
+        const bottom  = fieldHeight - 1;
+
         for (let tentativeBlock of tetriminoCoordinate) {
-            while (tentativeBlock.y > this.fieldHeight) {
+            while (tentativeBlock.y > bottom) {
                 tetriminoCoordinate.forEach(block => { block.y -= 1 });
             }
         }
@@ -47,9 +43,11 @@ export default class PushOut {
     }
 
     FromTheRightWall(tetriminoCoordinate){
+        const rightEdge   = fieldWidth - 1
         let moved = false
+        
         for (let tentativeBlock of tetriminoCoordinate) {
-            while (tentativeBlock.x > this.fieldWidth) {
+            while (tentativeBlock.x > rightEdge) {
                 tetriminoCoordinate.forEach(block => { block.x -= 1 });
                 moved = true
             }
