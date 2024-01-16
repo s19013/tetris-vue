@@ -6,7 +6,6 @@ import Next from "./Next.js"
 import Hold from "./Hold.js"
 import Score from "./Score.js"
 import GameOverPolicty from "./GameOver/GameOverPolicy.js"
-import * as Utils from  './TetrisUtils'
 import {levelConfig} from "./Level.js"
 import lodash from 'lodash';
 
@@ -280,8 +279,6 @@ export default class Tetris {
 
     /** 固定化した後にする処理を全部まとめた */
     async ProcessingAfterImmobilization(){
-        this.Field.updateRowStatus()
-
         /** 揃っているかを調べる */
         let countOfAlignedRow = this.Field.countAlignedRows()
 
@@ -291,7 +288,7 @@ export default class Tetris {
             level:this.level
         })
 
-        /** 消した列を足す */
+        /** 消した列の合計に足す */
         this.countOfLinesVanished += countOfAlignedRow
 
         if (countOfAlignedRow > 0) {
@@ -299,7 +296,7 @@ export default class Tetris {
 
             // 演出の関係上一旦処理を止める
             this.enableSleeping()
-            await Utils.sleep(800) 
+            await this.sleep(800) 
             this.disableSleeping()
 
             /** 揃っている列を消す */
@@ -316,7 +313,7 @@ export default class Tetris {
 
         /** ゲームオーバーになっているかどうか調べる */
         // trueが帰ってきたら､次のテトリミノを落とさずゲームオーバー処理に移る
-        if (this.gameOverPolicty.isGameOver(lodash.cloneDeep(this.Field))) {
+        if (this.gameOverPolicty.isGameOver(this.Field)) {
             // ゲームオーバー画面を表示させる
             this.isGameOver = true
             this.gameOver()
@@ -396,4 +393,6 @@ export default class Tetris {
         this.sleeping = false
         this.ojyama.disableSleeping()
     }
+
+    sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 }
