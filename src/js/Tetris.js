@@ -5,6 +5,7 @@ import Rotate from "./Rotate"
 import Next from "./Next.js"
 import Hold from "./Hold.js"
 import Score from "./Score.js"
+import GameOverPolicty from "./GameOver/GameOverPolicy.js"
 import * as Utils from  './TetrisUtils'
 import {levelConfig} from "./Level.js"
 import lodash from 'lodash';
@@ -39,6 +40,9 @@ export default class Tetris {
     /** ホールド */
     hold = new Hold()
 
+    /** ゲームオーバー条件たち */
+    gameOverPolicty = new GameOverPolicty()
+
     /** 放置してると勝手にブロックが落ちる感覚 */
     autoDropInterval = 2000 //ms
 
@@ -51,6 +55,7 @@ export default class Tetris {
     /** 動かす前のブロックの位置 */
     oldTetrimino = {}
 
+    /** ゲームオーバー画面をvueで表示させる時に必要 */
     isGameOver = false
 
     // ゴースト
@@ -310,8 +315,13 @@ export default class Tetris {
         }
 
         /** ゲームオーバーになっているかどうか調べる */
-        // trueが帰ってきたら､次のテトリミノを落とさない
-        if (this.checkIsItGameOver()) {return }
+        // trueが帰ってきたら､次のテトリミノを落とさずゲームオーバー処理に移る
+        if (this.gameOverPolicty.isGameOver(lodash.cloneDeep(this.Field))) {
+            // ゲームオーバー画面を表示させる
+            this.isGameOver = true
+            this.gameOver()
+            return 
+        }
 
         // 次のテトリミノを落とす
         this.dropNextTetrimino()
@@ -323,20 +333,6 @@ export default class Tetris {
         this.level = currentLevel.level
         this.autoDropInterval = currentLevel.autoDropInterval
         this.ojyama.predeterminedTimeSetter(currentLevel.ojyamaInterval)
-    }
-
-    /** ゲームオーバーになってないか確認 */
-    checkIsItGameOver(){
-        if (
-            Utils.gameOverCondition1(lodash.cloneDeep(this.Field)) ||
-            Utils.gameOverCondition2(lodash.cloneDeep(this.Field))
-            ) {
-            // ゲーム終了
-            this.isGameOver = true
-            this.gameOver()
-            return true //ゲームオーバーならこのあとの処理はしない
-        }
-        return false
     }
 
     /** 次のテトリミノを落とす */
@@ -358,6 +354,7 @@ export default class Tetris {
     }
 
     gameOver(){
+
         // タイマー止める
         this.stopTimer()
         this.deleteInterval()
