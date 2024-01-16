@@ -35,9 +35,6 @@ export default class Field {
 
     /** 各列が何マス埋まっているのか確認する */
     updateRowStatus(){
-        // 更新して最新の状態にする
-        this.updateRowStatus()
-
         // 一番最初の時は空だから飛ばす必要がある
         if (this.status.length == 0) { return }
 
@@ -51,6 +48,9 @@ export default class Field {
     
     // 揃っている行を数える
     countAlignedRows(){
+        // 更新して最新の状態にする
+        this.updateRowStatus()
+        
         return this.rowStatus.reduce((count,status)=>{
             // 要素がフィールド幅と一緒だった時 -> 1列に全部埋まっている時
             if(status == fieldWidth){ count += 1 } 
