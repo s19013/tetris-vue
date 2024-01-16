@@ -6,7 +6,6 @@ import Next from "./Next.js"
 import Hold from "./Hold.js"
 import Score from "./Score.js"
 import GameOverPolicty from "./GameOver/GameOverPolicy.js"
-import * as Utils from  './TetrisUtils'
 import {levelConfig} from "./Level.js"
 import lodash from 'lodash';
 
@@ -297,7 +296,7 @@ export default class Tetris {
 
             // 演出の関係上一旦処理を止める
             this.enableSleeping()
-            await Utils.sleep(800) 
+            await this.sleep(800) 
             this.disableSleeping()
 
             /** 揃っている列を消す */
@@ -394,4 +393,6 @@ export default class Tetris {
         this.sleeping = false
         this.ojyama.disableSleeping()
     }
+
+    sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 }
