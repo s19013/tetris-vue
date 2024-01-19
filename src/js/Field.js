@@ -50,7 +50,7 @@ export default class Field {
     countAlignedRows(){
         // 更新して最新の状態にする
         this.updateRowStatus()
-        
+
         return this.rowStatus.reduce((count,status)=>{
             // 要素がフィールド幅と一緒だった時 -> 1列に全部埋まっている時
             if(status == fieldWidth){ count += 1 } 
@@ -80,6 +80,18 @@ export default class Field {
             } 
             else { break } // 見つからないなら抜ける
         }
+    }
+
+    /** テトリミノがフィールドにすでにおいてるブロックに重なってないか調べる */
+    // 1つでも重なってはいけない
+    tetriminoIsNotOverlap(tetrimino){
+        for (const block of tetrimino.Coordinate) {
+            if (
+                this.status[block.y][block.x].isFill == true &&
+                this.status[block.y][block.x].isMoving == false 
+            ) {return false}
+        }
+        return true
     }
 
     // ---
