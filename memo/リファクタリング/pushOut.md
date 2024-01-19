@@ -5,10 +5,35 @@
 そのためにはtetriminoCoordinateをTetrisに変更し､Tetrisクラス型の要素を入れる  
 帰り値はTetrisクラス型
 
+
+
+
 ## 編集する他ファイル
 ### Rotate.js
 引数をTetrisクラス型の変数を入れる
-
-
 というかこれはそもそも､Rotate.jsのリファクタリングを先にやる必要がある
+
+
+# 追加する関数
+## isNeedCorrection
+補正が必要かどうか調べる 
+
+## isNeedLeftCorrection
+テトリミノが左壁を突き抜けてないか調べる
+
+## isNeedRightCorrection
+テトリミノが右壁を突き抜けてないか調べる
+
+## isNeedFloorCorrection
+テトリミノが床を突き抜けてないか調べる
+
+## correction
+補正をかける
+
+# その他コメント
+補正をかけるべきかは別々でわけないとややこしい?  
+調べずに全部の補正かかけたら余計にはみ出てしまう?
+
+
+
 
