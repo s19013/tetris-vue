@@ -84,8 +84,8 @@ export default class Field {
 
     /** テトリミノがフィールドにすでにおいてるブロックに重なってないか調べる */
     // 1つでも重なってはいけない
-    tetriminoIsNotOverlap(tetrimino){
-        for (const block of tetrimino.Coordinate) {
+    tetriminoIsNotOverlap(coordinate){
+        for (const block of coordinate) {
             if (
                 this.status[block.y][block.x].isFill == true &&
                 this.status[block.y][block.x].isMoving == false 
