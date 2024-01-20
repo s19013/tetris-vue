@@ -136,6 +136,11 @@ export default class Field {
             this.status[block.y][block.x].isMoving = false
         }
     }
+
+    // デバック用
+    /** テスト用の地形を生成する */
+    setTestField(){
+    }
 }
 
 // baseLineが便利な時
