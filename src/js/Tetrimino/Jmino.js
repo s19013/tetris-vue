@@ -1,6 +1,7 @@
 import Tetrimino from "./Tetrimino";
 import { effectiveRoof } from "../Config";
-import Rotate from "../Rotate";
+import {rotate as clockwise} from "../Clockwise"
+import {rotate as counterClockwise} from "../CounterClockwise"
 
 export default class Jmino extends Tetrimino{
     constructor() {
@@ -16,8 +17,7 @@ export default class Jmino extends Tetrimino{
     }
 
     clockwise(field){
-        const rotate = new Rotate()
-        this.Coordinate = rotate.clockwise({
+        this.Coordinate = clockwise({
             field:field,
             type:this.type,
             Coordinate:this.Coordinate,
@@ -26,8 +26,7 @@ export default class Jmino extends Tetrimino{
     }
 
     counterClockwise(field){
-        const rotate = new Rotate()
-        this.Coordinate = rotate.counterClockwise({
+        this.Coordinate = counterClockwise({
             field:field,
             type:this.type,
             Coordinate:this.Coordinate,
