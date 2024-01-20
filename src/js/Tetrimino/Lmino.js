@@ -15,19 +15,19 @@ export default class Lmino extends Tetrimino{
         })
     }
 
-    clockwise(clonedField){
+    clockwise(field){
         const rotate = new Rotate()
         this.Coordinate = rotate.clockwise({
-            clonedField:clonedField,
+            field:field,
             Coordinate:this.Coordinate,
             rotationPoint:2
         })
     }
 
-    counterClockwise(clonedField){
+    counterClockwise(field){
         const rotate = new Rotate()
         this.Coordinate = rotate.counterClockwise({
-            clonedField:clonedField,
+            field:field,
             Coordinate:this.Coordinate,
             rotationPoint:2
         })
