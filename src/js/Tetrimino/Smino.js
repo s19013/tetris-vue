@@ -19,6 +19,7 @@ export default class Smino extends Tetrimino{
         const rotate = new Rotate()
         this.Coordinate = rotate.clockwise({
             field:field,
+            type:this.type,
             Coordinate:this.Coordinate,
             rotationPoint:1
         })
@@ -28,6 +29,7 @@ export default class Smino extends Tetrimino{
         const rotate = new Rotate()
         this.Coordinate = rotate.counterClockwise({
             field:field,
+            type:this.type,
             Coordinate:this.Coordinate,
             rotationPoint:1
         })

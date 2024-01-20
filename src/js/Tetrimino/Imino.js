@@ -21,6 +21,7 @@ export default class Imino extends Tetrimino{
         if (this.Coordinate[0].x == this.Coordinate[1].x) {
             this.Coordinate = rotate.clockwise({
                 field:field,
+                type:this.type,
                 Coordinate:this.Coordinate,
                 rotationPoint:1
             })
@@ -29,6 +30,7 @@ export default class Imino extends Tetrimino{
         else {
             this.Coordinate = rotate.clockwise({
                 field:field,
+                type:this.type,
                 Coordinate:this.Coordinate,
                 rotationPoint:2
             })
@@ -41,6 +43,7 @@ export default class Imino extends Tetrimino{
         if (this.Coordinate[0].x == this.Coordinate[1].x) {
             this.Coordinate = rotate.counterClockwise({
                 field:field,
+                type:this.type,
                 Coordinate:this.Coordinate,
                 rotationPoint:2
             })
@@ -49,6 +52,7 @@ export default class Imino extends Tetrimino{
         else {
             this.Coordinate = rotate.counterClockwise({
                 field:field,
+                type:this.type,
                 Coordinate:this.Coordinate,
                 rotationPoint:1
             })
