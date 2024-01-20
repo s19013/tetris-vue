@@ -1,6 +1,7 @@
 import Tetrimino from "./Tetrimino";
 import { effectiveRoof } from "../Config";
-import Rotate from "../Rotate";
+import {rotate as clockwise} from "../Clockwise"
+import {rotate as counterClockwise} from "../CounterClockwise"
 
 export default class Imino extends Tetrimino{
     constructor() {
@@ -16,10 +17,9 @@ export default class Imino extends Tetrimino{
     }
 
     clockwise(field){
-        const rotate = new Rotate()
         // テトリミノが縦の時
         if (this.Coordinate[0].x == this.Coordinate[1].x) {
-            this.Coordinate = rotate.clockwise({
+            this.Coordinate = clockwise({
                 field:field,
                 type:this.type,
                 Coordinate:this.Coordinate,
@@ -28,7 +28,7 @@ export default class Imino extends Tetrimino{
         }
         // テトリミノが横の時
         else {
-            this.Coordinate = rotate.clockwise({
+            this.Coordinate = clockwise({
                 field:field,
                 type:this.type,
                 Coordinate:this.Coordinate,
@@ -38,10 +38,9 @@ export default class Imino extends Tetrimino{
     }
 
     counterClockwise(field){
-        const rotate = new Rotate()
         // テトリミノが縦の時
         if (this.Coordinate[0].x == this.Coordinate[1].x) {
-            this.Coordinate = rotate.counterClockwise({
+            this.Coordinate = counterClockwise({
                 field:field,
                 type:this.type,
                 Coordinate:this.Coordinate,
@@ -50,7 +49,7 @@ export default class Imino extends Tetrimino{
         }
         // テトリミノが横の時
         else {
-            this.Coordinate = rotate.counterClockwise({
+            this.Coordinate = counterClockwise({
                 field:field,
                 type:this.type,
                 Coordinate:this.Coordinate,
