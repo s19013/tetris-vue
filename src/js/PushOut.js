@@ -1,4 +1,5 @@
 import {fieldWidth,fieldHeight} from "./Config"
+import lodash from "lodash";
 /**
  * 主に壁などからブロックを押し出す処理をする
  * 完全に出てくるまで繰り返すためwhile
@@ -70,11 +71,12 @@ export default class PushOut {
     /** 補正をかける*/
     correction(coordinate){
         // 補正をかけた後(色々いじるからクローン)
-        coordinate = this.FromTheFloor(coordinate)
-        coordinate = this.FromTheLeftWall(coordinate)
-        coordinate = this.FromTheRightWall(coordinate)
+        const clonedCoordinate = lodash.cloneDeep(coordinate)
+        const coordinatedFloor = this.FromTheFloor(clonedCoordinate)
+        const coordinateLeftwall = this.FromTheLeftWall(coordinatedFloor)
+        const coordinateRightWall = this.FromTheRightWall(coordinateLeftwall)
 
-        return coordinate
+        return coordinateRightWall
     }
 
 }
