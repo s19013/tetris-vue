@@ -34,6 +34,7 @@ this.status[23][6].isFill = true
 this.status[23][7].isFill = true
 
 # L
+## 縦
 this.status[29][9].isFill = true
 this.status[29][6].isFill = true
 this.status[28][9].isFill = true
@@ -43,6 +44,12 @@ this.status[27][7].isFill = true
 this.status[26][9].isFill = true
 this.status[25][9].isFill = true
 this.status[25][8].isFill = true
+
+## 横
+this.status[29][6].isFill = true
+this.status[28][9].isFill = true
+this.status[28][8].isFill = true
+this.status[28][6].isFill = true
 
 # S
 ## 横
