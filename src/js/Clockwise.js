@@ -1,5 +1,5 @@
 
-import PushOut from "./PushOut";
+import * as pushOut from "./PushOut";
 import RotateHelper from "./RotateHelper";
 import lodash from "lodash";
 
@@ -21,7 +21,7 @@ export default class Clockwise{
         })
     
         // 補正をかける
-        const corrected =  (new PushOut()).correction(rotated)
+        const corrected =  pushOut.correction(rotated)
     
         // どのブロックにも被って無いならすぐ返す
         if (field.tetriminoIsNotOverlap(corrected)) { return corrected }
