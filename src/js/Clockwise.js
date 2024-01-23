@@ -25,30 +25,22 @@ export default class Clockwise{
     
         // どのブロックにも被って無いならすぐ返す
         if (field.tetriminoIsNotOverlap(corrected)) { return corrected }
-    
-        let turnedIn = {}
-        if (type == "S" || type == "Z") { 
-            // 下に最大2回移動し、それでもだめなら上に最大2回移動する
-            turnedIn = this.helper.turnIn(
-                {
-                    field:field,
-                    coordinate:corrected,
-                    directions:[this.helper.moveDown, this.helper.moveDown]
-                }
-            );
-        }
-        else {
-            // 下､左､下に移動してみて、それでもだめなら上に最大2回移動する
 
-            // ここで何故かcorrected,古い書き方のrotationに影響がでていた｡
-            turnedIn = this.helper.turnIn(
-                {
-                    field:field,
-                    coordinate:corrected,
-                    directions:[this.helper.moveDown, this.helper.moveLeft,this.helper.moveDown]
-                }
-            );
-        }
+        // 回し入れ時移動する方向
+        let directions = []
+
+        // 下に最大2回移動し、それでもだめなら上に最大2回移動する
+        if (type == "S" || type == "Z") { directions = [this.helper.moveDown, this.helper.moveDown] }
+        // 下､左､下に移動してみて、それでもだめなら上に最大2回移動する
+        else { directions = [this.helper.moveDown, this.helper.moveLeft,this.helper.moveDown] }
+
+        const turnedIn = this.helper.turnIn(
+            {
+                field:field,
+                coordinate:corrected,
+                directions:directions
+            }
+        );
     
         // 回し入れ成功ならそれを返す
         if (turnedIn != null ) { return turnedIn  }
