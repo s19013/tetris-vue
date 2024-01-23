@@ -1,7 +1,6 @@
 import Field from "./Field.js"
 import Ojyama from "./Ojyama.js"
 import CheckCanMove from "./CheckCanMove"
-import Rotate from "./Rotate"
 import Next from "./Next.js"
 import Hold from "./Hold.js"
 import Score from "./Score.js"
@@ -26,10 +25,6 @@ export default class Tetris {
     ojyama = new Ojyama()
 
     checkCanMove = new CheckCanMove()
-
-    rotater = new Rotate({
-        checkCanMove:this.checkCanMove
-    })
 
     /** nextテトリミノ達 */
     next = new Next()
