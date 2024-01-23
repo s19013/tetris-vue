@@ -1,6 +1,7 @@
 
-import PushOut from "./PushOut";
+import * as pushOut from "./PushOut";
 import RotateHelper from "./RotateHelper";
+import lodash from "lodash";
 
 export default class Clockwise{
     constructor() {
@@ -20,7 +21,7 @@ export default class Clockwise{
         })
     
         // 補正をかける
-        const corrected =  (new PushOut()).correction(rotated)
+        const corrected =  pushOut.correction(rotated)
     
         // どのブロックにも被って無いならすぐ返す
         if (field.tetriminoIsNotOverlap(corrected)) { return corrected }
@@ -28,42 +29,54 @@ export default class Clockwise{
         let turnedIn = {}
         if (type == "S" || type == "Z") { 
             // 下に最大2回移動し、それでもだめなら上に最大2回移動する
-            turnedIn = this.turnIn(
-                field, corrected, [this.helper.moveDown, this.helper.moveDown, this.helper.moveUp, this.helper.moveUp]
+            turnedIn = this.helper.turnIn(
+                {
+                    field:field,
+                    coordinate:corrected,
+                    directions:[this.helper.moveDown, this.helper.moveDown]
+                }
             );
         }
         else {
-            // 下､右､下に移動してみて、それでもだめなら上に最大2回移動する
-            turnedIn = this.turnIn(
-                field, corrected, [this.helper.moveDown, this.helper.moveRight,this.helper.moveDown,this.helper.moveUp, this.helper.moveUp]
+            // 下､左､下に移動してみて、それでもだめなら上に最大2回移動する
+
+            // ここで何故かcorrected,古い書き方のrotationに影響がでていた｡
+            turnedIn = this.helper.turnIn(
+                {
+                    field:field,
+                    coordinate:corrected,
+                    directions:[this.helper.moveDown, this.helper.moveRight,this.helper.moveDown]
+                }
             );
         }
     
-        // 回し入れ失敗なら
-        if (turnedIn[0].x == "none") { return Coordinate }
-        return turnedIn
+        // 回し入れ成功ならそれを返す
+        if (turnedIn != null ) { return turnedIn  }
+        
+        // 失敗時したら上げる方法を試す｡
+        // 最初の回転したを入れるのは仕様
+        const liftUpded = this.helper.liftUp({
+            field:field,
+            coordinate:rotated
+        })
+
+        // 押上で問題ないならそれを返す
+        if (liftUpded != null ) { return liftUpded  }
+
+        // ここまでやってだめなら初期値を返す
+        return Coordinate
     }
-    
-    turnIn(field, coordinate, directions) {
-        // directionには関数名が入っていてそのまま関数を使えるらしい｡
-        // jsならではの方法?
-        for (const direction of directions) {
-          const moved = direction(coordinate);
-          if (field.tetriminoIsNotOverlap(moved)) { return moved; }
-        }
-        // すべての方向で移動できなかった場合、失敗フラグを返す
-        return [{ x: "none", y: "none" }];
-      }
     
     /** すべてのブロックを計算して返す */
     calculation({
         coordinate,
         rotationPoint
     }) {
+        const clonedCoordinate = lodash.cloneDeep(coordinate)
         return coordinate.map(
             block => {
             return this.equation({
-                rotationPoint:coordinate[rotationPoint],
+                rotationPoint:clonedCoordinate[rotationPoint],
                 beforeRotation:block
             })
         })
