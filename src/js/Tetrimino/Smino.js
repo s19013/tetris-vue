@@ -21,7 +21,7 @@ export default class Smino extends Tetrimino{
             field:field,
             type:this.type,
             Coordinate:this.Coordinate,
-            rotationPoint:1
+            rotationPoint:2
         })
     }
 
@@ -30,7 +30,7 @@ export default class Smino extends Tetrimino{
             field:field,
             type:this.type,
             Coordinate:this.Coordinate,
-            rotationPoint:1
+            rotationPoint:2
         })
     }
 }

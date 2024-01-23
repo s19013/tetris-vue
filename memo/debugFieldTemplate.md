@@ -101,5 +101,23 @@ this.status[24][8].isFill = true
 
 # 回転できない
 ## 左右に挟まれてる
+this.status[29][2].isFill = true
+this.status[28][2].isFill = true
+this.status[27][2].isFill = true
+this.status[26][2].isFill = true
+
+this.status[29][5].isFill = true
+this.status[28][5].isFill = true
+this.status[27][5].isFill = true
+this.status[26][5].isFill = true
 
 ## 上下に挟まれてる
+this.status[27][0].isFill = true
+this.status[27][1].isFill = true
+this.status[27][2].isFill = true
+this.status[27][3].isFill = true
+
+this.status[24][0].isFill = true
+this.status[24][1].isFill = true
+this.status[24][2].isFill = true
+this.status[24][3].isFill = true
