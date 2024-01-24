@@ -1,35 +1,6 @@
 import * as pushOut from "./PushOut";
 import lodash from "lodash";
 export default class RotateHelper{
-    //note: 引数で受け取るのがオブジェクト型だったのでこのような形にする必要があった｡
-    moveUp(coordinate){
-        const moved = coordinate.map(block => {
-                return {x:block.x,y:block.y -= 1 }
-            }
-        );
-        return moved
-    }
-
-    moveDown(coordinate){
-        const moved = coordinate.map(block => {
-            return {x:block.x,y:block.y += 1}
-        });
-        return moved
-    }
-
-    moveLeft(coordinate){
-        const moved = coordinate.map(block => {
-            return {x:block.x -= 1,y:block.y}
-        });
-        return moved
-    }
-
-    moveRight(coordinate){
-        const moved = coordinate.map(block => {
-            return {x:block.x += 1,y:block.y}
-        });
-        return moved
-    }
 
     // 回転入れ
     turnIn({field, coordinate, directions}) {
@@ -37,8 +8,8 @@ export default class RotateHelper{
         // jsならではの方法?
 
         let returnValue = lodash.cloneDeep(coordinate)
-        for (const helper of directions) {
-          const moved = helper(returnValue)
+        for (const coordinateFunc of directions) {
+          const moved = coordinateFunc(returnValue)
           const corrected = pushOut.correction(moved)
           returnValue = corrected
           if (field.tetriminoIsNotOverlap(returnValue)) { return returnValue; }
@@ -53,7 +24,7 @@ export default class RotateHelper{
         // 最大2回まで上げる
         let returnValue = lodash.cloneDeep(coordinate)
         for (let index = 0; index < 2; index++) {
-            const moved = this.moveUp(returnValue)
+            const moved = returnValue.moveUp()
             const corrected = pushOut.correction(moved);
             returnValue = corrected
             if (field.tetriminoIsNotOverlap(returnValue)) { return returnValue; }
