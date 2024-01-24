@@ -9,12 +9,12 @@
 
 ## Tetris.js
 - [o] `Coordinate`と書いている部分を`coordinate`に変更
-- [ ] コンストラクタの`this.Coordinate = Coordinate`の部分を`this.coordinate = new Coordinate(coordinate)`に変更
-- [ ] `moveOO`の部分をCoordinateクラスの関数を使うように変更
+- [o] コンストラクタの`this.Coordinate = Coordinate`の部分を`this.coordinate = new Coordinate(coordinate)`に変更
+- [o] `moveOO`の部分をCoordinateクラスの関数を使うように変更
 
 ## Imino.js
 - [o] `Coordinate`と書いている部分を`coordinate`に変更
-- [ ] `Coordinate[0].x`などの座標を参照している部分を`coordinate.status[0].x`のような書き方に変更
+- [o] `Coordinate[0].x`などの座標を参照している部分を`coordinate.status[0].x`のような書き方に変更
 
 ## Tmino.js
 - [o] `Coordinate`と書いている部分を`coordinate`に変更
@@ -35,32 +35,33 @@
 - [o] `Coordinate`と書いている部分を`coordinate`に変更
 
 ## CheckCanMove.js
-- [ ] `let block of tetrimino.Coordinate`参照している部分を `let block of tetrimino.coordinate.status`
+- [o] `let block of tetrimino.Coordinate`参照している部分を `let block of tetrimino.coordinate.status`
 
 ## Clockwise.js
 - [o] `Coordinate` -> `coordinate`
-- [ ] `coordinate.map` -> `clonedCoordinate.status`
+- [o] `coordinate.map` -> `clonedCoordinate.status.map`
 - [ ] `clonedCoordinate[rotationPoint]` -> `clonedCoordinate.status[rotationPoint]`
 
 ## CounterClockwise.js
 - [o] `Coordinate` -> `coordinate`
-- [ ] `coordinate.map` -> `clonedCoordinate.status`
+- [o] `coordinate.map` -> `clonedCoordinate.status`
 - [ ] `clonedCoordinate[rotationPoint]` -> `clonedCoordinate.status[rotationPoint]`
 
 ## Field.js
-- [ ] `let block of tetrimino.Coordinate`参照している部分を `let block of tetrimino.coordinate.status`
-- [ ] `coordinate.every` -> `coordinate.status.every`
-- [ ] `let block of ghost.Coordinate`参照している部分を `let block of ghost.coordinate.status`
+- [o] `let block of tetrimino.Coordinate`参照している部分を `let block of tetrimino.coordinate.status`
+- [o] `coordinate.every` -> `coordinate.status.every`
+- [o] `let block of ghost.Coordinate`参照している部分を `let block of ghost.coordinate.status`
 
 ## PushOut.js
-- [ ] `coordinate.some` -> `coordinate.status.some`
-- [ ] `correctedCoordinate.forEach(block => { block.y -= 1; });`みたいな処理を`Coordinate`クラスの関数を使う
+- [o] `coordinate.some` -> `coordinate.status.some`
+- [o] `correctedCoordinate.forEach(block => { block.y -= 1; });`みたいな処理を`Coordinate`クラスの関数を使う
 
 ## RotateHelper.js
-- [ ] `moveOO`系は`Coordinate`クラスの関数を使うから全部削除
+- [o] `moveOO`系は`Coordinate`クラスの関数を使うから全部削除
+- [o] `Coordinate`クラスの関数を使う
 
 ## Tetris.js
-- [ ] `this.ghost.Coordinate[0].y - this.tetrimino.Coordinate[0].y` -> `this.ghost.Coordinate[0].status.y - this.tetrimino.Coordinate[0].status.y`
+- [o] `this.ghost.Coordinate[0].y - this.tetrimino.Coordinate[0].y` -> `this.ghost.Coordinate[0].status.y - this.tetrimino.Coordinate[0].status.y`
 
 # コメント
 放置してきたつけが回ってきたな｡  
