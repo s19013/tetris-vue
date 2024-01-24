@@ -222,7 +222,7 @@ export default class Tetris {
         this.saveCurrentPosition()
 
         // 何ます動かすかしらべる(スコアで使う)
-        let countOfMove = Math.abs(this.ghost.coordinate[0].y - this.tetrimino.coordinate[0].y)
+        let countOfMove = Math.abs(this.ghost.coordinate.status[0].y - this.tetrimino.coordinate.status[0].y)
         this.score.addScore(countOfMove * 2)
 
         // ゴーストの位置に移動する
