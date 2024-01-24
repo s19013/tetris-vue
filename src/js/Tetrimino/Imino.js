@@ -18,7 +18,7 @@ export default class Imino extends Tetrimino{
 
     clockwise(field){
         // テトリミノが縦の時
-        if (this.coordinate[0].x == this.coordinate[1].x) {
+        if (this.coordinate.status[0].x == this.coordinate.status[1].x) {
             this.coordinate = (new Clockwise()).rotate({
                 field:field,
                 type:this.type,
@@ -39,7 +39,7 @@ export default class Imino extends Tetrimino{
 
     counterClockwise(field){
         // テトリミノが縦の時
-        if (this.coordinate[0].x == this.coordinate[1].x) {
+        if (this.coordinate.status[0].x == this.coordinate.status[1].x) {
             this.coordinate = (new CounterClockwise()).rotate({
                 field:field,
                 type:this.type,

@@ -10,7 +10,7 @@ export default class checkCanMove {
          *  動かすとぶつかるようなら早期return
         */
 
-        for (let block of tetrimino.coordinate) {
+        for (let block of tetrimino.coordinate.status) {
             if (block.x <= 0) {return false}
         }
         
@@ -21,7 +21,7 @@ export default class checkCanMove {
          *  前のif文でブロックの位置 ≠ 0だと証明できた
          */
         
-        for (let block of tetrimino.coordinate ) {
+        for (let block of tetrimino.coordinate.status ) {
             /** 自分の左に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
@@ -44,7 +44,7 @@ export default class checkCanMove {
          *  動かすとぶつかるようなら早期return
         */
 
-        for (let block of tetrimino.coordinate) {
+        for (let block of tetrimino.coordinate.status) {
             if (block.x >= rightEdge) {return false}
         }
 
@@ -54,7 +54,7 @@ export default class checkCanMove {
          *  前のif文でブロックの位置 >≠ this.rightEdge だと証明できた
          */
 
-        for (let block of tetrimino.coordinate ) {
+        for (let block of tetrimino.coordinate.status ) {
             /** 自分の右に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
@@ -78,7 +78,7 @@ export default class checkCanMove {
          *  下に動かすと床にぶつかるということは今下端のブロックはy = this.bottomの場所,もしくはそれより大きい場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
-        for (let block of tetrimino.coordinate) {
+        for (let block of tetrimino.coordinate.status) {
             if (block.y >= bottom) {return false}
         }
 
@@ -87,7 +87,7 @@ export default class checkCanMove {
          *  自分が属するグループは除外しないとブロックが落ちなくなる
          *  前のif文でブロックの位置 ≠ this.bottomだと証明できた
          */
-        for (let block of tetrimino.coordinate ) {
+        for (let block of tetrimino.coordinate.status ) {
             /** 自分の下に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
@@ -108,7 +108,7 @@ export default class checkCanMove {
          *  上に動かすと天辺にぶつかるということは今上端のブロックはy = 0,もしくはそれよりも小さい場所にいることになる
          *  動かすとぶつかるようなら早期return
         */
-        for (let block of tetrimino.coordinate) {
+        for (let block of tetrimino.coordinate.status) {
             if (block.y <= 0) {return false}
         }
 
@@ -117,7 +117,7 @@ export default class checkCanMove {
          *  自分が属するグループは除外しないとブロックが落ちなくなる
          *  前のif文でブロックの位置 ≠ this.fieldWidth だと証明できた
          */
-        for (let block of tetrimino.coordinate ) {
+        for (let block of tetrimino.coordinate.status ) {
             /** 自分の下に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
