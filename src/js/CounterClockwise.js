@@ -65,10 +65,10 @@ export default class Clockwise{
         rotationPoint
     }) {
         const clonedCoordinate = lodash.cloneDeep(coordinate)
-        return coordinate.map(
+        return clonedCoordinate.status.map(
             block => {
             return this.equation({
-                rotationPoint:clonedCoordinate[rotationPoint],
+                rotationPoint:clonedCoordinate.status[rotationPoint],
                 beforeRotation:block
             })
         })
