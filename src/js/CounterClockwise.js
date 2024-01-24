@@ -11,12 +11,12 @@ export default class Clockwise{
     rotate({
         field,
         type,
-        Coordinate,
+        coordinate,
         rotationPoint
     }){
         // 回転実行
         const rotated = this.calculation({
-            coordinate:Coordinate,
+            coordinate:coordinate,
             rotationPoint:rotationPoint
         })
     
@@ -56,7 +56,7 @@ export default class Clockwise{
         if (liftUpded != null ) { return liftUpded  }
 
         // ここまでやってだめなら初期値を返す
-        return Coordinate
+        return coordinate
     }
     
     /** すべてのブロックを計算して返す */

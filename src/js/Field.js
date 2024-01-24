@@ -93,14 +93,14 @@ export default class Field {
     // ---
     // 描写関係
     displayTetrimino(tetrimino){
-        for (let block of tetrimino.Coordinate) {
+        for (let block of tetrimino.coordinate) {
             this.status[block.y][block.x].isFill = true
             this.status[block.y][block.x].isMoving = true
         }
     }
 
     undisplayTetrimino(tetrimino){
-        for (let block of tetrimino.Coordinate) {
+        for (let block of tetrimino.coordinate) {
             this.status[block.y][block.x].isFill = false
             this.status[block.y][block.x].isMoving = false
         }
@@ -108,13 +108,13 @@ export default class Field {
 
 
     displayGhost(ghost){
-        for (let block of ghost.Coordinate) {
+        for (let block of ghost.coordinate) {
             this.status[block.y][block.x].ghost = true
         }
     }
 
     undisplayGhost(ghost){
-        for (let block of ghost.Coordinate) {
+        for (let block of ghost.coordinate) {
             this.status[block.y][block.x].ghost = false
         }
     }
@@ -132,7 +132,7 @@ export default class Field {
     /** 動かしているテトリミノを固定化する */
     immobilization(tetrimino){
         // movingを外して固定化(動かせなく)する
-        for (let block of tetrimino.Coordinate) {
+        for (let block of tetrimino.coordinate) {
             this.status[block.y][block.x].isMoving = false
         }
     }

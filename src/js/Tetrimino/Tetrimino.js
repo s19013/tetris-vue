@@ -1,16 +1,16 @@
 export default class Tetrimino {
-    constructor({type,Coordinate}){
+    constructor({type,coordinate}){
         this.type = type
-        this.Coordinate = Coordinate
+        this.coordinate = coordinate
     }
 
-    moveLeft(){ for (let block of this.Coordinate) { block.x -= 1 } }
+    moveLeft(){ for (let block of this.coordinate) { block.x -= 1 } }
 
-    moveRight(){ for (let block of this.Coordinate) { block.x += 1 } }
+    moveRight(){ for (let block of this.coordinate) { block.x += 1 } }
 
-    moveUp(){ for (let block of this.Coordinate) {block.y -= 1} }
+    moveUp(){ for (let block of this.coordinate) {block.y -= 1} }
 
-    moveDown(){ for (let block of this.Coordinate) {block.y += 1} }
+    moveDown(){ for (let block of this.coordinate) {block.y += 1} }
 
     /** 時計周り回転 */
     // clockwise(Field){}
