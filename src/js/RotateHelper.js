@@ -9,10 +9,14 @@ export default class RotateHelper{
 
         let returnValue = lodash.cloneDeep(coordinate)
         for (const coordinateFunc of directions) {
-          const moved = coordinateFunc(returnValue)
-          const corrected = pushOut.correction(moved)
-          returnValue = corrected
-          if (field.tetriminoIsNotOverlap(returnValue)) { return returnValue; }
+            // ひどい書き方だが後で修正できると思うので今はこれで
+            let moved = null
+            if (coordinateFunc === "moveDown") { moved = returnValue.moveDown() }
+            if (coordinateFunc === "moveLeft") { moved = returnValue.moveLeft() }
+            if (coordinateFunc === "moveRight") { moved = returnValue.moveRight() }
+            const corrected = pushOut.correction(moved)
+            returnValue = corrected
+            if (field.tetriminoIsNotOverlap(returnValue)) { return returnValue; }
         }
         // すべての方向で移動できなかった場合、失敗フラグを返す
         // 一般的にnullを返すのは良くないらしいが､失敗フラグとしてnullを使うのは良いらしい｡

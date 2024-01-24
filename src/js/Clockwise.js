@@ -2,6 +2,7 @@
 import * as pushOut from "./PushOut";
 import RotateHelper from "./RotateHelper";
 import lodash from "lodash";
+import Coordinate from "./Tetrimino/Coordinate"
 
 export default class Clockwise{
     constructor() {
@@ -30,11 +31,12 @@ export default class Clockwise{
         let directions = []
 
         // 下に最大2回移動し、それでもだめなら上に最大2回移動する
-        if (type == "S" || type == "Z") { directions = [this.helper.moveDown, this.helper.moveDown] }
+        if (type == "S" || type == "Z") { directions = ["moveDown", "moveDown"] }
         // 下､左､下に移動してみて、それでもだめなら上に最大2回移動する
-        else { directions = [this.helper.moveDown, this.helper.moveLeft,this.helper.moveDown] }
+        else { directions = ["moveDown", "moveLeft","moveDown"] }
 
         const turnedIn = this.helper.turnIn(
+            
             {
                 field:field,
                 coordinate:corrected,
@@ -60,18 +62,21 @@ export default class Clockwise{
     }
     
     /** すべてのブロックを計算して返す */
+    // これはCoordinateクラスのstatusをいじるからCoordinateクラスに書くべきか?
     calculation({
         coordinate,
         rotationPoint
     }) {
         const clonedCoordinate = lodash.cloneDeep(coordinate)
-        return clonedCoordinate.status.map(
+        const calculated = clonedCoordinate.status.map(
             block => {
             return this.equation({
                 rotationPoint:clonedCoordinate.status[rotationPoint],
                 beforeRotation:block
             })
         })
+
+        return new Coordinate(calculated)
     }
     
     /** 回転前点{a,b} 回転点 {c,d} */
