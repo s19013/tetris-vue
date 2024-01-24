@@ -1,5 +1,5 @@
 # メリット
-?
+?(勉強になる?)
 
 # デメリット
 影響箇所が多い  
@@ -8,42 +8,42 @@
 # 変更箇所
 
 ## Tetris.js
-- [ ] `Coordinate`と書いている部分を`coordinate`に変更
+- [o] `Coordinate`と書いている部分を`coordinate`に変更
 - [ ] コンストラクタの`this.Coordinate = Coordinate`の部分を`this.coordinate = new Coordinate(coordinate)`に変更
 - [ ] `moveOO`の部分をCoordinateクラスの関数を使うように変更
 
 ## Imino.js
-- [ ] `Coordinate`と書いている部分を`coordinate`に変更
+- [o] `Coordinate`と書いている部分を`coordinate`に変更
 - [ ] `Coordinate[0].x`などの座標を参照している部分を`coordinate.status[0].x`のような書き方に変更
 
 ## Tmino.js
-- [ ] `Coordinate`と書いている部分を`coordinate`に変更
+- [o] `Coordinate`と書いている部分を`coordinate`に変更
 
 ## Omino.js
-- [ ] `Coordinate`と書いている部分を`coordinate`に変更
+- [o] `Coordinate`と書いている部分を`coordinate`に変更
 
 ## Jmino.js
-- [ ] `Coordinate`と書いている部分を`coordinate`に変更
+- [o] `Coordinate`と書いている部分を`coordinate`に変更
 
 ## Lmino.js
-- [ ] `Coordinate`と書いている部分を`coordinate`に変更
+- [o] `Coordinate`と書いている部分を`coordinate`に変更
 
 ## Smino.js
-- [ ] `Coordinate`と書いている部分を`coordinate`に変更
+- [o] `Coordinate`と書いている部分を`coordinate`に変更
 
 ## Zmino.js
-- [ ] `Coordinate`と書いている部分を`coordinate`に変更
+- [o] `Coordinate`と書いている部分を`coordinate`に変更
 
 ## CheckCanMove.js
 - [ ] `let block of tetrimino.Coordinate`参照している部分を `let block of tetrimino.coordinate.status`
 
 ## Clockwise.js
-- [ ] `Coordinate` -> `coordinate`
+- [o] `Coordinate` -> `coordinate`
 - [ ] `coordinate.map` -> `clonedCoordinate.status`
 - [ ] `clonedCoordinate[rotationPoint]` -> `clonedCoordinate.status[rotationPoint]`
 
 ## CounterClockwise.js
-- [ ] `Coordinate` -> `coordinate`
+- [o] `Coordinate` -> `coordinate`
 - [ ] `coordinate.map` -> `clonedCoordinate.status`
 - [ ] `clonedCoordinate[rotationPoint]` -> `clonedCoordinate.status[rotationPoint]`
 
