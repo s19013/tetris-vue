@@ -1,21 +1,25 @@
+import Coordinate from "../Coordinate"
+
 export default class Tetrimino {
     constructor({type,coordinate}){
         this.type = type
-        this.coordinate = coordinate
+        this.coordinate = new Coordinate(coordinate)
     }
 
-    moveLeft(){ for (let block of this.coordinate) { block.x -= 1 } }
+    moveLeft(){
+        this.coordinate = this.coordinate.moveLeft()
+    }
 
-    moveRight(){ for (let block of this.coordinate) { block.x += 1 } }
+    moveRight(){
+        this.coordinate = this.coordinate.moveRight()
+    }
 
-    moveUp(){ for (let block of this.coordinate) {block.y -= 1} }
+    moveUp(){
+        this.coordinate = this.coordinate.moveUp()
+    }
 
-    moveDown(){ for (let block of this.coordinate) {block.y += 1} }
-
-    /** 時計周り回転 */
-    // clockwise(Field){}
-
-    /** 半時計周り回転 */
-    // counterClockwise(Field){}
+    moveDown(){
+        this.coordinate = this.coordinate.moveDown()
+    }
 
 }
