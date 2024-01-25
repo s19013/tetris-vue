@@ -9,7 +9,7 @@ import lodash from "lodash";
 
         // 床から出てくるまで繰り返す
         while (isNeedFloorCorrection(correctedCoordinate)) {
-            correctedCoordinate.forEach(block => { block.y -= 1; });
+            correctedCoordinate = correctedCoordinate.moveUp()
         }
 
         return correctedCoordinate
@@ -20,7 +20,7 @@ import lodash from "lodash";
 
         // 左壁から出てくるまで繰り返す
         while (isNeedLeftCorrection(correctedCoordinate)) {
-            correctedCoordinate.forEach(block => { block.x += 1 });
+            correctedCoordinate = correctedCoordinate.moveRight()
         }
 
         return correctedCoordinate
@@ -30,7 +30,7 @@ import lodash from "lodash";
         let correctedCoordinate = coordinate
         // 右壁から出てくるまで繰り返す
         while (isNeedRightCorrection(correctedCoordinate)) {
-            correctedCoordinate.forEach(block => { block.x -= 1 });
+            correctedCoordinate = correctedCoordinate.moveLeft()
         }
 
         return correctedCoordinate
@@ -49,21 +49,21 @@ import lodash from "lodash";
     // 左壁を突き抜けてないか
     function isNeedLeftCorrection(coordinate){
         // 1つでも突き抜けてはいけない
-        return coordinate.some(block => block.x < 0);
+        return coordinate.status.some(block => block.x < 0);
     }
 
     // 右壁を突き抜けてないか
     function isNeedRightCorrection(coordinate){
         const rightEdge   = fieldWidth - 1
         // 1つでも突き抜けてはいけない
-        return coordinate.some(block => block.x > rightEdge);
+        return coordinate.status.some(block => block.x > rightEdge);
     }
 
     // 床を突き抜けてないか
     function isNeedFloorCorrection(coordinate){
         const bottom  = fieldHeight - 1;
         // 1つでも突き抜けてはいけない
-        return coordinate.some(block => block.y > bottom);
+        return coordinate.status.some(block => block.y > bottom);
     }
 
     /** 補正をかける*/
