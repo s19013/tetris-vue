@@ -7,7 +7,7 @@ export default class Imino extends Tetrimino{
     constructor() {
         super({
             type:"I",
-            Coordinate:[
+            coordinate:[
                 {x:3,y:effectiveRoof + 1},
                 {x:4,y:effectiveRoof + 1},
                 {x:5,y:effectiveRoof + 1},
@@ -18,20 +18,20 @@ export default class Imino extends Tetrimino{
 
     clockwise(field){
         // テトリミノが縦の時
-        if (this.Coordinate[0].x == this.Coordinate[1].x) {
-            this.Coordinate = (new Clockwise()).rotate({
+        if (this.coordinate.status[0].x == this.coordinate.status[1].x) {
+            this.coordinate = (new Clockwise()).rotate({
                 field:field,
                 type:this.type,
-                Coordinate:this.Coordinate,
+                coordinate:this.coordinate,
                 rotationPoint:1
             })
         }
         // テトリミノが横の時
         else {
-            this.Coordinate = (new Clockwise()).rotate({
+            this.coordinate = (new Clockwise()).rotate({
                 field:field,
                 type:this.type,
-                Coordinate:this.Coordinate,
+                coordinate:this.coordinate,
                 rotationPoint:2
             })
         }
@@ -39,20 +39,20 @@ export default class Imino extends Tetrimino{
 
     counterClockwise(field){
         // テトリミノが縦の時
-        if (this.Coordinate[0].x == this.Coordinate[1].x) {
-            this.Coordinate = (new CounterClockwise()).rotate({
+        if (this.coordinate.status[0].x == this.coordinate.status[1].x) {
+            this.coordinate = (new CounterClockwise()).rotate({
                 field:field,
                 type:this.type,
-                Coordinate:this.Coordinate,
+                coordinate:this.coordinate,
                 rotationPoint:2
             })
         }
         // テトリミノが横の時
         else {
-            this.Coordinate = (new CounterClockwise()).rotate({
+            this.coordinate = (new CounterClockwise()).rotate({
                 field:field,
                 type:this.type,
-                Coordinate:this.Coordinate,
+                coordinate:this.coordinate,
                 rotationPoint:1
             })
         }
