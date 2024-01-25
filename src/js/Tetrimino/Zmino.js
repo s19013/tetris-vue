@@ -1,7 +1,7 @@
 import Tetrimino from "./Tetrimino";
 import { effectiveRoof } from "../Config";
-import Clockwise from "../Clockwise"
-import CounterClockwise from "../CounterClockwise"
+import Clockwise from "../ClockwiseHelper"
+import CounterClockwise from "../CounterClockwiseHelper"
 
 export default class Zmino extends Tetrimino{
     constructor() {
@@ -14,6 +14,7 @@ export default class Zmino extends Tetrimino{
                 {x:3,y:effectiveRoof },
             ]
         })
+        this.turninDirections = [this.coordinate.moveDown,this.coordinate.moveDown]
     }
 
     clockwise(field){
