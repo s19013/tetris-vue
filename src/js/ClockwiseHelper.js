@@ -4,7 +4,7 @@ import RotateHelper from "./RotateHelper";
 import lodash from "lodash";
 import Coordinate from "./Tetrimino/Coordinate"
 
-export default class Clockwise{
+export default class ClockwiseHelper{
     constructor() {
         this.helper = new RotateHelper()
     }
