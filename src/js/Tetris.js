@@ -94,7 +94,7 @@ export default class Tetris {
     keyDownDown(){
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.down({
-                Field:lodash.cloneDeep(this.Field),
+                Field:this.Field,
                 tetrimino:this.tetrimino
             })
         ) {
@@ -117,7 +117,7 @@ export default class Tetris {
     keyDownLeft(){
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.left({
-                Field:lodash.cloneDeep(this.Field),
+                Field:this.Field,
                 tetrimino:this.tetrimino
             })
         ) {
@@ -133,7 +133,7 @@ export default class Tetris {
 
     keyDownRight(){
         if (this.checkCanMove.right({
-                Field:lodash.cloneDeep(this.Field),
+                Field:this.Field,
                 tetrimino:this.tetrimino
             })
         ) {
@@ -150,7 +150,7 @@ export default class Tetris {
     keyDownL(){
         this.saveCurrentPosition()
 
-        this.tetrimino.clockwise(lodash.cloneDeep(this.Field))
+        this.tetrimino.clockwise(this.Field)
 
         this.reRenderTetrimino()
         this.reRenderGhost()
@@ -159,7 +159,7 @@ export default class Tetris {
     keyDownJ(){
         this.saveCurrentPosition()
 
-        this.tetrimino.counterClockwise(lodash.cloneDeep(this.Field))
+        this.tetrimino.counterClockwise(this.Field)
 
         this.reRenderTetrimino()
         this.reRenderGhost()
@@ -199,7 +199,7 @@ export default class Tetris {
          *  下記のコードは自動落下用
         */
         if (this.checkCanMove.down({
-                Field:lodash.cloneDeep(this.Field),
+                Field:this.Field,
                 tetrimino:this.tetrimino
             })
             == false
@@ -253,8 +253,8 @@ export default class Tetris {
         // ブロックを限界が来るまで下に動かす
         // falseが帰ってくるまで回し続ける
         while (this.checkCanMove.down({
-            Field:lodash.cloneDeep(this.Field),
-            tetrimino:lodash.cloneDeep(this.ghost)
+            Field:this.Field,
+            tetrimino:this.ghost
         })) {
             // 1つ下に動かす
             this.ghost.moveDown()
