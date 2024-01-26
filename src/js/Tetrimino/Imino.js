@@ -1,7 +1,6 @@
 import Tetrimino from "./Tetrimino";
 import { effectiveRoof } from "../Config";
-import Clockwise from "../ClockwiseHelper"
-import CounterClockwise from "../CounterClockwiseHelper"
+import * as Rotate from  "../Rotate"
 
 export default class Imino extends Tetrimino{
     constructor() {
@@ -14,27 +13,27 @@ export default class Imino extends Tetrimino{
                 {x:6,y:effectiveRoof + 1},
             ]
         })
-        this.clockwiseTurninDirections = [this.coordinate.moveDown,this.coordinate.moveLeft,this.coordinate.moveDown]
-        this.counterClockwiseTurninDirections = [this.coordinate.moveDown,this.coordinate.moveRight,this.coordinate.moveDown]
+        this.clockwiseTurninDirections = ["down","left","down"]
+        this.counterClockwiseTurninDirections = ["down","right","down"]
     }
 
     clockwise(field){
         // テトリミノが縦の時
         if (this.coordinate.status[0].x == this.coordinate.status[1].x) {
-            this.coordinate = (new Clockwise()).rotate({
+            this.coordinate = Rotate.clockwise({
                 field:field,
-                type:this.type,
                 coordinate:this.coordinate,
-                rotationPoint:1
+                rotationPoint:1,
+                directions:this.clockwiseTurninDirections
             })
         }
         // テトリミノが横の時
         else {
-            this.coordinate = (new Clockwise()).rotate({
+            this.coordinate = Rotate.clockwise({
                 field:field,
-                type:this.type,
                 coordinate:this.coordinate,
-                rotationPoint:2
+                rotationPoint:2,
+                directions:this.clockwiseTurninDirections
             })
         }
     }
@@ -42,20 +41,20 @@ export default class Imino extends Tetrimino{
     counterClockwise(field){
         // テトリミノが縦の時
         if (this.coordinate.status[0].x == this.coordinate.status[1].x) {
-            this.coordinate = (new CounterClockwise()).rotate({
+            this.coordinate = Rotate.counterClockwise({
                 field:field,
-                type:this.type,
                 coordinate:this.coordinate,
-                rotationPoint:2
+                rotationPoint:2,
+                directions:this.counterClockwiseTurninDirections
             })
         }
         // テトリミノが横の時
         else {
-            this.coordinate = (new CounterClockwise()).rotate({
+            this.coordinate = Rotate.counterClockwise({
                 field:field,
-                type:this.type,
                 coordinate:this.coordinate,
-                rotationPoint:1
+                rotationPoint:1,
+                directions:this.counterClockwiseTurninDirections
             })
         }
     }
