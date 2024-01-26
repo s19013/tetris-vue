@@ -1,7 +1,6 @@
 import Tetrimino from "./Tetrimino";
 import { effectiveRoof } from "../Config";
-import Clockwise from "../Clockwise"
-import CounterClockwise from "../CounterClockwise"
+import * as Rotate from  "../Rotate"
 
 export default class Lmino extends Tetrimino{
     constructor() {
@@ -14,23 +13,25 @@ export default class Lmino extends Tetrimino{
                 {x:3,y:effectiveRoof + 1},
             ]
         })
+        this.clockwiseTurninDirections = ["down","left","down"]
+        this.counterClockwiseTurninDirections = ["down","right","down"]
     }
 
     clockwise(field){
-        this.coordinate = (new Clockwise()).rotate({
+        this.coordinate = Rotate.clockwise({
             field:field,
-            type:this.type,
             coordinate:this.coordinate,
-            rotationPoint:2
+            rotationPoint:2,
+            directions:this.clockwiseTurninDirections
         })
     }
 
     counterClockwise(field){
-        this.coordinate = (new CounterClockwise()).rotate({
+        this.coordinate = Rotate.counterClockwise({
             field:field,
-            type:this.type,
             coordinate:this.coordinate,
-            rotationPoint:2
+            rotationPoint:2,
+            directions:this.counterClockwiseTurninDirections
         })
     }
 }

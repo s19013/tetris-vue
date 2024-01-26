@@ -1,3 +1,7 @@
+import * as ClockwiseHelper from "../ClockwiseHelper"
+import * as CounterClockwiseHelper from "../CounterClockwiseHelper"
+import lodash from "lodash";
+
 export default class Coordinate{
     constructor(status) {
         this.status = status 
@@ -24,4 +28,31 @@ export default class Coordinate{
          for (let block of this.status) {block.y += 1} 
          return new Coordinate(this.status)
     }
+
+    clockwise({ rotationPoint }) {
+          const clonedStatus = lodash.cloneDeep(this.status)
+          const calculated = clonedStatus.map(
+               block => {
+               return ClockwiseHelper.equation({
+                    rotationPoint:clonedStatus[rotationPoint],
+                    beforeRotation:block
+               })
+          })
+
+          return new Coordinate(calculated)
+     }
+
+    counterClockwise({ rotationPoint }){
+          const clonedStatus = lodash.cloneDeep(this.status)
+          const calculated = clonedStatus.map(
+               block => {
+               return CounterClockwiseHelper.equation({
+                    rotationPoint:clonedStatus[rotationPoint],
+                    beforeRotation:block
+               })
+          })
+
+          return new Coordinate(calculated)
+     }
+
 }
