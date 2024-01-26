@@ -1,9 +1,11 @@
 import {fieldWidth,fieldHeight} from "./Config"
+import lodash from 'lodash';
 
 /** 動かせるかどうかチェック */
 export default class checkCanMove {
 
     left({Field,tetrimino}){
+        const clonedField = lodash.cloneDeep(Field)
 
         /** 壁にぶつからないか調べる 
          *  左に動かすと壁にぶつかるということは今左端のブロックはx = 0の場所,もしくはそれよりも小さい場所にいることになる
@@ -25,10 +27,10 @@ export default class checkCanMove {
             /** 自分の左に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
-            if (Field.status[block.y][block.x - 1].isMoving) { continue }
+            if (clonedField.status[block.y][block.x - 1].isMoving) { continue }
 
             /** 自分の左にブロックがないか調べる */
-            if (Field.status[block.y][block.x - 1].isFill) { return false }
+            if (clonedField.status[block.y][block.x - 1].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
@@ -36,6 +38,8 @@ export default class checkCanMove {
     }
 
     right({Field,tetrimino}){
+        const clonedField = lodash.cloneDeep(Field)
+
         /** 右端 */
         const rightEdge = fieldWidth - 1
 
@@ -58,10 +62,10 @@ export default class checkCanMove {
             /** 自分の右に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
-            if (Field.status[block.y][block.x + 1].isMoving) { continue }
+            if (clonedField.status[block.y][block.x + 1].isMoving) { continue }
 
             /** 自分の右にブロックがないか調べる */
-            if (Field.status[block.y][block.x + 1].isFill) { return false }
+            if (clonedField.status[block.y][block.x + 1].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
@@ -69,6 +73,7 @@ export default class checkCanMove {
     }
 
     down({Field,tetrimino}){
+        const clonedField = lodash.cloneDeep(Field)
 
         const bottom  = fieldHeight - 1;
 
@@ -91,10 +96,10 @@ export default class checkCanMove {
             /** 自分の下に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
-            if (Field.status[block.y + 1][block.x].isMoving) { continue }
+            if (clonedField.status[block.y + 1][block.x].isMoving) { continue }
 
             /** 自分の下にブロックがないか調べる */
-            if (Field.status[block.y + 1][block.x].isFill) { return false }
+            if (clonedField.status[block.y + 1][block.x].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
@@ -102,7 +107,7 @@ export default class checkCanMove {
     }
 
     up({Field,tetrimino}){
-        /** ぶつかる物が1つでもあれば落ちないようにする */ 
+        const clonedField = lodash.cloneDeep(Field)
 
         /** 天辺にぶつからないか調べる 
          *  上に動かすと天辺にぶつかるということは今上端のブロックはy = 0,もしくはそれよりも小さい場所にいることになる
@@ -121,10 +126,10 @@ export default class checkCanMove {
             /** 自分の下に属してるグループのブロックがないか調べる
              *  あったらスキップする
              */
-            if (Field.status[block.y - 1][block.x].isMoving) { continue }
+            if (clonedField.status[block.y - 1][block.x].isMoving) { continue }
 
             /** 自分の上にブロックがないか調べる */
-            if (Field.status[block.y - 1][block.x].isFill) { return false }
+            if (clonedField.status[block.y - 1][block.x].isFill) { return false }
         }
 
         /** ここまで確認してやっと動かせると返す */
