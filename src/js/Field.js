@@ -1,4 +1,3 @@
-import Block from "./Block"
 import {fieldWidth,fieldHeight} from "./Config"
 import lodash from 'lodash';
 export default class Field {
@@ -19,7 +18,7 @@ export default class Field {
     generateRow(){
         let row = []
         for (let n = 0; n < fieldWidth; n++) {
-            row.push(new Block())
+            row.push(false)
         }
         return row
     }
@@ -41,7 +40,8 @@ export default class Field {
         for (let index = 0; index < fieldHeight; index++) {
             /** 配列の中身を全部足す */
             this.rowStatus[index] = this.status[index].reduce((a,b) => {
-                return a + Number(b.isFill);
+                // trueを1に変換
+                return a + Number(b);
             },0);
         }
     }
@@ -83,57 +83,19 @@ export default class Field {
     }
 
     /** テトリミノがフィールドにすでにおいてるブロックに重なってないか調べる */
+    // -> その場所が相手いればよい
     // 1つでも重なってはいけない
     tetriminoIsNotOverlap(coordinate){
         return coordinate.status.every(block => 
-            !(this.status[block.y][block.x].isFill == true && this.status[block.y][block.x].isMoving == false)
+            this.status[block.y][block.x] == false
         );
-    }
-
-    // ---
-    // 描写関係
-    displayTetrimino(tetrimino){
-        for (let block of tetrimino.coordinate.status) {
-            this.status[block.y][block.x].isFill = true
-            this.status[block.y][block.x].isMoving = true
-        }
-    }
-
-    undisplayTetrimino(tetrimino){
-        for (let block of tetrimino.coordinate.status) {
-            this.status[block.y][block.x].isFill = false
-            this.status[block.y][block.x].isMoving = false
-        }
-    }
-
-
-    displayGhost(ghost){
-        for (let block of ghost.coordinate.status) {
-            this.status[block.y][block.x].ghost = true
-        }
-    }
-
-    undisplayGhost(ghost){
-        for (let block of ghost.coordinate.status) {
-            this.status[block.y][block.x].ghost = false
-        }
-    }
-
-    // 揃っている列に色を塗る
-    EnableLined(){
-        for (let index = 0; index < fieldHeight; index++) {
-            // 揃っていたらlinedプロパティをtrueにする
-            if (this.rowStatus[index] == fieldWidth) { 
-                for (const block of this.status[index]) { block.lined = true } 
-            }
-        }
     }
 
     /** 動かしているテトリミノを固定化する */
     immobilization(tetrimino){
         // movingを外して固定化(動かせなく)する
         for (let block of tetrimino.coordinate.status) {
-            this.status[block.y][block.x].isMoving = false
+            this.status[block.y][block.x] = true
         }
     }
 
