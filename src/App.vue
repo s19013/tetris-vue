@@ -250,6 +250,20 @@ export default {
     }
   }
   .Center {
+    display: grid;
+    grid-template-rows: 10fr 1fr;
+    grid-template-columns: 1fr;
+    .Tetrimino {
+      position: absolute;
+      grid-row: 1/2;
+    }
+    .Field {
+      position: relative;
+      grid-row: 1/2;
+    }
+    p {
+      grid-row: 2/3;
+    }
   }
   .RightInfo {
     table {
