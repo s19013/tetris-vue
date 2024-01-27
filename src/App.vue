@@ -3,6 +3,7 @@ import Tetris from '@/js/Tetris.js'
 import Field from './components/Field.vue'
 import Next from './components/Next.vue'
 import Hold from './components/Hold.vue'
+import Tetrimino from './components/Tetrimino.vue'
 import GameEnd from './components/GameEnd.vue'
 import lodash from 'lodash'
 
@@ -11,6 +12,7 @@ export default {
     Field,
     Next,
     Hold,
+    Tetrimino,
     GameEnd
   },
   data() {
@@ -19,6 +21,7 @@ export default {
       field: [],
       next: [],
       hold: '',
+      tetrimino: [],
       isGameOver: false,
       sleeping: false,
       score: 0,
@@ -92,6 +95,7 @@ export default {
       this.field = lodash.cloneDeep(this.tetris.Field.status)
       this.next = lodash.cloneDeep(this.tetris.next.list)
       this.hold = this.tetris.hold.holdingTetrimino
+      this.tetrimino = lodash.cloneDeep(this.tetris.tetrimino.coordinate.status)
       this.isGameOver = this.tetris.isGameOver
       this.sleeping = this.tetris.sleeping
       this.score = this.tetris.score.score
@@ -115,7 +119,7 @@ export default {
   beforeMount() {
     // タイミングの問題でここ
     // mountedだと遅すぎてエラーになる
-    this.next = this.tetris.next.list
+    this.reRender()
   },
   mounted() {
     // 定期的再描画
@@ -147,6 +151,7 @@ export default {
         <p class="isTetris" v-show="isTetris">Tetris!</p>
       </div>
       <div class="Center">
+        <Tetrimino :tetrimino="tetrimino" />
         <Field :field="field" />
         <p class="Score">{{ score }}</p>
       </div>
