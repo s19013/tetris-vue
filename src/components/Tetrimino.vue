@@ -28,11 +28,9 @@ export default {
           :class="{
             // pretterが見づらい形に壊す…
             // x,yは1から始める故に変な書き方になる
-            moving:
-              (tetrimino[0].x === x - 1 && tetrimino[0].y === y + effectiveRoof - 1) ||
-              (tetrimino[1].x === x - 1 && tetrimino[1].y === y + effectiveRoof - 1) ||
-              (tetrimino[2].x === x - 1 && tetrimino[2].y === y + effectiveRoof - 1) ||
-              (tetrimino[3].x === x - 1 && tetrimino[3].y === y + effectiveRoof - 1)
+            moving: tetrimino.some((block) => {
+              return block.x === x - 1 && block.y === y + effectiveRoof - 1
+            })
           }"
         ></li>
       </template>
