@@ -1,12 +1,17 @@
 <script>
+import { fieldWidth, fieldHeight, effectiveRoof } from '@/js/Config.js'
 export default {
   components: {},
   data() {
-    return {}
+    return {
+      width: fieldWidth,
+      effectiveRoof: effectiveRoof,
+      hight: fieldHeight - effectiveRoof
+    }
   },
   props: {
     field: {
-      type: Array
+      type: Object
     }
   },
   methods: {},
@@ -16,14 +21,14 @@ export default {
 
 <template>
   <div class="Field">
-    <ul v-for="index in field.length" :key="index">
-      <template v-for="(block, index) in field[index + 9]" :key="index">
+    <ul v-for="y in field.status.length" :key="y">
+      <!-- 横の列を表示 配列を並べていってる -->
+      <!-- 一意にするためにindexを使ってる -->
+      <template v-for="(block, index) in field.status[y - 1 + effectiveRoof]" :key="index">
         <li
           :class="{
-            fill: block.isFill == true,
-            moving: block.isMoving == true,
-            ghost: block.ghost == true,
-            lined: block.lined == true
+            fill: block == true,
+            lined: field.rowStatus[y - 1 + effectiveRoof] == width
           }"
         ></li>
       </template>
@@ -51,12 +56,6 @@ li {
 }
 .fill {
   background-color: aquamarine;
-}
-.ghost {
-  background-color: rgb(255, 203, 183);
-}
-.moving {
-  background-color: rgb(255, 163, 127);
 }
 
 .lined {
