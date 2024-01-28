@@ -267,9 +267,7 @@ export default class Tetris {
 
         if (countOfAlignedRow > 0) {
             // 演出の関係上一旦処理を止める
-            this.enableSleeping()
             await this.sleep(800) 
-            this.disableSleeping()
 
             /** 揃っている列を消す */
             this.Field.vanishAlignedRows()
@@ -366,5 +364,9 @@ export default class Tetris {
         this.ojyama.disableSleeping()
     }
 
-    sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+    async sleep(ms){
+        this.enableSleeping()
+        await new Promise(resolve => setTimeout(resolve, ms))
+        this.disableSleeping()
+    }
 }
