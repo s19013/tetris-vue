@@ -279,6 +279,7 @@ export default class Tetris {
         /** おじゃまを発動できるか調べて実行 */
         if (this.ojyama.checkWhetherToExecuteOjyama()) {
             this.Field = this.ojyama.insertOjyama(this.Field)
+            // おじゃまブロックの挿入後に短い遅延を入れることで、ゲームプレイの流れを自然にする
             await this.sleep(600)
         }
 
