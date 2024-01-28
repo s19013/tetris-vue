@@ -21,7 +21,7 @@ export default {
 
 <template>
   <div class="Ghost">
-    <!-- この場合､x,yは1から始まる -->
+    <!-- 仕様上､x,yは1から始まるからindexを参照した場合-1 する必要がある-->
     <ul v-for="y in hight" :key="y">
       <template v-for="x in width" :key="x">
         <li
@@ -29,7 +29,7 @@ export default {
             // pretterが見づらい形に壊す…
             // x,yは1から始める故に変な書き方になる
             ghost: ghost.some((block) => {
-              return block.x === x - 1 && block.y === y + effectiveRoof - 1
+              return block.x === x - 1 && block.y === y - 1 + effectiveRoof
             })
           }"
         ></li>
