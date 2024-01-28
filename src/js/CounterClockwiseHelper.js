@@ -1,23 +1,4 @@
 
-import lodash from "lodash";
-
-/** すべてのブロックを計算して返す */
-export function calculation({
-    coordinate,
-    rotationPoint
-}) {
-    const clonedCoordinate = lodash.cloneDeep(coordinate)
-    const calculated = clonedCoordinate.status.map(
-        block => {
-        return equation({
-            rotationPoint:clonedCoordinate.status[rotationPoint],
-            beforeRotation:block
-        })
-    })
-
-    return  calculated
-}
-
 /** 回転前点{a,b} 回転点 {c,d} */
 /** X = (a - c)cos𝜃 - (b - d)sin𝜃 + c */
 /** Y = (a - c)sin𝜃 + (b - d)cos𝜃 + d */

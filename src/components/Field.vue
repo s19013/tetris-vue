@@ -6,7 +6,7 @@ export default {
     return {
       width: fieldWidth,
       effectiveRoof: effectiveRoof,
-      hight: fieldHeight - effectiveRoof
+      height: fieldHeight - effectiveRoof
     }
   },
   props: {
@@ -60,5 +60,16 @@ li {
 
 .lined {
   background-color: rgb(251, 255, 140);
+  animation-duration: 0.8s;
+  animation-name: bg-color;
+}
+
+@keyframes bg-color {
+  0% {
+    background-color: aquamarine;
+  }
+  20% {
+    background-color: rgb(251, 255, 140);
+  }
 }
 </style>

@@ -95,7 +95,7 @@ export default {
       this.reRender()
     },
     reRender() {
-      this.field = lodash.cloneDeep(this.tetris.Field.status)
+      this.field = lodash.cloneDeep(this.tetris.Field)
       this.next = lodash.cloneDeep(this.tetris.next.list)
       this.hold = this.tetris.hold.holdingTetrimino
       this.tetrimino = lodash.cloneDeep(this.tetris.tetrimino.coordinate.status)

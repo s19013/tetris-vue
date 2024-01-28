@@ -6,6 +6,7 @@ import Hold from "./Hold.js"
 import Score from "./Score.js"
 import GameOverPolicty from "./GameOver/GameOverPolicy.js"
 import {levelConfig} from "./Level.js"
+import Tetrimino from "./Tetrimino/Tetrimino.js"
 import lodash from 'lodash';
 
 
@@ -44,7 +45,7 @@ export default class Tetris {
     time = 0
 
     /** 動かせるブロックたちの座標 と ブロックの種類*/
-    tetrimino = {}
+    tetrimino = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
 
     /** 動かす前のブロックの位置 */
     oldTetrimino = {}
@@ -237,12 +238,21 @@ export default class Tetris {
     /** 動かしているブロックを固定化する */
     async immobilization(){
         this.Field.immobilization(this.tetrimino)
-
         this.ProcessingAfterImmobilization()
     }
 
     /** 固定化した後にする処理を全部まとめた */
+    // 今は適切な分け方がわからない
     async ProcessingAfterImmobilization(){
+        // 固定化したテトリミノはフィールドクラスに情報を渡したのでもう表示しなくて良い
+        // だからここでリセットする
+        // そしてリセットしないと揃ったアニメーションが阻害される
+
+        // 今は問題がないが､描写関連でエラーがでたらおそらくここが問題だと思う
+        this.tetrimino = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
+        this.ghost = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
+
+
         /** 揃っているかを調べる */
         let countOfAlignedRow = this.Field.countAlignedRows()
 
