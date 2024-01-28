@@ -6,7 +6,7 @@ export default {
     return {
       width: fieldWidth,
       effectiveRoof: effectiveRoof,
-      hight: fieldHeight - effectiveRoof
+      height: fieldHeight - effectiveRoof
     }
   },
   props: {
@@ -22,7 +22,7 @@ export default {
 <template>
   <div class="Tetrimino">
     <!-- 仕様上､x,yは1から始まるからindexを参照した場合-1 する必要がある-->
-    <ul v-for="y in hight" :key="y">
+    <ul v-for="y in height" :key="y">
       <template v-for="x in width" :key="x">
         <li
           :class="{

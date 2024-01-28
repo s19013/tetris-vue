@@ -6,7 +6,7 @@ export default {
     return {
       width: fieldWidth,
       effectiveRoof: effectiveRoof,
-      hight: fieldHeight - effectiveRoof
+      height: fieldHeight - effectiveRoof
     }
   },
   props: {
