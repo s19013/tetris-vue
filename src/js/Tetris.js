@@ -80,7 +80,6 @@ export default class Tetris {
         this.saveCurrentPosition()
 
         // 落ちてくるブロックをフィールドに出現させる
-        this.reRenderTetrimino()
         this.reRenderGhost()
 
     }
@@ -126,7 +125,6 @@ export default class Tetris {
             /** 位置を更新 */
             this.tetrimino.moveLeft()
 
-            this.reRenderTetrimino()
             this.reRenderGhost()
         }
     }
@@ -142,7 +140,6 @@ export default class Tetris {
             /** 位置を更新 */
             this.tetrimino.moveRight()
 
-            this.reRenderTetrimino()
             this.reRenderGhost()
         }
     }
@@ -151,8 +148,6 @@ export default class Tetris {
         this.saveCurrentPosition()
 
         this.tetrimino.clockwise(this.Field)
-
-        this.reRenderTetrimino()
         this.reRenderGhost()
     }
 
@@ -160,8 +155,6 @@ export default class Tetris {
         this.saveCurrentPosition()
 
         this.tetrimino.counterClockwise(this.Field)
-
-        this.reRenderTetrimino()
         this.reRenderGhost()
 
     }
@@ -171,10 +164,6 @@ export default class Tetris {
         if (this.hold.cannotHold) { return  }
 
         this.saveCurrentPosition()
-
-        // 古い場所のテトリミノやゴーストを消しとく
-        this.Field.undisplayTetrimino(this.oldTetrimino)
-        this.Field.undisplayGhost(this.oldGhost)
 
         // ホールドしてるのを取り出す
         let tetriminoTakenOut = this.hold.takeOut()
@@ -213,9 +202,6 @@ export default class Tetris {
 
         /** 位置を更新 */
         this.tetrimino.moveDown()
-
-        // this.reRenderGhost() 重くなるしほぼ意味ない
-        this.reRenderTetrimino()
     }
 
     hardDrop(){
@@ -227,26 +213,13 @@ export default class Tetris {
 
         // ゴーストの位置に移動する
         this.tetrimino = lodash.cloneDeep(this.ghost);
-
-        this.reRenderTetrimino()
         this.reRenderGhost()
 
         // 固定化
         this.immobilization()
     }
 
-    reRenderTetrimino(){
-        /** 古い場所のブロックを消して */
-        this.Field.undisplayTetrimino(this.oldTetrimino)
-
-        /** 新しい場所に描写 */
-        this.Field.displayTetrimino(this.tetrimino)
-    }
-
     reRenderGhost(){
-        /** 古い場所のゴーストを消して */
-        this.Field.undisplayGhost(this.oldGhost)
-
         // ghostを動かすための準備
         this.ghost = lodash.cloneDeep(this.tetrimino)
 
@@ -259,15 +232,11 @@ export default class Tetris {
             // 1つ下に動かす
             this.ghost.moveDown()
         }
-
-        this.Field.displayGhost(this.ghost)
     }
 
     /** 動かしているブロックを固定化する */
     async immobilization(){
         this.Field.immobilization(this.tetrimino)
-        
-        this.Field.undisplayGhost(this.ghost)
 
         this.ProcessingAfterImmobilization()
     }
@@ -287,8 +256,6 @@ export default class Tetris {
         this.countOfLinesVanished += countOfAlignedRow
 
         if (countOfAlignedRow > 0) {
-            this.Field.EnableLined()
-
             // 演出の関係上一旦処理を止める
             this.enableSleeping()
             await this.sleep(800) 
