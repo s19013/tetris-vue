@@ -279,6 +279,7 @@ export default class Tetris {
         /** おじゃまを発動できるか調べて実行 */
         if (this.ojyama.checkWhetherToExecuteOjyama()) {
             this.Field = this.ojyama.insertOjyama(this.Field)
+            await this.sleep(600)
         }
 
         /** ゲームオーバーになっているかどうか調べる */
