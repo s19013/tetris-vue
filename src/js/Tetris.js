@@ -80,7 +80,6 @@ export default class Tetris {
         this.saveCurrentPosition()
 
         // 落ちてくるブロックをフィールドに出現させる
-        this.reRenderTetrimino()
         this.reRenderGhost()
 
     }
@@ -94,7 +93,7 @@ export default class Tetris {
     keyDownDown(){
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.down({
-                Field:lodash.cloneDeep(this.Field),
+                Field:this.Field,
                 tetrimino:this.tetrimino
             })
         ) {
@@ -117,7 +116,7 @@ export default class Tetris {
     keyDownLeft(){
         /** 動かせるかどうか確認*/
         if (this.checkCanMove.left({
-                Field:lodash.cloneDeep(this.Field),
+                Field:this.Field,
                 tetrimino:this.tetrimino
             })
         ) {
@@ -126,14 +125,13 @@ export default class Tetris {
             /** 位置を更新 */
             this.tetrimino.moveLeft()
 
-            this.reRenderTetrimino()
             this.reRenderGhost()
         }
     }
 
     keyDownRight(){
         if (this.checkCanMove.right({
-                Field:lodash.cloneDeep(this.Field),
+                Field:this.Field,
                 tetrimino:this.tetrimino
             })
         ) {
@@ -142,7 +140,6 @@ export default class Tetris {
             /** 位置を更新 */
             this.tetrimino.moveRight()
 
-            this.reRenderTetrimino()
             this.reRenderGhost()
         }
     }
@@ -150,18 +147,14 @@ export default class Tetris {
     keyDownL(){
         this.saveCurrentPosition()
 
-        this.tetrimino.clockwise(lodash.cloneDeep(this.Field))
-
-        this.reRenderTetrimino()
+        this.tetrimino.clockwise(this.Field)
         this.reRenderGhost()
     }
 
     keyDownJ(){
         this.saveCurrentPosition()
 
-        this.tetrimino.counterClockwise(lodash.cloneDeep(this.Field))
-
-        this.reRenderTetrimino()
+        this.tetrimino.counterClockwise(this.Field)
         this.reRenderGhost()
 
     }
@@ -171,10 +164,6 @@ export default class Tetris {
         if (this.hold.cannotHold) { return  }
 
         this.saveCurrentPosition()
-
-        // 古い場所のテトリミノやゴーストを消しとく
-        this.Field.undisplayTetrimino(this.oldTetrimino)
-        this.Field.undisplayGhost(this.oldGhost)
 
         // ホールドしてるのを取り出す
         let tetriminoTakenOut = this.hold.takeOut()
@@ -199,7 +188,7 @@ export default class Tetris {
          *  下記のコードは自動落下用
         */
         if (this.checkCanMove.down({
-                Field:lodash.cloneDeep(this.Field),
+                Field:this.Field,
                 tetrimino:this.tetrimino
             })
             == false
@@ -213,9 +202,6 @@ export default class Tetris {
 
         /** 位置を更新 */
         this.tetrimino.moveDown()
-
-        // this.reRenderGhost() 重くなるしほぼ意味ない
-        this.reRenderTetrimino()
     }
 
     hardDrop(){
@@ -227,47 +213,30 @@ export default class Tetris {
 
         // ゴーストの位置に移動する
         this.tetrimino = lodash.cloneDeep(this.ghost);
-
-        this.reRenderTetrimino()
         this.reRenderGhost()
 
         // 固定化
         this.immobilization()
     }
 
-    reRenderTetrimino(){
-        /** 古い場所のブロックを消して */
-        this.Field.undisplayTetrimino(this.oldTetrimino)
-
-        /** 新しい場所に描写 */
-        this.Field.displayTetrimino(this.tetrimino)
-    }
-
     reRenderGhost(){
-        /** 古い場所のゴーストを消して */
-        this.Field.undisplayGhost(this.oldGhost)
-
         // ghostを動かすための準備
         this.ghost = lodash.cloneDeep(this.tetrimino)
 
         // ブロックを限界が来るまで下に動かす
         // falseが帰ってくるまで回し続ける
         while (this.checkCanMove.down({
-            Field:lodash.cloneDeep(this.Field),
-            tetrimino:lodash.cloneDeep(this.ghost)
+            Field:this.Field,
+            tetrimino:this.ghost
         })) {
             // 1つ下に動かす
             this.ghost.moveDown()
         }
-
-        this.Field.displayGhost(this.ghost)
     }
 
     /** 動かしているブロックを固定化する */
     async immobilization(){
         this.Field.immobilization(this.tetrimino)
-        
-        this.Field.undisplayGhost(this.ghost)
 
         this.ProcessingAfterImmobilization()
     }
@@ -287,8 +256,6 @@ export default class Tetris {
         this.countOfLinesVanished += countOfAlignedRow
 
         if (countOfAlignedRow > 0) {
-            this.Field.EnableLined()
-
             // 演出の関係上一旦処理を止める
             this.enableSleeping()
             await this.sleep(800) 

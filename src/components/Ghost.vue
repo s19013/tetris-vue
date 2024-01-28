@@ -10,7 +10,7 @@ export default {
     }
   },
   props: {
-    field: {
+    ghost: {
       type: Object
     }
   },
@@ -20,15 +20,17 @@ export default {
 </script>
 
 <template>
-  <div class="Field">
-    <ul v-for="y in field.status.length" :key="y">
-      <!-- 横の列を表示 配列を並べていってる -->
-      <!-- 一意にするためにindexを使ってる -->
-      <template v-for="(block, index) in field.status[y - 1 + effectiveRoof]" :key="index">
+  <div class="Ghost">
+    <!-- 仕様上､x,yは1から始まるからindexを参照した場合-1 する必要がある-->
+    <ul v-for="y in hight" :key="y">
+      <template v-for="x in width" :key="x">
         <li
           :class="{
-            fill: block == true,
-            lined: field.rowStatus[y - 1 + effectiveRoof] == width
+            // pretterが見づらい形に壊す…
+            // x,yは1から始める故に変な書き方になる
+            ghost: ghost.some((block) => {
+              return block.x === x - 1 && block.y === y - 1 + effectiveRoof
+            })
           }"
         ></li>
       </template>
@@ -37,11 +39,11 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.Field {
+.Ghost {
   width: fit-content;
   height: fit-content; // 中身に幅をあわせる
   border: 1px black solid;
-  z-index: 1;
+  z-index: 2;
 }
 ul {
   display: flex;
@@ -54,11 +56,7 @@ li {
   padding: 10px 10px;
   border: 1px rgb(162, 162, 162) solid;
 }
-.fill {
-  background-color: aquamarine;
-}
-
-.lined {
-  background-color: rgb(251, 255, 140);
+.ghost {
+  background-color: rgb(255, 203, 183);
 }
 </style>

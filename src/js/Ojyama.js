@@ -1,6 +1,5 @@
 import {fieldWidth} from "./Config"
 import lodash from 'lodash';
-import Block from "./Block"
 
 export default class Ojyama{
     constructor() {
@@ -22,8 +21,8 @@ export default class Ojyama{
     
         let row = []
         for (let n = 0; n < fieldWidth; n++) {
-            if (hole == n) { row.push(new Block()) }
-            else {row.push(new Block(true))}
+            if (hole == n) { row.push(false) }
+            else {row.push(true)}
         }
     
         return row

@@ -7,8 +7,8 @@ export default class Rule1{
         // {x:3,y:effectiveRoof - 1} ~ {x:6,y:effectiveRoof - 1}
         // の範囲にブロックがあるかどうか
         for (let index = 3; index < 6; index++) {
-            if (Field.status[effectiveRoof][index].isFill) { return true }
-            if (Field.status[effectiveRoof - 1][index].isFill) { return true }
+            if (Field.status[effectiveRoof][index]) { return true }
+            if (Field.status[effectiveRoof - 1][index]) { return true }
         }
         return false
     }
