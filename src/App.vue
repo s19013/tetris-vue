@@ -24,7 +24,6 @@ export default {
       tetris: new Tetris(),
       field: [],
       next: [],
-      hold: '',
       tetrimino: [],
       ghost: [],
       isTetris: false,
@@ -91,7 +90,6 @@ export default {
     reRender() {
       this.field = lodash.cloneDeep(this.tetris.Field)
       this.next = lodash.cloneDeep(this.tetris.next.list)
-      this.hold = this.tetris.hold.holdingTetrimino
       this.tetrimino = lodash.cloneDeep(this.tetris.tetrimino.coordinate.status)
       this.ghost = lodash.cloneDeep(this.tetris.ghost.coordinate.status)
       this.isTetris = this.tetris.score.isTetris
@@ -135,7 +133,7 @@ export default {
     <a href="https://github.com/s19013/tetris-vue">コード</a>
     <div class="game">
       <div class="LeftInfo">
-        <Hold :hold="hold" />
+        <Hold :hold="this.tetris.hold.holdingTetrimino" />
         <div class="coution">
           <p v-show="this.tetris.ojyama.countDown <= 2000">Danger!!</p>
         </div>
