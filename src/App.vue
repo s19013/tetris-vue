@@ -32,11 +32,8 @@ export default {
   methods: {
     keyEvents(event) {
       // _.debounce(,1000)
-      try {
-        event.preventDefault()
-      } catch (error) {
-        console.log()
-      }
+      // ここで通常のキーボード動作が動かないように釘をさす
+      event.preventDefault()
 
       let code = event.code
 
@@ -133,6 +130,7 @@ export default {
       <div class="LeftInfo">
         <Hold :hold="this.tetris.hold.holdingTetrimino" />
         <div class="coution">
+          <!-- 2秒前になったら警告を出す -->
           <p v-show="this.tetris.ojyama.countDown <= 2000">Danger!!</p>
         </div>
         <p class="Ren" v-show="this.tetris.score.ren > 0">Ren:{{ this.tetris.score.ren }}</p>
