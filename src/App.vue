@@ -26,7 +26,8 @@ export default {
       next: [],
       tetrimino: [],
       ghost: [],
-      reRendIntervalId: 0
+      reRendIntervalId: 0,
+      inPreparation: true
     }
   },
   methods: {
@@ -38,8 +39,12 @@ export default {
       let code = event.code
 
       // 動かせない状態(ルール)のときは動かせないようにする
-      if (this.tetris.isGameOver || this.tetris.sleeping) {
-        return
+      // ルールを変数に入れようとしたが､一部動的に動くせいで正しく動作しない｡
+      // ここでしか使わないのでこの方法を取る
+      for (const rule of [this.tetris.isGameOver, this.tetris.sleeping, this.inPreparation]) {
+        if (rule) {
+          return
+        }
       }
 
       /** 上 */
@@ -90,6 +95,7 @@ export default {
       this.ghost = lodash.cloneDeep(this.tetris.ghost.coordinate.status)
     },
     gameStart() {
+      this.inPreparation = false
       this.tetris.gameStart()
       // 定期的再描画
       this.reRendIntervalId = setInterval(this.reRender, 100)
