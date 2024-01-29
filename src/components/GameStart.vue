@@ -16,7 +16,7 @@ export default {
 
 <template>
   <div class="GameStart" v-if="flag">
-    <div class="contaner">
+    <div class="container">
       <button @click="gameStart()">始める</button>
     </div>
   </div>
@@ -34,7 +34,7 @@ export default {
   text-align: center;
   align-items: center;
   justify-content: center;
-  .contaner {
+  .container {
     position: fixed;
     top: 40vh;
     left: 45vw;

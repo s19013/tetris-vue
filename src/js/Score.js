@@ -27,18 +27,18 @@ export default class Score{
     }
 
     /** 計算 */
-    calculation({countOfAlignedRow,level}){
+    calculation({countOfAlignedRows,level}){
 
         /** 一列も揃ってない時はさっさと返す */
-        if (countOfAlignedRow == 0) {
+        if (countOfAlignedRows == 0) {
             this.back2back = false
             this.ren = 0
             return 
         }
 
-        this.addScore(countOfAlignedRow * countOfAlignedRow * level * 10)
+        this.addScore(countOfAlignedRows * countOfAlignedRows * level * 10)
 
-        if (countOfAlignedRow == 4) {
+        if (countOfAlignedRows == 4) {
             this.isTetris = true
 
             // これは表示用なので数秒たったら消す
@@ -54,6 +54,6 @@ export default class Score{
         this.addScore(this.ren * 10 * level)
         
         // renを加える
-        this.ren += countOfAlignedRow
+        this.ren += countOfAlignedRows
     }
 }

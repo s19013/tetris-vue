@@ -232,16 +232,16 @@ export default class Tetris {
         this.resetGhost()
 
         /** 揃っているかを調べる */
-        let countOfAlignedRow = this.Field.countAlignedRows()
+        let countOfAlignedRows = this.Field.countAlignedRows()
 
         // スコアなどに揃った列を足す
-        this.addAlignedRows(countOfAlignedRow)
+        this.addAlignedRows(countOfAlignedRows)
 
         /** レベル計算 */
-        this.calculateLevel(countOfAlignedRow)
+        this.calculateLevel(countOfAlignedRows)
 
         // 揃ってる列があるなら消す
-        await this.vanishAlignedRows(countOfAlignedRow)
+        await this.vanishAlignedRows(countOfAlignedRows)
 
         // 状況によってはおじゃま発動を発動させる
         await this.insertOjyama()
@@ -266,21 +266,21 @@ export default class Tetris {
     }
 
     // スコアなどに揃った列を足す
-    addAlignedRows(countOfAlignedRow){
+    addAlignedRows(countOfAlignedRows){
         /** 揃った列をスコアとして足す */
         this.score.calculation({
-            countOfAlignedRow:countOfAlignedRow,
+            countOfAlignedRows:countOfAlignedRows,
             level:this.level
         })
 
         /** 消した列の合計に足す */
-        this.countOfLinesVanished += countOfAlignedRow
+        this.countOfLinesVanished += countOfAlignedRows
     }
 
     // レベル計算
-    calculateLevel(countOfAlignedRow){
+    calculateLevel(countOfAlignedRows){
         // 揃ってる列が1つも無いなら動かす必要がない
-        if (countOfAlignedRow === 0) {return }
+        if (countOfAlignedRows === 0) {return }
 
         const currentLevel = levelConfig.find(config => this.countOfLinesVanished >= config.threshold);
         this.level = currentLevel.level
@@ -288,8 +288,8 @@ export default class Tetris {
         this.ojyama.predeterminedTimeSetter(currentLevel.ojyamaInterval)
     }
 
-    async vanishAlignedRows(countOfAlignedRow){
-        if (countOfAlignedRow === 0) { return }
+    async vanishAlignedRows(countOfAlignedRows){
+        if (countOfAlignedRows === 0) { return }
 
         // 演出の関係上一旦処理を止める
         await this.sleep(800) 
