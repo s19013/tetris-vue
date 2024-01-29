@@ -28,7 +28,6 @@ export default {
       tetrimino: [],
       ghost: [],
       isGameOver: false,
-      ren: 0,
       level: 0,
       countOfLinesVanished: 0,
       timer: 0,
@@ -101,7 +100,6 @@ export default {
       this.tetrimino = lodash.cloneDeep(this.tetris.tetrimino.coordinate.status)
       this.ghost = lodash.cloneDeep(this.tetris.ghost.coordinate.status)
       this.isGameOver = this.tetris.isGameOver
-      this.ren = this.tetris.score.ren
       this.isTetris = this.tetris.score.isTetris
       this.level = this.tetris.level
       this.countOfLinesVanished = this.tetris.countOfLinesVanished
@@ -151,7 +149,7 @@ export default {
         <div class="coution">
           <p v-show="ojyamaCountDown <= 3000">Danger!!</p>
         </div>
-        <p class="Ren" v-show="ren > 0">Ren:{{ ren }}</p>
+        <p class="Ren" v-show="this.tetris.score.ren > 0">Ren:{{ this.tetris.score.ren }}</p>
         <p class="isTetris" v-show="isTetris">Tetris!</p>
       </div>
       <div class="Center">
