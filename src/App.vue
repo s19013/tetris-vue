@@ -27,7 +27,6 @@ export default {
       hold: '',
       tetrimino: [],
       ghost: [],
-      countOfLinesVanished: 0,
       timer: 0,
       ojyamaCountDown: 10,
       isTetris: false,
@@ -98,7 +97,6 @@ export default {
       this.tetrimino = lodash.cloneDeep(this.tetris.tetrimino.coordinate.status)
       this.ghost = lodash.cloneDeep(this.tetris.ghost.coordinate.status)
       this.isTetris = this.tetris.score.isTetris
-      this.countOfLinesVanished = this.tetris.countOfLinesVanished
       this.timer = this.tetris.time
       this.ojyamaCountDown = this.tetris.ojyama.countDown
     },
@@ -163,7 +161,7 @@ export default {
           </tr>
           <tr>
             <td>列数</td>
-            <td>{{ countOfLinesVanished }}</td>
+            <td>{{ this.tetris.countOfLinesVanished }}</td>
           </tr>
           <tr>
             <td>時間</td>
