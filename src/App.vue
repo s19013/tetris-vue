@@ -5,6 +5,7 @@ import Next from './components/Next.vue'
 import Hold from './components/Hold.vue'
 import Tetrimino from './components/Tetrimino.vue'
 import Ghost from './components/Ghost.vue'
+import GameStart from './components/GameStart.vue'
 import GameEnd from './components/GameEnd.vue'
 import lodash from 'lodash'
 
@@ -15,6 +16,7 @@ export default {
     Hold,
     Tetrimino,
     Ghost,
+    GameStart,
     GameEnd
   },
   data() {
@@ -109,6 +111,11 @@ export default {
       this.countOfLinesVanished = this.tetris.countOfLinesVanished
       this.timer = this.tetris.time
       this.ojyamaCountDown = this.tetris.ojyama.countDown
+    },
+    gameStart() {
+      this.tetris.gameStart()
+      // 定期的再描画
+      this.reRendIntervalId = setInterval(this.reRender, 100)
     }
   },
   computed: {
@@ -121,14 +128,10 @@ export default {
   },
   watch: {},
   beforeMount() {
-    // タイミングの問題でここ
-    // mountedだと遅すぎてエラーになる
+    this.tetris.init()
     this.reRender()
   },
   mounted() {
-    // 定期的再描画
-    this.reRendIntervalId = setInterval(this.reRender, 100)
-    this.$nextTick(function () {})
     /** キーボード受付 */
     document.addEventListener('keydown', this.keyEvents)
   },
@@ -142,6 +145,7 @@ export default {
 
 <template>
   <main>
+    <GameStart @gameStart="gameStart" />
     <GameEnd v-if="isGameOver" :score="score" />
     <h1>動きに癖がある非公式テトリス</h1>
     <a href="https://github.com/s19013/tetris-vue">コード</a>
@@ -214,9 +218,6 @@ export default {
         <h2>注意</h2>
         <p>公式といろいろ違う</p>
         <p>回したら大きくずれることがある｡</p>
-        <p>たまに回らない</p>
-        <p>LJの回しいれが発動する条件が違う(縦に1マスすくない)</p>
-        <p>sZを縦に回しいれることができない</p>
         <h2>できないこと(未実装)</h2>
         <p>一部回し入れ</p>
         <p>Back To Back</p>
