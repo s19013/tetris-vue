@@ -26,7 +26,6 @@ export default {
       next: [],
       tetrimino: [],
       ghost: [],
-      isTetris: false,
       reRendIntervalId: 0
     }
   },
@@ -92,7 +91,6 @@ export default {
       this.next = lodash.cloneDeep(this.tetris.next.list)
       this.tetrimino = lodash.cloneDeep(this.tetris.tetrimino.coordinate.status)
       this.ghost = lodash.cloneDeep(this.tetris.ghost.coordinate.status)
-      this.isTetris = this.tetris.score.isTetris
     },
     gameStart() {
       this.tetris.gameStart()
@@ -138,7 +136,7 @@ export default {
           <p v-show="this.tetris.ojyama.countDown <= 2000">Danger!!</p>
         </div>
         <p class="Ren" v-show="this.tetris.score.ren > 0">Ren:{{ this.tetris.score.ren }}</p>
-        <p class="isTetris" v-show="isTetris">Tetris!</p>
+        <p class="isTetris" v-show="this.tetris.score.isTetris">Tetris!</p>
       </div>
       <div class="Center">
         <Tetrimino :tetrimino="tetrimino" />
