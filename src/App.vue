@@ -28,7 +28,6 @@ export default {
       tetrimino: [],
       ghost: [],
       isGameOver: false,
-      score: 0,
       ren: 0,
       level: 0,
       countOfLinesVanished: 0,
@@ -102,7 +101,6 @@ export default {
       this.tetrimino = lodash.cloneDeep(this.tetris.tetrimino.coordinate.status)
       this.ghost = lodash.cloneDeep(this.tetris.ghost.coordinate.status)
       this.isGameOver = this.tetris.isGameOver
-      this.score = this.tetris.score.score
       this.ren = this.tetris.score.ren
       this.isTetris = this.tetris.score.isTetris
       this.level = this.tetris.level
@@ -144,7 +142,7 @@ export default {
 <template>
   <main>
     <GameStart @gameStart="gameStart" />
-    <GameEnd v-if="isGameOver" :score="score" />
+    <GameEnd v-if="isGameOver" :score="this.tetris.score.score" />
     <h1>動きに癖がある非公式テトリス</h1>
     <a href="https://github.com/s19013/tetris-vue">コード</a>
     <div class="game">
@@ -160,7 +158,7 @@ export default {
         <Tetrimino :tetrimino="tetrimino" />
         <Ghost :ghost="ghost" />
         <Field :field="field" />
-        <p class="Score">{{ score }}</p>
+        <p class="Score">{{ this.tetris.score.score }}</p>
       </div>
       <div class="RightInfo">
         <Next :next="next" />
