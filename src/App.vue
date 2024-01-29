@@ -28,7 +28,6 @@ export default {
       tetrimino: [],
       ghost: [],
       isGameOver: false,
-      sleeping: false,
       score: 0,
       ren: 0,
       level: 0,
@@ -51,7 +50,7 @@ export default {
       let code = event.code
 
       // ゲームオーバーしてたら動かない
-      if (this.isGameOver || this.sleeping) {
+      if (this.isGameOver || this.tetris.sleeping) {
         return
       }
 
@@ -103,7 +102,6 @@ export default {
       this.tetrimino = lodash.cloneDeep(this.tetris.tetrimino.coordinate.status)
       this.ghost = lodash.cloneDeep(this.tetris.ghost.coordinate.status)
       this.isGameOver = this.tetris.isGameOver
-      this.sleeping = this.tetris.sleeping
       this.score = this.tetris.score.score
       this.ren = this.tetris.score.ren
       this.isTetris = this.tetris.score.isTetris
