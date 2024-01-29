@@ -23,7 +23,7 @@ export default {
     <div class="container">
       <p>Game Over</p>
       <p>最終スコア:{{ score }}</p>
-      <button @click="reload()">ReTry</button>
+      <button @click="reload()">Retry</button>
     </div>
   </div>
 </template>
@@ -41,9 +41,13 @@ export default {
   align-items: center;
   justify-content: center;
   .container {
-    position: fixed;
-    top: 40vh;
-    left: 45vw;
+    p {
+      font-size: 4rem;
+      margin-top: 10vh;
+    }
+    button {
+      padding: 1rem 5rem;
+    }
   }
 }
 </style>
