@@ -73,7 +73,7 @@ export default {
     height: 100%;
     background-color: #ffca28;
     animation-name: progress;
-    animation-duration: 1.4s;
+    animation-duration: 1.5s;
     animation-timing-function: linear;
     animation-fill-mode: forwards;
   }
@@ -83,7 +83,7 @@ export default {
   0% {
     width: 0;
   }
-  95% {
+  90% {
     width: 100%;
   }
   100% {
