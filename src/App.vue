@@ -27,7 +27,6 @@ export default {
       hold: '',
       tetrimino: [],
       ghost: [],
-      isGameOver: false,
       level: 0,
       countOfLinesVanished: 0,
       timer: 0,
@@ -47,8 +46,8 @@ export default {
 
       let code = event.code
 
-      // ゲームオーバーしてたら動かない
-      if (this.isGameOver || this.tetris.sleeping) {
+      // 動かせない状態(ルール)のときは動かせないようにする
+      if (this.tetris.isGameOver || this.tetris.sleeping) {
         return
       }
 
@@ -99,7 +98,6 @@ export default {
       this.hold = this.tetris.hold.holdingTetrimino
       this.tetrimino = lodash.cloneDeep(this.tetris.tetrimino.coordinate.status)
       this.ghost = lodash.cloneDeep(this.tetris.ghost.coordinate.status)
-      this.isGameOver = this.tetris.isGameOver
       this.isTetris = this.tetris.score.isTetris
       this.level = this.tetris.level
       this.countOfLinesVanished = this.tetris.countOfLinesVanished
@@ -140,7 +138,7 @@ export default {
 <template>
   <main>
     <GameStart @gameStart="gameStart" />
-    <GameEnd v-if="isGameOver" :score="this.tetris.score.score" />
+    <GameEnd v-if="this.tetris.isGameOver" :score="this.tetris.score.score" />
     <h1>動きに癖がある非公式テトリス</h1>
     <a href="https://github.com/s19013/tetris-vue">コード</a>
     <div class="game">
