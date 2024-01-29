@@ -229,45 +229,27 @@ export default class Tetris {
         // そしてリセットしないと揃ったアニメーションが阻害される
 
         // 今は問題がないが､描写関連でエラーがでたらおそらくここが問題だと思う
-        this.tetrimino = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
-        this.ghost = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
-
+        this.resetTetrimino()
+        this.resetGhost()
 
         /** 揃っているかを調べる */
         let countOfAlignedRow = this.Field.countAlignedRows()
 
-        /** 揃った列をスコアとして足す */
-        this.score.calculation({
-            countOfAlignedRow:countOfAlignedRow,
-            level:this.level
-        })
+        // スコアなどに揃った列を足す
+        this.addAlignedRows(countOfAlignedRow)
 
-        /** 消した列の合計に足す */
-        this.countOfLinesVanished += countOfAlignedRow
+        /** レベル計算 */
+        this.calculateLevel(countOfAlignedRow)
 
-        if (countOfAlignedRow > 0) {
-            // 演出の関係上一旦処理を止める
-            await this.sleep(800) 
+        // 揃ってる列があるなら消す
+        await this.vanishAlignedRows(countOfAlignedRow)
 
-            /** 揃っている列を消す */
-            this.Field.vanishAlignedRows()
-
-            /** レベル計算 */
-            this.calculateLevel()
-        }
-
-        /** おじゃまを発動できるか調べて実行 */
-        if (this.ojyama.checkWhetherToExecuteOjyama()) {
-            this.Field = this.ojyama.insertOjyama(this.Field)
-            // おじゃまブロックの挿入後に短い遅延を入れることで、ゲームプレイの流れを自然にする
-            await this.sleep(600)
-        }
+        // 状況によってはおじゃま発動を発動させる
+        await this.insertOjyama()
 
         /** ゲームオーバーになっているかどうか調べる */
         // trueが帰ってきたら､次のテトリミノを落とさずゲームオーバー処理に移る
         if (this.gameOverPolicty.isGameOver(this.Field)) {
-            // ゲームオーバー画面を表示させる
-            this.isGameOver = true
             this.gameOver()
             return 
         }
@@ -276,12 +258,54 @@ export default class Tetris {
         this.dropNextTetrimino()
     }
 
+    resetTetrimino(){
+        this.tetrimino = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
+    }
+
+    resetGhost(){
+        this.ghost = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
+    }
+
+    // スコアなどに揃った列を足す
+    addAlignedRows(countOfAlignedRow){
+        /** 揃った列をスコアとして足す */
+        this.score.calculation({
+            countOfAlignedRow:countOfAlignedRow,
+            level:this.level
+        })
+
+        /** 消した列の合計に足す */
+        this.countOfLinesVanished += countOfAlignedRow
+    }
+
     // レベル計算
-    calculateLevel(){
+    calculateLevel(countOfAlignedRow){
+        // 揃ってる列が1つも無いなら動かす必要がない
+        if (countOfAlignedRow === 0) {return }
+
         const currentLevel = levelConfig.find(config => this.countOfLinesVanished >= config.threshold);
         this.level = currentLevel.level
         this.autoDropInterval = currentLevel.autoDropInterval
         this.ojyama.predeterminedTimeSetter(currentLevel.ojyamaInterval)
+    }
+
+    async vanishAlignedRows(countOfAlignedRow){
+        if (countOfAlignedRow === 0) { return }
+
+        // 演出の関係上一旦処理を止める
+        await this.sleep(800) 
+
+        /** 揃っている列を消す */
+        this.Field.vanishAlignedRows()
+    }
+
+    async insertOjyama(){
+        /** おじゃまを発動できるか調べて実行 */
+        if (this.ojyama.checkWhetherToExecuteOjyama()) {
+            this.Field = this.ojyama.insertOjyama(this.Field)
+            // おじゃまブロックの挿入後に短い遅延を入れることで、ゲームプレイの流れを自然にする
+            await this.sleep(600)
+        }
     }
 
     /** 次のテトリミノを落とす */
@@ -297,6 +321,8 @@ export default class Tetris {
     }
 
     gameOver(){
+        // Vueの方でゲームオーバー画面を表示させたりするのに必要
+        this.isGameOver = true
 
         // タイマー止める
         this.stopTimer()
