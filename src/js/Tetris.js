@@ -47,15 +47,11 @@ export default class Tetris {
     /** 動かせるブロックたちの座標 と ブロックの種類*/
     tetrimino = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
 
-    /** 動かす前のブロックの位置 */
-    oldTetrimino = {}
-
     /** ゲームオーバー画面をvueで表示させる時に必要 */
     isGameOver = false
 
     // ゴースト
     ghost = {}
-    oldGhost = {}
 
     constructor(){
         this.Field.generateField()
@@ -78,7 +74,6 @@ export default class Tetris {
         /** 落ちてくるのをセット */
         this.tetrimino = next
         this.ghost = lodash.cloneDeep(this.tetrimino)
-        this.saveCurrentPosition()
 
         // 落ちてくるブロックをフィールドに出現させる
         this.reRenderGhost()
@@ -121,8 +116,6 @@ export default class Tetris {
                 tetrimino:this.tetrimino
             })
         ) {
-            this.saveCurrentPosition()
-
             /** 位置を更新 */
             this.tetrimino.moveLeft()
 
@@ -136,8 +129,6 @@ export default class Tetris {
                 tetrimino:this.tetrimino
             })
         ) {
-            this.saveCurrentPosition()
-
             /** 位置を更新 */
             this.tetrimino.moveRight()
 
@@ -146,15 +137,11 @@ export default class Tetris {
     }
 
     keyDownL(){
-        this.saveCurrentPosition()
-
         this.tetrimino.clockwise(this.Field)
         this.reRenderGhost()
     }
 
     keyDownJ(){
-        this.saveCurrentPosition()
-
         this.tetrimino.counterClockwise(this.Field)
         this.reRenderGhost()
 
@@ -163,8 +150,6 @@ export default class Tetris {
     keyDownSpace(){
         // ロックがかかっていたら入れ替え不可
         if (this.hold.cannotHold) { return  }
-
-        this.saveCurrentPosition()
 
         // ホールドしてるのを取り出す
         let tetriminoTakenOut = this.hold.takeOut()
@@ -198,16 +183,11 @@ export default class Tetris {
             return 
         }
 
-        /** 動かせるようなら下に動かす */
-        this.saveCurrentPosition()
-
         /** 位置を更新 */
         this.tetrimino.moveDown()
     }
 
     hardDrop(){
-        this.saveCurrentPosition()
-
         // 何ます動かすかしらべる(スコアで使う)
         let countOfMove = Math.abs(this.ghost.coordinate.status[0].y - this.tetrimino.coordinate.status[0].y)
         this.score.addScore(countOfMove * 2)
@@ -279,6 +259,7 @@ export default class Tetris {
         /** おじゃまを発動できるか調べて実行 */
         if (this.ojyama.checkWhetherToExecuteOjyama()) {
             this.Field = this.ojyama.insertOjyama(this.Field)
+            // おじゃまブロックの挿入後に短い遅延を入れることで、ゲームプレイの流れを自然にする
             await this.sleep(600)
         }
 
@@ -313,12 +294,6 @@ export default class Tetris {
 
         /** 新しいブロックを落とす */
         this.startDropping(this.next.getNextTetrimino())
-    }
-
-    /** 今の位置を古い情報として保存 */
-    saveCurrentPosition(){
-        this.oldTetrimino = lodash.cloneDeep(this.tetrimino);
-        this.oldGhost = lodash.cloneDeep(this.ghost);
     }
 
     gameOver(){
