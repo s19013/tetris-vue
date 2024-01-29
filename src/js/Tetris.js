@@ -53,10 +53,9 @@ export default class Tetris {
     /** ゲームオーバー画面をvueで表示させる時に必要 */
     isGameOver = false
 
-    constructor(){
+    // 
+    init(){
         this.Field.generateField()
-
-        this.gameStart()
     }
 
     /** ゲームスタートの処理 */
