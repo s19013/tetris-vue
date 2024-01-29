@@ -14,7 +14,8 @@ export default {
     },
     countDown() {
       this.countDownId = setInterval(() => {
-        if (this.countDownTime == 0) {
+        if (this.countDownTime === 0) {
+          clearInterval(this.countDownId)
           this.gameStart()
         }
         this.countDownTime -= 100 //ms
