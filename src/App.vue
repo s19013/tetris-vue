@@ -27,7 +27,6 @@ export default {
       hold: '',
       tetrimino: [],
       ghost: [],
-      timer: 0,
       ojyamaCountDown: 10,
       isTetris: false,
       reRendIntervalId: 0
@@ -97,7 +96,6 @@ export default {
       this.tetrimino = lodash.cloneDeep(this.tetris.tetrimino.coordinate.status)
       this.ghost = lodash.cloneDeep(this.tetris.ghost.coordinate.status)
       this.isTetris = this.tetris.score.isTetris
-      this.timer = this.tetris.time
       this.ojyamaCountDown = this.tetris.ojyama.countDown
     },
     gameStart() {
@@ -108,8 +106,8 @@ export default {
   },
   computed: {
     time: function () {
-      let m = Math.floor(this.timer / 60)
-      let s = this.timer % 60
+      let m = Math.floor(this.tetris.time / 60)
+      let s = this.tetris.time % 60
 
       return `${m}m ${s}s`
     }
