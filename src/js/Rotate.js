@@ -8,7 +8,6 @@ function rotateTetrimino({
     directions,
     rotateFunction // コールバックというか回す関数を入れる
 }) {
-    console.log(coordinate);
     // 回転実行
     const rotated = rotateFunction({rotationPoint: rotationPoint});
 
