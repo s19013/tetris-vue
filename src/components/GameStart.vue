@@ -14,7 +14,8 @@ export default {
     },
     countDown() {
       this.countDownId = setInterval(() => {
-        if (this.countDownTime == 0) {
+        if (this.countDownTime === 0) {
+          clearInterval(this.countDownId)
           this.gameStart()
         }
         this.countDownTime -= 100 //ms
@@ -72,7 +73,7 @@ export default {
     height: 100%;
     background-color: #ffca28;
     animation-name: progress;
-    animation-duration: 1.4s;
+    animation-duration: 1.5s;
     animation-timing-function: linear;
     animation-fill-mode: forwards;
   }
@@ -82,7 +83,7 @@ export default {
   0% {
     width: 0;
   }
-  95% {
+  90% {
     width: 100%;
   }
   100% {
