@@ -47,11 +47,11 @@ export default class Tetris {
     /** 動かせるブロックたちの座標 と ブロックの種類*/
     tetrimino = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
 
+    // ゴースト
+    ghost = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
+
     /** ゲームオーバー画面をvueで表示させる時に必要 */
     isGameOver = false
-
-    // ゴースト
-    ghost = {}
 
     constructor(){
         this.Field.generateField()
