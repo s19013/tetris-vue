@@ -24,18 +24,8 @@ export default {
       tetris: new Tetris(),
       field: [],
       next: [],
-      hold: '',
       tetrimino: [],
       ghost: [],
-      isGameOver: false,
-      sleeping: false,
-      score: 0,
-      ren: 0,
-      level: 0,
-      countOfLinesVanished: 0,
-      timer: 0,
-      ojyamaCountDown: 10,
-      isTetris: false,
       reRendIntervalId: 0
     }
   },
@@ -50,8 +40,8 @@ export default {
 
       let code = event.code
 
-      // ゲームオーバーしてたら動かない
-      if (this.isGameOver || this.sleeping) {
+      // 動かせない状態(ルール)のときは動かせないようにする
+      if (this.tetris.isGameOver || this.tetris.sleeping) {
         return
       }
 
@@ -99,18 +89,8 @@ export default {
     reRender() {
       this.field = lodash.cloneDeep(this.tetris.Field)
       this.next = lodash.cloneDeep(this.tetris.next.list)
-      this.hold = this.tetris.hold.holdingTetrimino
       this.tetrimino = lodash.cloneDeep(this.tetris.tetrimino.coordinate.status)
       this.ghost = lodash.cloneDeep(this.tetris.ghost.coordinate.status)
-      this.isGameOver = this.tetris.isGameOver
-      this.sleeping = this.tetris.sleeping
-      this.score = this.tetris.score.score
-      this.ren = this.tetris.score.ren
-      this.isTetris = this.tetris.score.isTetris
-      this.level = this.tetris.level
-      this.countOfLinesVanished = this.tetris.countOfLinesVanished
-      this.timer = this.tetris.time
-      this.ojyamaCountDown = this.tetris.ojyama.countDown
     },
     gameStart() {
       this.tetris.gameStart()
@@ -120,8 +100,8 @@ export default {
   },
   computed: {
     time: function () {
-      let m = Math.floor(this.timer / 60)
-      let s = this.timer % 60
+      let m = Math.floor(this.tetris.time / 60)
+      let s = this.tetris.time % 60
 
       return `${m}m ${s}s`
     }
@@ -146,34 +126,34 @@ export default {
 <template>
   <main>
     <GameStart @gameStart="gameStart" />
-    <GameEnd v-if="isGameOver" :score="score" />
+    <GameEnd v-if="this.tetris.isGameOver" :score="this.tetris.score.score" />
     <h1>動きに癖がある非公式テトリス</h1>
     <a href="https://github.com/s19013/tetris-vue">コード</a>
     <div class="game">
       <div class="LeftInfo">
-        <Hold :hold="hold" />
+        <Hold :hold="this.tetris.hold.holdingTetrimino" />
         <div class="coution">
-          <p v-show="ojyamaCountDown <= 3000">Danger!!</p>
+          <p v-show="this.tetris.ojyama.countDown <= 2000">Danger!!</p>
         </div>
-        <p class="Ren" v-show="ren > 0">Ren:{{ ren }}</p>
-        <p class="isTetris" v-show="isTetris">Tetris!</p>
+        <p class="Ren" v-show="this.tetris.score.ren > 0">Ren:{{ this.tetris.score.ren }}</p>
+        <p class="isTetris" v-show="this.tetris.score.isTetris">Tetris!</p>
       </div>
       <div class="Center">
         <Tetrimino :tetrimino="tetrimino" />
         <Ghost :ghost="ghost" />
         <Field :field="field" />
-        <p class="Score">{{ score }}</p>
+        <p class="Score">{{ this.tetris.score.score }}</p>
       </div>
       <div class="RightInfo">
         <Next :next="next" />
         <table border="1">
           <tr>
             <td>レベル</td>
-            <td>{{ level }}</td>
+            <td>{{ this.tetris.level }}</td>
           </tr>
           <tr>
             <td>列数</td>
-            <td>{{ countOfLinesVanished }}</td>
+            <td>{{ this.tetris.countOfLinesVanished }}</td>
           </tr>
           <tr>
             <td>時間</td>
