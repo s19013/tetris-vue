@@ -2,6 +2,8 @@
 export default {
   data() {
     return {
+      countDownId: 0,
+      countDownTime: 1500, //ms
       flag: true
     }
   },
@@ -9,7 +11,18 @@ export default {
     gameStart() {
       this.flag = false
       this.$emit('gameStart')
+    },
+    countDown() {
+      this.countDownId = setInterval(() => {
+        if (this.countDownTime == 0) {
+          this.gameStart()
+        }
+        this.countDownTime -= 100 //ms
+      }, 100)
     }
+  },
+  mounted() {
+    this.countDown()
   }
 }
 </script>
@@ -17,7 +30,11 @@ export default {
 <template>
   <div class="GameStart" v-if="flag">
     <div class="container">
-      <button @click="gameStart()">始める</button>
+      <p v-if="this.countDownTime > 100">Ready...</p>
+      <p v-if="this.countDownTime <= 100">Go!</p>
+      <div class="progBar">
+        <div class="bar"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -35,9 +52,41 @@ export default {
   align-items: center;
   justify-content: center;
   .container {
-    position: fixed;
-    top: 40vh;
-    left: 45vw;
+    p {
+      font-size: 5rem;
+      margin-top: 30vh;
+    }
+  }
+}
+
+.progBar {
+  width: 50%;
+  height: 50px;
+  background-color: #ececec;
+  position: relative;
+  margin-left: 25%;
+  border-radius: 10px;
+  overflow: hidden;
+  .bar {
+    position: absolute;
+    height: 100%;
+    background-color: #ffca28;
+    animation-name: progress;
+    animation-duration: 1.4s;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+}
+
+@keyframes progress {
+  0% {
+    width: 0;
+  }
+  95% {
+    width: 100%;
+  }
+  100% {
+    width: 100%;
   }
 }
 </style>
