@@ -165,21 +165,18 @@ export default class Tetris {
     }
 
     droppingTheBlock(){
-
-        /** 動かせないなら固定化する 
-         *  下記のコードは自動落下用
-        */
-        if (!checkCanMove.down({
-                Field:this.Field,
-                tetrimino:this.tetrimino
-            })
+        if (checkCanMove.down({
+            Field:this.Field,
+            tetrimino:this.tetrimino
+        })
         ) {
-            this.immobilization()
+            /** 位置を更新 */
+            this.tetrimino.moveDown()
             return 
         }
 
-        /** 位置を更新 */
-        this.tetrimino.moveDown()
+        /** 動かせないなら固定化する */
+        this.immobilization()
     }
 
     hardDrop(){
