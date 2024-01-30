@@ -1,6 +1,6 @@
 import Field from "./Field.js"
 import Ojyama from "./Ojyama.js"
-import CheckCanMove from "./CheckCanMove"
+import * as checkCanMove from "./CheckCanMove"
 import Next from "./Next.js"
 import Hold from "./Hold.js"
 import Score from "./Score.js"
@@ -24,8 +24,6 @@ export default class Tetris {
     Field = new Field()
 
     ojyama = new Ojyama()
-
-    checkCanMove = new CheckCanMove()
 
     /** nextテトリミノ達 */
     next = new Next()
@@ -87,7 +85,7 @@ export default class Tetris {
 
     keyDownDown(){
         /** 動かせるかどうか確認*/
-        if (this.checkCanMove.down({
+        if (checkCanMove.down({
                 Field:this.Field,
                 tetrimino:this.tetrimino
             })
@@ -110,7 +108,7 @@ export default class Tetris {
 
     keyDownLeft(){
         /** 動かせるかどうか確認*/
-        if (this.checkCanMove.left({
+        if (checkCanMove.left({
                 Field:this.Field,
                 tetrimino:this.tetrimino
             })
@@ -123,7 +121,7 @@ export default class Tetris {
     }
 
     keyDownRight(){
-        if (this.checkCanMove.right({
+        if (checkCanMove.right({
                 Field:this.Field,
                 tetrimino:this.tetrimino
             })
@@ -167,16 +165,14 @@ export default class Tetris {
     }
 
     droppingTheBlock(){
-        // このロジックreRenderTetriminoに分けたほうがよい?
 
         /** 動かせないなら固定化する 
          *  下記のコードは自動落下用
         */
-        if (this.checkCanMove.down({
+        if (!checkCanMove.down({
                 Field:this.Field,
                 tetrimino:this.tetrimino
             })
-            == false
         ) {
             this.immobilization()
             return 
@@ -205,7 +201,7 @@ export default class Tetris {
 
         // ブロックを限界が来るまで下に動かす
         // falseが帰ってくるまで回し続ける
-        while (this.checkCanMove.down({
+        while (checkCanMove.down({
             Field:this.Field,
             tetrimino:this.ghost
         })) {
