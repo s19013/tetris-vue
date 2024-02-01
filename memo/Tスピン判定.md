@@ -1,6 +1,7 @@
 参考サイト
 [【#10】～Tスピン判定編～新人プログラマーはテトリスを作れるのか？【C#.NET】](https://www.terasol.co.jp/%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%9f%e3%83%b3%e3%82%b0/6729)
 
+# Tスピン判定
 >* 現在操作しているミノが「Tミノ」である
 >* 設置したタイミングで最後の操作が「ミノの回転」である
 >* Tミノの周囲4マスの空間のうち、3マス以上が壁やミノで埋まっている
@@ -15,6 +16,11 @@ Tミノクラスに色々関数を加えれば良いはず｡
 上下を調べるって思ったけど､今向いている方向がわからないと正しく確認ができないな｡
 -> 状態を表す何かが必要
 
+何かをするたびにTスピン判定関数を実行  
+-> いや､turnIn関数成功したらTスピン成功で良いくない?  
+->-> いや良くない!回し入れしなくてもTスピンが成立するから｡
+
+# Tスピンミニ判定
 >* Tスピンを成功させる
 >* 埋まっている空間の数が「3つ」であり、その位置がTミノの土台側に2つ、凸型の方に1つである
 >* スーパーローテーションの到達パターン数が「4以外」である
@@ -50,17 +56,17 @@ if directionOfMino < 1 -> directionOfMino = 4
 -> directionOfMinoIsOdd,directionOfMinoIsEven のほうがより適切か?
 
 ## 奇数
-Field[coordinate[0].y][(coordinate[0].x) + 1],  
-Field[coordinate[0].y][(coordinate[0].x) - 1],  
-Field[coordinate[4].y][(coordinate[4].x) + 1],  
-Field[coordinate[4].y][(coordinate[4].x) - 1],  
-の4個所を調べる
-
-## 偶数
 Field[(coordinate[0].y) + 1][coordinate[0].x],  
 Field[(coordinate[0].y) - 1][coordinate[0].x],  
 Field[(coordinate[4].y) + 1][coordinate[4].x],  
 Field[(coordinate[4].y) - 1][coordinate[4].x],  
+の4個所を調べる
+
+## 偶数
+Field[coordinate[0].y][(coordinate[0].x) + 1],  
+Field[coordinate[0].y][(coordinate[0].x) - 1],  
+Field[coordinate[4].y][(coordinate[4].x) + 1],  
+Field[coordinate[4].y][(coordinate[4].x) - 1],  
 の4個所を調べる
 
 ## 壁はどう調べるか
