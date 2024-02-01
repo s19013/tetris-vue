@@ -11,6 +11,9 @@ Tミノクラスに色々関数を加えれば良いはず｡
 
 1番目のブロックと､4番目のブロックの上下を確認すれば良い  
 フィールドと､ブロックで別々にする必要があるな｡  
+-> Tミノの中でしか使わないからTミノのファイルの中でやればよいか｡  
+上下を調べるって思ったけど､今向いている方向がわからないと正しく確認ができないな｡
+-> 状態を表す何かが必要
 
 >* Tスピンを成功させる
 >* 埋まっている空間の数が「3つ」であり、その位置がTミノの土台側に2つ、凸型の方に1つである
@@ -23,3 +26,47 @@ Tミノクラスに色々関数を加えれば良いはず｡
 
 Tみのだけで色々特殊なことをするからいっそのことTみのの回転のやり方は独立させた方が良いかも  
 -> ここまできたらテトリミノクラスを継承しなくてもいいけど､インターフェイスの代わりにやってるもんだし｡ここらへんの問題はtsに書き換えてから｡
+
+# 回転の状態
+directionOfMino 数値  
+初期値:1 (凸部分が上をむいている状態)
+
+奇数:上向き下向き -> yの+-1を調べる
+偶数:左向き右向き -> xの+-1を調べる
+
+## addDirectionOfMino
+directionOfMino += 1  
+if directionOfMino > 4 -> directionOfMino = 1  
+
+## subDirectionOfMino
+directionOfMino -= 1  
+if directionOfMino < 1 -> directionOfMino = 4  
+
+# 上下もしくは左右が埋まってるかどうか調べる
+まずはdirectionOfMinoが奇数か偶数か調べる必要がある｡
+
+## 奇数
+Field[coordinate[0].y][(coordinate[0].x) + 1],  
+Field[coordinate[0].y][(coordinate[0].x) - 1],  
+Field[coordinate[4].y][(coordinate[4].x) + 1],  
+Field[coordinate[4].y][(coordinate[4].x) - 1],  
+の4個所を調べる
+
+## 偶数
+Field[(coordinate[0].y) + 1][coordinate[0].x],  
+Field[(coordinate[0].y) - 1][coordinate[0].x],  
+Field[(coordinate[4].y) + 1][coordinate[4].x],  
+Field[(coordinate[4].y) - 1][coordinate[4].x],  
+の4個所を調べる
+
+## 壁はどう調べるか
+幅:10  
+高さ:30  
+だった場合  
+
+x == -1,10  
+y == -1,30  
+がフィールドの範囲外となるので  
+
+(coordinate[0].x) + 1 == 30  
+ならばその場所はフィールドの範囲外,つまり壁ということになる
