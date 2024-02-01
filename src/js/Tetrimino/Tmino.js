@@ -1,5 +1,5 @@
 import Tetrimino from "./Tetrimino";
-import { effectiveRoof } from "../Config";
+import {fieldHeight,fieldWidth, effectiveRoof} from "../Config";
 import * as pushOut from "../PushOut"
 import * as helper from "../RotateHelper"
 
@@ -65,25 +65,48 @@ export default class Tmino extends Tetrimino{
             count = this.directionOfMinoIsEven(field)
         }
 
+        console.log("useTSpin",this.useTSpin);
         if (count > 3) { this.useTSpin = true }
     }
 
     directionOfMinoIsOdd(field){
         let count = 0
-        if (field[(this.coordinate[0].y) + 1][this.coordinate[0].x]) {count += 1}
-        if (field[(this.coordinate[0].y) - 1][this.coordinate[0].x]) {count += 1}
-        if (field[(this.coordinate[4].y) + 1][this.coordinate[4].x]) {count += 1}
-        if (field[(this.coordinate[4].y) - 1][this.coordinate[4].x]) {count += 1}
+        try {
+            if (field.status[(this.coordinate.status[0].y) + 1][this.coordinate.status[0].x]) {count += 1}
+        } catch (error) {
+            // エラーがでた -> フィールドには存在していない 
+            // (this.coordinate.status[0].y) + 1 の場所は-> フィールドの範囲外 
+            // (this.coordinate.status[0].y) + 1 の場所は-> 壁である
+            if ((this.coordinate.status[0].y) + 1 >= fieldHeight) {count += 1}
+        }
+        
+        try {
+            if (field.status[(this.coordinate.status[0].y) - 1][this.coordinate.status[0].x]) {count += 1}
+        } catch (error) {
+            if ((this.coordinate.status[0].y) - 1 >= fieldHeight) {count += 1}
+        }
+
+        try {
+            if (field.status[(this.coordinate.status[3].y) - 1][this.coordinate.status[3].x]) {count += 1}
+        } catch (error) {
+            if ((this.coordinate.status[3].y) - 1 >= fieldHeight) {count += 1}
+        }
+
+        try {
+            if (field.status[(this.coordinate.status[3].y) + 1][this.coordinate.status[3].x]) {count += 1}
+        } catch (error) {
+            if ((this.coordinate.status[3].y) + 1 - 1 >= fieldHeight) {count += 1}
+        }
         
         return count
     }
 
     directionOfMinoIsEven(field){
         let count = 0
-        if (field[this.coordinate[0].y][(this.coordinate[0].x) + 1]) {count += 1}
-        if (field[this.coordinate[0].y][(this.coordinate[0].x) - 1]) {count += 1}
-        if (field[this.coordinate[4].y][(this.coordinate[4].x) + 1]) {count += 1}
-        if (field[this.coordinate[4].y][(this.coordinate[4].x) - 1]) {count += 1}
+        if (field.status[this.coordinate.status[0].y][(this.coordinate.status[0].x) + 1]) {count += 1}
+        if (field.status[this.coordinate.status[0].y][(this.coordinate.status[0].x) - 1]) {count += 1}
+        if (field.status[this.coordinate.status[3].y][(this.coordinate.status[3].x) + 1]) {count += 1}
+        if (field.status[this.coordinate.status[3].y][(this.coordinate.status[3].x) - 1]) {count += 1}
         
         return count
     }
@@ -95,7 +118,7 @@ export default class Tmino extends Tetrimino{
             rotationPoint:2,
             directions:this.clockwiseTurninDirections,
             rotateFunction: this.coordinate.clockwise.bind(this.coordinate),
-            directionOfMinoFunction:this.addDirectionOfMino()
+            directionOfMinoFunction:this.addDirectionOfMino.bind(this)
         });
     }
 
@@ -106,7 +129,7 @@ export default class Tmino extends Tetrimino{
             rotationPoint:2,
             directions:this.counterClockwiseTurninDirections,
             rotateFunction: this.coordinate.counterClockwise.bind(this.coordinate),
-            directionOfMinoFunction:this.subDirectionOfMino()
+            directionOfMinoFunction:this.subDirectionOfMino.bind(this)
         });
     }
 
@@ -123,6 +146,7 @@ export default class Tmino extends Tetrimino{
 
         // directionOfMinoFunctionを増減させる
         directionOfMinoFunction()
+        console.log("rotated",this.directionOfMino);
 
         // 回転実行
         const rotated = rotateFunction({rotationPoint: rotationPoint});
@@ -162,6 +186,7 @@ export default class Tmino extends Tetrimino{
 
         // directionOfMinoを回転前に戻す
         this.directionOfMino = oldDirectionOfMino
+        console.log("reset",this.directionOfMino);
 
         return coordinate;
     }
