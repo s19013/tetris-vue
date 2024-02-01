@@ -43,7 +43,11 @@ directionOfMino -= 1
 if directionOfMino < 1 -> directionOfMino = 4  
 
 # 上下もしくは左右が埋まってるかどうか調べる
-まずはdirectionOfMinoが奇数か偶数か調べる必要がある｡
+まずはdirectionOfMinoが奇数か偶数か調べる必要がある｡  
+奇数か偶数かで関数を分けたほうが良い  
+-> 名前どうしよう｡  
+単純にodd､evenにするかな?  
+-> directionOfMinoIsOdd,directionOfMinoIsEven のほうがより適切か?
 
 ## 奇数
 Field[coordinate[0].y][(coordinate[0].x) + 1],  
