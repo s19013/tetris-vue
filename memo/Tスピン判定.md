@@ -55,21 +55,25 @@ if directionOfMino < 1 -> directionOfMino = 4
 単純にodd､evenにするかな?  
 -> directionOfMinoIsOdd,directionOfMinoIsEven のほうがより適切か?
 
+条件を配列に入れといてforで回すか?
+
 ## 奇数
-Field[(coordinate[0].y) + 1][coordinate[0].x],  
-Field[(coordinate[0].y) - 1][coordinate[0].x],  
-Field[(coordinate[4].y) + 1][coordinate[4].x],  
-Field[(coordinate[4].y) - 1][coordinate[4].x],  
+field.status[(coordinate.status[0].y) + 1][coordinate.status[0].x],  
+field.status[(coordinate.status[0].y) - 1][coordinate.status[0].x],  
+field.status[(coordinate.status[3].y) + 1][coordinate.status[3].x],  
+field.status[(coordinate.status[3].y) - 1][coordinate.status[3].x],  
 の4個所を調べる
 
 ## 偶数
-Field[coordinate[0].y][(coordinate[0].x) + 1],  
-Field[coordinate[0].y][(coordinate[0].x) - 1],  
-Field[coordinate[4].y][(coordinate[4].x) + 1],  
-Field[coordinate[4].y][(coordinate[4].x) - 1],  
+field.status[coordinate.status[0].y][(coordinate.status[0].x) + 1],  
+field.status[coordinate.status[0].y][(coordinate.status[0].x) - 1],  
+field.status[coordinate.status[3].y][(coordinate.status[3].x) + 1],  
+field.status[coordinate.status[3].y][(coordinate.status[3].x) - 1],  
 の4個所を調べる
 
 ## 壁はどう調べるか
+フィールドを調べる前に壁かどうかを調べる必要がある
+
 幅:10  
 高さ:30  
 だった場合  
@@ -80,3 +84,20 @@ y == -1,30
 
 (coordinate[0].x) + 1 == 30  
 ならばその場所はフィールドの範囲外,つまり壁ということになる
+
+xに関しては (coordinate[0].x) + 1 == -1  
+かどうかも調べないといけない
+
+x == -1,30の場合
+field.status[coordinate.status[0].y][(coordinate.status[0].x) + 1]
+はエラーがでる(フィールドに存在しないため)
+
+いっそのことtrycatchでやったほうが2つまとめられて楽?
+
+# スコアとか表示関係はどうしよう?
+スコア計算でもTスピンしたかどうかの情報が必要｡  
+いっそのことTスピンした時だけの個別の関数を作ってしまったほうが汚さずにすむか?  
+コールバックっていう手もあるな｡
+
+## そもそもcalculationの処理を分割して個別のTetris.jsで呼び出そう
+表示系はTetris.jsに移したほうが良さそう?
