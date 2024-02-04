@@ -1,5 +1,5 @@
 import Tetrimino from "./Tetrimino";
-import {fieldHeight,fieldWidth, effectiveRoof} from "../Config";
+import {fieldHeight,fieldWidth,effectiveRoof} from "../Config";
 import * as pushOut from "../PushOut"
 import * as helper from "../RotateHelper"
 
@@ -65,49 +65,80 @@ export default class Tmino extends Tetrimino{
             count = this.directionOfMinoIsEven(field)
         }
 
-        console.log("useTSpin",this.useTSpin);
+        console.log("count",count);
         if (count > 3) { this.useTSpin = true }
+        console.log("useTSpin",this.useTSpin);
+    }
+
+    // 指定した場所フィールドの外(壁の中にめり込む)かどうか調べる
+    // 引数の適切な名前が思いつかない
+    isWall(point){
+        if (point < 0) { return true }  // 左壁
+        if (point >= fieldWidth) {return true} // 右壁
+        return false
+    }
+
+    // 指定した場所フィールドの外(床の中､天井にめり込む)かどうか調べる
+    // 引数の適切な名前が思いつかない
+    isRoofOrFloor(point){
+        if (point < 0) { return true }  // 天井
+        if (point >= fieldHeight) {return true}  // 床
+        return false
     }
 
     directionOfMinoIsOdd(field){
         let count = 0
-        try {
+
+        // フィールドの外かどうか
+        if (this.isRoofOrFloor((this.coordinate.status[0].y) + 1)) { count += 1 }
+        else {
+            // ブロックがあるか
             if (field.status[(this.coordinate.status[0].y) + 1][this.coordinate.status[0].x]) {count += 1}
-        } catch (error) {
-            // エラーがでた -> フィールドには存在していない 
-            // (this.coordinate.status[0].y) + 1 の場所は-> フィールドの範囲外 
-            // (this.coordinate.status[0].y) + 1 の場所は-> 壁である
-            if ((this.coordinate.status[0].y) + 1 >= fieldHeight) {count += 1}
         }
-        
-        try {
+
+        if (this.isRoofOrFloor((this.coordinate.status[0].y) - 1)){ count += 1 }
+        else {
             if (field.status[(this.coordinate.status[0].y) - 1][this.coordinate.status[0].x]) {count += 1}
-        } catch (error) {
-            if ((this.coordinate.status[0].y) - 1 >= fieldHeight) {count += 1}
         }
 
-        try {
-            if (field.status[(this.coordinate.status[3].y) - 1][this.coordinate.status[3].x]) {count += 1}
-        } catch (error) {
-            if ((this.coordinate.status[3].y) - 1 >= fieldHeight) {count += 1}
-        }
-
-        try {
+        if (this.isRoofOrFloor((this.coordinate.status[3].y) + 1)){ count += 1 }
+        else {
             if (field.status[(this.coordinate.status[3].y) + 1][this.coordinate.status[3].x]) {count += 1}
-        } catch (error) {
-            if ((this.coordinate.status[3].y) + 1 - 1 >= fieldHeight) {count += 1}
         }
-        
+
+        if (this.isRoofOrFloor((this.coordinate.status[3].y) - 1)){ count += 1 }
+        else {
+            if (field.status[(this.coordinate.status[3].y) - 1][this.coordinate.status[3].x]) {count += 1}
+        }
+
         return count
     }
 
     directionOfMinoIsEven(field){
         let count = 0
-        if (field.status[this.coordinate.status[0].y][(this.coordinate.status[0].x) + 1]) {count += 1}
-        if (field.status[this.coordinate.status[0].y][(this.coordinate.status[0].x) - 1]) {count += 1}
-        if (field.status[this.coordinate.status[3].y][(this.coordinate.status[3].x) + 1]) {count += 1}
-        if (field.status[this.coordinate.status[3].y][(this.coordinate.status[3].x) - 1]) {count += 1}
-        
+
+        // フィールドの外かどうか
+        if ((this.coordinate.status[0].x) + 1) { count += 1 }
+        else {
+            // ブロックがあるか
+            if (field.status[this.coordinate.status[0].y][(this.coordinate.status[0].x) + 1]) {count += 1}
+        }
+
+        if ((this.coordinate.status[0].x) - 1) { count += 1 }
+        else {
+            if (field.status[this.coordinate.status[0].y][(this.coordinate.status[0].x) - 1]) {count += 1}
+        }
+
+        if ((this.coordinate.status[3].x) + 1) { count += 1 }
+        else {
+            if (field.status[this.coordinate.status[3].y][(this.coordinate.status[3].x) + 1]) {count += 1}
+        }
+
+        if ((this.coordinate.status[3].x) - 1) { count += 1 }
+        else {
+            if (field.status[this.coordinate.status[3].y][(this.coordinate.status[3].x) - 1]) {count += 1}
+        }
+
         return count
     }
 
