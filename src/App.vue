@@ -209,14 +209,15 @@ export default {
       </div>
     </div>
     <!-- <pre>{{ field }}</pre> -->
-    <!-- <div class="deb">
-      <p v-for="(line,index) in field" :key = index>
-        <template v-for="(block,index) in line" :key = index>
-          <template v-if="block.isFill">1</template>
+    <div class="deb">
+      <p v-for="(line, index) in field.status" :key="index">
+        {{ index }}
+        <template v-for="(block, index) in line" :key="index">
+          <template v-if="block">1</template>
           <template v-else>0</template>
         </template>
       </p>
-    </div> -->
+    </div>
   </main>
 </template>
 
