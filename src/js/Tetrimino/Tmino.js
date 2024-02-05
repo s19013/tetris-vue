@@ -56,17 +56,17 @@ export default class Tmino extends Tetrimino{
         if (this.directionOfMino < 1) { this.directionOfMino = 4 }
     }
 
-    is3CornersFill(field){
+    is3CornersFill({field,coordinate}){
         let count = 0
         if (this.directionOfMino % 2 == 1) {
-            count = this.directionOfMinoIsOdd(field)
+            count = this.directionOfMinoIsOdd({field:field,coordinate:coordinate})
         } 
         else {
-            count = this.directionOfMinoIsEven(field)
+            count = this.directionOfMinoIsEven({field:field,coordinate:coordinate})
         }
 
         console.log("count",count);
-        if (count > 3) { this.useTSpin = true }
+        if (count >= 3) { this.useTSpin = true }
         console.log("useTSpin",this.useTSpin);
     }
 
@@ -86,57 +86,61 @@ export default class Tmino extends Tetrimino{
         return false
     }
 
-    directionOfMinoIsOdd(field){
+    directionOfMinoIsOdd({field,coordinate}){
         let count = 0
 
         // フィールドの外かどうか
-        if (this.isRoofOrFloor((this.coordinate.status[0].y) + 1)) { count += 1 }
+        if (this.isRoofOrFloor((coordinate.status[0].y) + 1)) { count += 1 }
         else {
             // ブロックがあるか
-            if (field.status[(this.coordinate.status[0].y) + 1][this.coordinate.status[0].x]) {count += 1}
+            console.log("[",(coordinate.status[0].y) + 1,coordinate.status[0].x,"]",field.status[(coordinate.status[0].y) + 1][coordinate.status[0].x]);
+            if (field.status[(coordinate.status[0].y) + 1][coordinate.status[0].x]) {count += 1}
         }
 
-        if (this.isRoofOrFloor((this.coordinate.status[0].y) - 1)){ count += 1 }
+        if (this.isRoofOrFloor((coordinate.status[0].y) - 1)){ count += 1 }
         else {
-            if (field.status[(this.coordinate.status[0].y) - 1][this.coordinate.status[0].x]) {count += 1}
+            console.log("[",(coordinate.status[0].y) - 1,coordinate.status[0].x,"]",field.status[(coordinate.status[0].y) - 1][coordinate.status[0].x]);
+            if (field.status[(coordinate.status[0].y) - 1][coordinate.status[0].x]) {count += 1}
         }
 
-        if (this.isRoofOrFloor((this.coordinate.status[3].y) + 1)){ count += 1 }
+        if (this.isRoofOrFloor((coordinate.status[3].y) + 1)){ count += 1 }
         else {
-            if (field.status[(this.coordinate.status[3].y) + 1][this.coordinate.status[3].x]) {count += 1}
+            console.log("[",(coordinate.status[3].y) + 1,coordinate.status[3].x,"]",field.status[(coordinate.status[3].y) + 1][coordinate.status[3].x]);
+            if (field.status[(coordinate.status[3].y) + 1][coordinate.status[3].x]) {count += 1}
         }
 
-        if (this.isRoofOrFloor((this.coordinate.status[3].y) - 1)){ count += 1 }
+        if (this.isRoofOrFloor((coordinate.status[3].y) - 1)){ count += 1 }
         else {
-            if (field.status[(this.coordinate.status[3].y) - 1][this.coordinate.status[3].x]) {count += 1}
+            console.log("[",(coordinate.status[3].y) - 1,coordinate.status[3].x,"]",field.status[(coordinate.status[3].y) - 1][coordinate.status[3].x]);
+            if (field.status[(coordinate.status[3].y) - 1][coordinate.status[3].x]) {count += 1}
         }
 
         return count
     }
 
-    directionOfMinoIsEven(field){
+    directionOfMinoIsEven({field,coordinate}){
         let count = 0
 
         // フィールドの外かどうか
-        if ((this.coordinate.status[0].x) + 1) { count += 1 }
+        if (this.isWall((coordinate.status[0].x) + 1)) { count += 1 }
         else {
             // ブロックがあるか
-            if (field.status[this.coordinate.status[0].y][(this.coordinate.status[0].x) + 1]) {count += 1}
+            if (field.status[coordinate.status[0].y][(coordinate.status[0].x) + 1]) {count += 1}
         }
 
-        if ((this.coordinate.status[0].x) - 1) { count += 1 }
+        if (this.isWall((coordinate.status[0].x) - 1)) { count += 1 }
         else {
-            if (field.status[this.coordinate.status[0].y][(this.coordinate.status[0].x) - 1]) {count += 1}
+            if (field.status[coordinate.status[0].y][(coordinate.status[0].x) - 1]) {count += 1}
         }
 
-        if ((this.coordinate.status[3].x) + 1) { count += 1 }
+        if (this.isWall((coordinate.status[3].x) + 1)) { count += 1 }
         else {
-            if (field.status[this.coordinate.status[3].y][(this.coordinate.status[3].x) + 1]) {count += 1}
+            if (field.status[coordinate.status[3].y][(coordinate.status[3].x) + 1]) {count += 1}
         }
 
-        if ((this.coordinate.status[3].x) - 1) { count += 1 }
+        if (this.isWall((coordinate.status[3].x) - 1)) { count += 1 }
         else {
-            if (field.status[this.coordinate.status[3].y][(this.coordinate.status[3].x) - 1]) {count += 1}
+            if (field.status[coordinate.status[3].y][(coordinate.status[3].x) - 1]) {count += 1}
         }
 
         return count
@@ -188,7 +192,7 @@ export default class Tmino extends Tetrimino{
     
         // どのブロックにも被って無いならすぐ返す
         if (field.tetriminoIsNotOverlap(corrected)) {
-            this.is3CornersFill(field)
+            this.is3CornersFill({field:field,coordinate:corrected})
             return corrected; 
         }
     
@@ -200,7 +204,7 @@ export default class Tmino extends Tetrimino{
     
         // 回し入れ成功ならそれを返す
         if (turnedIn != null) {
-            this.is3CornersFill(field)
+            this.is3CornersFill({field:field,coordinate:turnedIn})
             return turnedIn; 
         }
         
