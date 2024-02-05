@@ -70,9 +70,9 @@ import lodash from "lodash";
     export function correction(coordinate){
         // 補正をかけた後(色々いじるからクローン)
         const clonedCoordinate = lodash.cloneDeep(coordinate)
-        const coordinatedFloor = FromTheFloor(clonedCoordinate)
-        const coordinateLeftwall = FromTheLeftWall(coordinatedFloor)
-        const coordinateRightWall = FromTheRightWall(coordinateLeftwall)
+        const correctedFloor = FromTheFloor(clonedCoordinate)
+        const correctedLeftwall = FromTheLeftWall(correctedFloor)
+        const correctedRightWall = FromTheRightWall(correctedLeftwall)
 
-        return coordinateRightWall
+        return correctedRightWall
     }
