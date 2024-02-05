@@ -92,7 +92,8 @@ x == -1,30の場合
 field.status[coordinate.status[0].y][(coordinate.status[0].x) + 1]
 はエラーがでる(フィールドに存在しないため)
 
-いっそのことtrycatchでやったほうが2つまとめられて楽?
+いっそのことtrycatchでやったほうが2つまとめられて楽?  
+-> いや危ないか?ちゃんとif文で分岐すべきか?
 
 # スコアとか表示関係はどうしよう?
 スコア計算でもTスピンしたかどうかの情報が必要｡  
@@ -101,3 +102,6 @@ field.status[coordinate.status[0].y][(coordinate.status[0].x) + 1]
 
 ## そもそもcalculationの処理を分割して個別のTetris.jsで呼び出そう
 表示系はTetris.jsに移したほうが良さそう?
+
+# ボヤキ
+thisを使ってたからか｡通りで変化してないなと思ったら…｡
