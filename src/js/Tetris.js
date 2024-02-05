@@ -223,6 +223,18 @@ export default class Tetris {
     /** 固定化した後にする処理を全部まとめた */
     // 今は適切な分け方がわからない
     async ProcessingAfterImmobilization(){
+        /** 揃っているかを調べる */
+        const countOfAlignedRows = this.Field.countAlignedRows()
+
+        // スコア計算
+        this.scoreCalculation(countOfAlignedRows)
+
+        /** 消した列の合計に足す */
+        this.countOfLinesVanished += countOfAlignedRows
+
+        /** レベル計算 */
+        this.calculateLevel(countOfAlignedRows)
+
         // 固定化したテトリミノはフィールドクラスに情報を渡したのでもう表示しなくて良い
         // だからここでリセットする
         // そしてリセットしないと揃ったアニメーションが阻害される
@@ -230,15 +242,6 @@ export default class Tetris {
         // 今は問題がないが､描写関連でエラーがでたらおそらくここが問題だと思う
         this.resetTetrimino()
         this.resetGhost()
-
-        /** 揃っているかを調べる */
-        let countOfAlignedRows = this.Field.countAlignedRows()
-
-        // スコアなどに揃った列を足す
-        this.addAlignedRows(countOfAlignedRows)
-
-        /** レベル計算 */
-        this.calculateLevel(countOfAlignedRows)
 
         // 揃ってる列があるなら消す
         await this.vanishAlignedRows(countOfAlignedRows)
@@ -265,16 +268,26 @@ export default class Tetris {
         this.ghost = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
     }
 
-    // スコアなどに揃った列を足す
-    addAlignedRows(countOfAlignedRows){
-        /** 揃った列をスコアとして足す */
-        this.score.calculation({
-            countOfAlignedRows:countOfAlignedRows,
-            level:this.level
-        })
+    // スコア計算
+    scoreCalculation(countOfAlignedRows){
+        // 以下の3つのパターンがある
+        // * そもそもTミノじゃない
+        // * TみのでTスピンが成立してる
+        // * TミノだけどTスピンじゃなかった
+        
+        if (this.tetrimino.type != "T") {
+            this.score.calculation({countOfAlignedRows:countOfAlignedRows,level:this.level})
+            return
+        }
+        
+        // Tスピンかどうか調べる
+        if (this.tetrimino.tSpin) {
+            this.score.TspinCalculation({countOfAlignedRows:countOfAlignedRows,level:this.level})
+            return
+        }
 
-        /** 消した列の合計に足す */
-        this.countOfLinesVanished += countOfAlignedRows
+        // TミノだけどTスピンじゃなかった時
+        this.score.calculation({countOfAlignedRows:countOfAlignedRows,level:this.level})
     }
 
     // レベル計算
