@@ -63,9 +63,7 @@ export default class Tmino extends Tetrimino{
             count = this.directionOfMinoIsEven({field:field,coordinate:coordinate})
         }
 
-        console.log("count",count);
         if (count >= 3) { this.tSpin = true }
-        console.log("useTSpin",this.tSpin);
     }
 
     // 指定した場所フィールドの外(壁の中にめり込む)かどうか調べる
@@ -91,25 +89,21 @@ export default class Tmino extends Tetrimino{
         if (this.isRoofOrFloor((coordinate.status[0].y) + 1)) { count += 1 }
         else {
             // ブロックがあるか
-            console.log("[",(coordinate.status[0].y) + 1,coordinate.status[0].x,"]",field.status[(coordinate.status[0].y) + 1][coordinate.status[0].x]);
             if (field.status[(coordinate.status[0].y) + 1][coordinate.status[0].x]) {count += 1}
         }
 
         if (this.isRoofOrFloor((coordinate.status[0].y) - 1)){ count += 1 }
         else {
-            console.log("[",(coordinate.status[0].y) - 1,coordinate.status[0].x,"]",field.status[(coordinate.status[0].y) - 1][coordinate.status[0].x]);
             if (field.status[(coordinate.status[0].y) - 1][coordinate.status[0].x]) {count += 1}
         }
 
         if (this.isRoofOrFloor((coordinate.status[3].y) + 1)){ count += 1 }
         else {
-            console.log("[",(coordinate.status[3].y) + 1,coordinate.status[3].x,"]",field.status[(coordinate.status[3].y) + 1][coordinate.status[3].x]);
             if (field.status[(coordinate.status[3].y) + 1][coordinate.status[3].x]) {count += 1}
         }
 
         if (this.isRoofOrFloor((coordinate.status[3].y) - 1)){ count += 1 }
         else {
-            console.log("[",(coordinate.status[3].y) - 1,coordinate.status[3].x,"]",field.status[(coordinate.status[3].y) - 1][coordinate.status[3].x]);
             if (field.status[(coordinate.status[3].y) - 1][coordinate.status[3].x]) {count += 1}
         }
 
@@ -179,7 +173,6 @@ export default class Tmino extends Tetrimino{
 
         // directionOfMinoFunctionを増減させる
         directionOfMinoFunction()
-        console.log("rotated",this.directionOfMino);
 
         // 回転実行
         const rotated = rotateFunction({rotationPoint: rotationPoint});
@@ -219,7 +212,6 @@ export default class Tmino extends Tetrimino{
 
         // directionOfMinoを回転前に戻す
         this.directionOfMino = oldDirectionOfMino
-        console.log("reset",this.directionOfMino);
 
         return coordinate;
     }
