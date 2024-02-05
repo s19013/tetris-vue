@@ -209,7 +209,7 @@ export default {
       </div>
     </div>
     <!-- <pre>{{ field }}</pre> -->
-    <div class="deb">
+    <!-- <div class="deb">
       <p v-for="(line, index) in field.status" :key="index">
         {{ index }}
         <template v-for="(block, index) in line" :key="index">
@@ -217,7 +217,7 @@ export default {
           <template v-else>0</template>
         </template>
       </p>
-    </div>
+    </div> -->
   </main>
 </template>
 
