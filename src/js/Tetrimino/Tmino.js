@@ -17,8 +17,7 @@ export default class Tmino extends Tetrimino{
         this.clockwiseTurninDirections = ["down","left","down"]
         this.counterClockwiseTurninDirections = ["down","right","down"]
         this.directionOfMino = 1
-        this.useSpin = false
-        this.useTSpin = false
+        this.tSpin = false
     }
 
     moveLeft(){
@@ -42,8 +41,7 @@ export default class Tmino extends Tetrimino{
     }
 
     disableFlags(){
-        this.useSpin = false
-        this.useTSpin = false
+        this.tSpin = false
     }
 
     addDirectionOfMino(){
@@ -66,8 +64,8 @@ export default class Tmino extends Tetrimino{
         }
 
         console.log("count",count);
-        if (count >= 3) { this.useTSpin = true }
-        console.log("useTSpin",this.useTSpin);
+        if (count >= 3) { this.tSpin = true }
+        console.log("useTSpin",this.tSpin);
     }
 
     // 指定した場所フィールドの外(壁の中にめり込む)かどうか調べる
