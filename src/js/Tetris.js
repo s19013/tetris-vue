@@ -13,47 +13,45 @@ import lodash from 'lodash';
 // 時間に関する数字は全部ミリ秒
 
 export default class Tetris {
-    constructor() {
-        this.autoDropIntervalId = 0
-        this.timerId = 0
-        this.level = 1
-        this.countOfLinesVanished = 0
+    autoDropIntervalId = 0
+    timerId = 0
+    level = 1
+    countOfLinesVanished = 0
 
-        this.sleeping = false
+    sleeping = false
 
-        // new する奴ら
-        this.Field = new Field()
+    // new する奴ら
+    Field = new Field()
 
-        this.ojyama = new Ojyama()
+    ojyama = new Ojyama()
 
-        this.checkCanMove = new CheckCanMove()
+    checkCanMove = new CheckCanMove()
 
-        /** nextテトリミノ達 */
-        this.next = new Next()
+    /** nextテトリミノ達 */
+    next = new Next()
 
-        this.score = new Score()
+    score = new Score()
 
-        /** ホールド */
-        this.hold = new Hold()
+    /** ホールド */
+    hold = new Hold()
 
-        /** ゲームオーバー条件たち */
-        this.gameOverPolicty = new GameOverPolicty()
+    /** ゲームオーバー条件たち */
+    gameOverPolicty = new GameOverPolicty()
 
-        /** 放置してると勝手にブロックが落ちる感覚 */
-        this.autoDropInterval = 2000 //ms
+    /** 放置してると勝手にブロックが落ちる感覚 */
+    autoDropInterval = 2000 //ms
 
-        /** ゲームを初めてからの時間 */
-        this.time = 0
+    /** ゲームを初めてからの時間 */
+    time = 0
 
-        /** 動かせるブロックたちの座標 と ブロックの種類*/
-        this.tetrimino = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
+    /** 動かせるブロックたちの座標 と ブロックの種類*/
+    tetrimino = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
 
-        // ゴースト
-        this.ghost = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
+    // ゴースト
+    ghost = new Tetrimino({type:"none",coordinate:[{x:null,y:null}]})
 
-        /** ゲームオーバー画面をvueで表示させる時に必要 */
-        this.isGameOver = false
-    }
+    /** ゲームオーバー画面をvueで表示させる時に必要 */
+    isGameOver = false
 
     // 
     init(){
