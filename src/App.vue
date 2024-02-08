@@ -108,6 +108,13 @@ export default {
       setTimeout(() => {
         this.isTetris = false
       }, 2000)
+    },
+    enableIsB2B() {
+      this.isB2B = true
+      // 数秒たったら消す
+      setTimeout(() => {
+        this.isB2B = false
+      }, 2000)
     }
   },
   computed: {
@@ -123,7 +130,8 @@ export default {
     this.tetris.init()
     // 関数を渡す時に関数名()とか書かずに関数名のみで書かないと正しくうごいてくれないらしい｡
     this.tetris.score.setCallbacks({
-      enableIsTetrisFlag: this.enableIsTetris
+      enableIsTetrisFlag: this.enableIsTetris,
+      enableIsB2B: this.enableIsB2B
     })
     this.reRender()
   },
@@ -154,6 +162,11 @@ export default {
         </div>
         <p class="Ren" v-show="this.tetris.score.ren > 0">Ren:{{ this.tetris.score.ren }}</p>
         <p class="isTetris" v-show="this.isTetris">Tetris!</p>
+        <p class="isB2B" v-show="this.isB2B">
+          Back <br />
+          To <br />
+          Back!
+        </p>
       </div>
       <div class="Center">
         <Tetrimino :tetrimino="tetrimino" />
