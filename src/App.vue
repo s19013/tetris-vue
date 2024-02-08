@@ -27,7 +27,9 @@ export default {
       tetrimino: [],
       ghost: [],
       reRendIntervalId: 0,
-      inPreparation: true
+      inPreparation: true,
+      isTetris: false,
+      isB2B: false
     }
   },
   methods: {
@@ -99,6 +101,13 @@ export default {
       this.tetris.gameStart()
       // 定期的再描画
       this.reRendIntervalId = setInterval(this.reRender, 100)
+    },
+    enableIsTetris() {
+      this.isTetris = true
+      // 数秒たったら消す
+      setTimeout(() => {
+        this.isTetris = false
+      }, 2000)
     }
   },
   computed: {
@@ -112,6 +121,10 @@ export default {
   watch: {},
   beforeMount() {
     this.tetris.init()
+    // 関数を渡す時に関数名()とか書かずに関数名のみで書かないと正しくうごいてくれないらしい｡
+    this.tetris.score.setCallbacks({
+      enableIsTetrisFlag: this.enableIsTetris
+    })
     this.reRender()
   },
   mounted() {
@@ -140,7 +153,7 @@ export default {
           <p v-show="this.tetris.ojyama.countDown <= 2000">Danger!!</p>
         </div>
         <p class="Ren" v-show="this.tetris.score.ren > 0">Ren:{{ this.tetris.score.ren }}</p>
-        <p class="isTetris" v-show="this.tetris.score.isTetris">Tetris!</p>
+        <p class="isTetris" v-show="this.isTetris">Tetris!</p>
       </div>
       <div class="Center">
         <Tetrimino :tetrimino="tetrimino" />

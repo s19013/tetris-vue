@@ -5,14 +5,8 @@ export default class Score{
 
         this.score = 0
 
-        /** 4列消し */
-        this.isTetris = false
-
         /** 連続消し */
         this.ren = 0
-
-        /** 連続4列消し */
-        this.back2back = false
 
         // 通常消しの得点
         this.points = [0,100,300,500,800]
@@ -22,6 +16,23 @@ export default class Score{
 
         // パーフェクトクリア得点
         this.PerfectClearPoints = [800,1000,1800,2000]
+
+        // 描写用
+        /** 4列消し */
+        this.enableIsTetris = null
+
+        /** Tスピン */
+        this.tSpin = false
+
+        /** 連続特殊消し */
+        this.back2back = false
+
+        
+    }
+
+    setCallbacks({enableIsTetris}){
+        this.enableIsTetris = enableIsTetris
+        console.log(this.enableIsTetris);
     }
 
     /** スコアを加える
@@ -77,20 +88,12 @@ export default class Score{
         // b2b発動は消した後
         if (countOfAlignedRows == 4) {
             this.back2back = true
-            this.enableIsTetrisFlag()
+            this.enableIsTetris()
         }
     }
 
     disableFlags(){
         this.back2back = false
         this.ren = 0
-    }
-
-    enableIsTetrisFlag(){
-        this.isTetris = true
-        // これは表示用なので数秒たったら消す
-        setTimeout(()=> {
-            this.isTetris = false
-        },2000) ;
     }
 }
