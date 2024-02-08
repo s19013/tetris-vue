@@ -51,13 +51,13 @@ export default class Score{
     TspinCalculation({countOfAlignedRows,level}){
         if (countOfAlignedRows == 0) { this.disableFlags() }
 
-        // renを加える
-        this.ren += countOfAlignedRows
-
         this.scoreCalculater({
             base:this.tspinPoints[countOfAlignedRows],
             level:level
         })
+
+        // renを加える
+        this.ren += countOfAlignedRows
 
         if (countOfAlignedRows > 0) { this.back2back = true }
     }
@@ -66,13 +66,13 @@ export default class Score{
     calculation({countOfAlignedRows,level}){
         if (countOfAlignedRows == 0) { this.disableFlags() }
 
-        // renを加える
-        this.ren += countOfAlignedRows
-
         this.scoreCalculater({
             base:this.points[countOfAlignedRows],
             level:level
         })
+
+        // renを加える
+        this.ren += countOfAlignedRows
 
         // b2b発動は消した後
         if (countOfAlignedRows == 4) {
