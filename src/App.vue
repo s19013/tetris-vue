@@ -27,7 +27,11 @@ export default {
       tetrimino: [],
       ghost: [],
       reRendIntervalId: 0,
-      inPreparation: true
+      inPreparation: true,
+      isTetris: false,
+      isB2B: false,
+      isTspin: false,
+      TspinType: ''
     }
   },
   methods: {
@@ -99,6 +103,30 @@ export default {
       this.tetris.gameStart()
       // 定期的再描画
       this.reRendIntervalId = setInterval(this.reRender, 100)
+    },
+    enableIsTetris() {
+      this.isTetris = true
+      // 数秒たったら消す
+      setTimeout(() => {
+        this.isTetris = false
+      }, 2000)
+    },
+    enableIsB2B() {
+      this.isB2B = true
+      // 数秒たったら消す
+      setTimeout(() => {
+        this.isB2B = false
+      }, 2000)
+    },
+    enableIsTspin() {
+      this.isTspin = true
+      // 数秒たったら消す
+      setTimeout(() => {
+        this.isTspin = false
+      }, 2000)
+    },
+    setTspinType(type) {
+      this.TspinType = type
     }
   },
   computed: {
@@ -112,6 +140,13 @@ export default {
   watch: {},
   beforeMount() {
     this.tetris.init()
+    // 関数を渡す時に関数名()とか書かずに関数名のみで書かないと正しくうごいてくれないらしい｡
+    this.tetris.score.setCallbacks({
+      enableIsTetris: this.enableIsTetris,
+      enableIsB2B: this.enableIsB2B,
+      enableIsTspin: this.enableIsTspin,
+      setTspinType: this.setTspinType
+    })
     this.reRender()
   },
   mounted() {
@@ -140,7 +175,16 @@ export default {
           <p v-show="this.tetris.ojyama.countDown <= 2000">Danger!!</p>
         </div>
         <p class="Ren" v-show="this.tetris.score.ren > 0">Ren:{{ this.tetris.score.ren }}</p>
-        <p class="isTetris" v-show="this.tetris.score.isTetris">Tetris!</p>
+        <p class="isTetris" v-show="this.isTetris">Tetris!</p>
+        <p class="Tspin" v-show="this.isTspin">
+          Tspin <br />
+          {{ this.TspinType }}
+        </p>
+        <p class="isB2B" v-show="this.isB2B">
+          Back <br />
+          To <br />
+          Back!
+        </p>
       </div>
       <div class="Center">
         <Tetrimino :tetrimino="tetrimino" />
@@ -209,7 +253,7 @@ export default {
       </div>
     </div>
     <!-- <pre>{{ field }}</pre> -->
-    <div class="deb">
+    <!-- <div class="deb">
       <p v-for="(line, index) in field.status" :key="index">
         {{ index }}
         <template v-for="(block, index) in line" :key="index">
@@ -217,7 +261,7 @@ export default {
           <template v-else>0</template>
         </template>
       </p>
-    </div>
+    </div> -->
   </main>
 </template>
 
