@@ -17,22 +17,33 @@ export default class Score{
         // パーフェクトクリア得点
         this.PerfectClearPoints = [800,1000,1800,2000]
 
-        // 描写用
+        /** 連続特殊消しトリガー */
+        this.back2back = false
+
+        // 描写用 コールバック関数を収納する
         /** 4列消し */
         this.enableIsTetris = null
 
-        /** Tスピン */
-        this.tSpin = false
-
         /** 連続特殊消し */
-        this.back2back = false
+        this.enableIsB2B = null
 
-        
+        /** Tスピン */
+        this.enableIsTspin = null
+
+        this.setTspinType = null
+        this.TspinTypeLabels = ["","Single","Double","Triple"]
     }
 
-    setCallbacks({enableIsTetris}){
+    setCallbacks({
+        enableIsTetris,
+        enableIsB2B,
+        enableIsTspin,
+        setTspinType
+    }){
         this.enableIsTetris = enableIsTetris
-        console.log(this.enableIsTetris);
+        this.enableIsB2B = enableIsB2B
+        this.enableIsTspin = enableIsTspin
+        this.setTspinType = setTspinType
     }
 
     /** スコアを加える
@@ -60,7 +71,7 @@ export default class Score{
 
     // Tスピン用
     TspinCalculation({countOfAlignedRows,level}){
-        if (countOfAlignedRows == 0) { this.disableFlags() }
+        if (countOfAlignedRows == 0) {this.disableFlags() }
 
         this.scoreCalculater({
             base:this.tspinPoints[countOfAlignedRows],
@@ -71,6 +82,9 @@ export default class Score{
         this.ren += countOfAlignedRows
 
         if (countOfAlignedRows > 0) { this.back2back = true }
+
+        this.setTspinType(this.TspinTypeLabels[countOfAlignedRows])
+        this.enableIsTspin()
     }
 
     // 他のミノ用

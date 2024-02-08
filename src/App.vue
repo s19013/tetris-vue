@@ -29,7 +29,9 @@ export default {
       reRendIntervalId: 0,
       inPreparation: true,
       isTetris: false,
-      isB2B: false
+      isB2B: false,
+      isTspin: false,
+      TspinType: ''
     }
   },
   methods: {
@@ -115,6 +117,16 @@ export default {
       setTimeout(() => {
         this.isB2B = false
       }, 2000)
+    },
+    enableIsTspin() {
+      this.isTspin = true
+      // 数秒たったら消す
+      setTimeout(() => {
+        this.isTspin = false
+      }, 2000)
+    },
+    setTspinType(type) {
+      this.TspinType = type
     }
   },
   computed: {
@@ -130,8 +142,10 @@ export default {
     this.tetris.init()
     // 関数を渡す時に関数名()とか書かずに関数名のみで書かないと正しくうごいてくれないらしい｡
     this.tetris.score.setCallbacks({
-      enableIsTetrisFlag: this.enableIsTetris,
-      enableIsB2B: this.enableIsB2B
+      enableIsTetris: this.enableIsTetris,
+      enableIsB2B: this.enableIsB2B,
+      enableIsTspin: this.enableIsTspin,
+      setTspinType: this.setTspinType
     })
     this.reRender()
   },
@@ -162,6 +176,10 @@ export default {
         </div>
         <p class="Ren" v-show="this.tetris.score.ren > 0">Ren:{{ this.tetris.score.ren }}</p>
         <p class="isTetris" v-show="this.isTetris">Tetris!</p>
+        <p class="Tspin" v-show="this.isTspin">
+          Tspin <br />
+          {{ this.TspinType }}
+        </p>
         <p class="isB2B" v-show="this.isB2B">
           Back <br />
           To <br />
