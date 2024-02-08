@@ -5,14 +5,8 @@ export default class Score{
 
         this.score = 0
 
-        /** 4列消し */
-        this.isTetris = false
-
         /** 連続消し */
         this.ren = 0
-
-        /** 連続4列消し */
-        this.back2back = false
 
         // 通常消しの得点
         this.points = [0,100,300,500,800]
@@ -22,6 +16,34 @@ export default class Score{
 
         // パーフェクトクリア得点
         this.PerfectClearPoints = [800,1000,1800,2000]
+
+        /** 連続特殊消しトリガー */
+        this.back2back = false
+
+        // 描写用 コールバック関数を収納する
+        /** 4列消し */
+        this.enableIsTetris = null
+
+        /** 連続特殊消し */
+        this.enableIsB2B = null
+
+        /** Tスピン */
+        this.enableIsTspin = null
+
+        this.setTspinType = null
+        this.TspinTypeLabels = ["","Single","Double","Triple"]
+    }
+
+    setCallbacks({
+        enableIsTetris,
+        enableIsB2B,
+        enableIsTspin,
+        setTspinType
+    }){
+        this.enableIsTetris = enableIsTetris
+        this.enableIsB2B = enableIsB2B
+        this.enableIsTspin = enableIsTspin
+        this.setTspinType = setTspinType
     }
 
     /** スコアを加える
@@ -49,7 +71,7 @@ export default class Score{
 
     // Tスピン用
     TspinCalculation({countOfAlignedRows,level}){
-        if (countOfAlignedRows == 0) { this.disableFlags() }
+        if (countOfAlignedRows == 0) {this.disableFlags() }
 
         this.scoreCalculater({
             base:this.tspinPoints[countOfAlignedRows],
@@ -60,6 +82,9 @@ export default class Score{
         this.ren += countOfAlignedRows
 
         if (countOfAlignedRows > 0) { this.back2back = true }
+
+        this.setTspinType(this.TspinTypeLabels[countOfAlignedRows])
+        this.enableIsTspin()
     }
 
     // 他のミノ用
@@ -77,20 +102,12 @@ export default class Score{
         // b2b発動は消した後
         if (countOfAlignedRows == 4) {
             this.back2back = true
-            this.enableIsTetrisFlag()
+            this.enableIsTetris()
         }
     }
 
     disableFlags(){
         this.back2back = false
         this.ren = 0
-    }
-
-    enableIsTetrisFlag(){
-        this.isTetris = true
-        // これは表示用なので数秒たったら消す
-        setTimeout(()=> {
-            this.isTetris = false
-        },2000) ;
     }
 }
