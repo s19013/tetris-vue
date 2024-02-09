@@ -90,7 +90,11 @@ export default class Score{
         this.enableIsTspin()
 
         // b2b発動は最後
-        if (countOfAlignedRows > 0) { this.back2back = true }
+        if (countOfAlignedRows > 0) {
+            // フロントにb2bを表示するのはすでにb2bが発動してる時
+            if (this.back2back) { this.enableIsB2B() }
+            this.back2back = true 
+        }
         else { this.back2back = false}
 
     }
@@ -112,6 +116,8 @@ export default class Score{
 
         // b2b発動は消した後
         if (countOfAlignedRows == 4) {
+            // フロントにb2bを表示するのはすでにb2bが発動してる時
+            if (this.back2back) { this.enableIsB2B() }
             this.back2back = true
             this.enableIsTetris()
         } 
