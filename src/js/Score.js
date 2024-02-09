@@ -31,6 +31,8 @@ export default class Score{
         this.enableIsTspin = null
 
         this.setTspinType = null
+
+        // Tスピンで消した数で表示するラベル
         this.TspinTypeLabels = ["","Single","Double","Triple"]
     }
 
