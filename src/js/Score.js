@@ -31,6 +31,8 @@ export default class Score{
         this.enableIsTspin = null
 
         this.setTspinType = null
+
+        // Tスピンで消した数で表示するラベル
         this.TspinTypeLabels = ["","Single","Double","Triple"]
     }
 
@@ -71,7 +73,10 @@ export default class Score{
 
     // Tスピン用
     TspinCalculation({countOfAlignedRows,level}){
-        if (countOfAlignedRows == 0) {this.disableFlags() }
+        if (countOfAlignedRows == 0) { 
+            this.resetRen() 
+            return
+        }
 
         this.scoreCalculater({
             base:this.tspinPoints[countOfAlignedRows],
@@ -81,15 +86,25 @@ export default class Score{
         // renを加える
         this.ren += countOfAlignedRows
 
-        if (countOfAlignedRows > 0) { this.back2back = true }
-
         this.setTspinType(this.TspinTypeLabels[countOfAlignedRows])
         this.enableIsTspin()
+
+        // b2b発動は最後
+        if (countOfAlignedRows > 0) {
+            // フロントにb2bを表示するのはすでにb2bが発動してる時
+            if (this.back2back) { this.enableIsB2B() }
+            this.back2back = true 
+        }
+        else { this.back2back = false}
+
     }
 
     // 他のミノ用
     calculation({countOfAlignedRows,level}){
-        if (countOfAlignedRows == 0) { this.disableFlags() }
+        if (countOfAlignedRows == 0) {
+            this.resetRen() 
+            return
+        }
 
         this.scoreCalculater({
             base:this.points[countOfAlignedRows],
@@ -101,13 +116,13 @@ export default class Score{
 
         // b2b発動は消した後
         if (countOfAlignedRows == 4) {
+            // フロントにb2bを表示するのはすでにb2bが発動してる時
+            if (this.back2back) { this.enableIsB2B() }
             this.back2back = true
             this.enableIsTetris()
-        }
+        } 
+        else { this.back2back = false}
     }
 
-    disableFlags(){
-        this.back2back = false
-        this.ren = 0
-    }
+    resetRen(){ this.ren = 0 }
 }
