@@ -7,6 +7,7 @@ import Tetrimino from './components/Tetrimino.vue'
 import Ghost from './components/Ghost.vue'
 import GameStart from './components/GameStart.vue'
 import GameEnd from './components/GameEnd.vue'
+import FlashMessage from './components/FlashMessage.vue'
 import lodash from 'lodash'
 
 export default {
@@ -17,7 +18,8 @@ export default {
     Tetrimino,
     Ghost,
     GameStart,
-    GameEnd
+    GameEnd,
+    FlashMessage
   },
   data() {
     return {
@@ -28,9 +30,6 @@ export default {
       ghost: [],
       reRendIntervalId: 0,
       inPreparation: true,
-      isTetris: false,
-      isB2B: false,
-      isTspin: false,
       TspinType: ''
     }
   },
@@ -104,27 +103,6 @@ export default {
       // 定期的再描画
       this.reRendIntervalId = setInterval(this.reRender, 100)
     },
-    enableIsTetris() {
-      this.isTetris = true
-      // 数秒たったら消す
-      setTimeout(() => {
-        this.isTetris = false
-      }, 2000)
-    },
-    enableIsB2B() {
-      this.isB2B = true
-      // 数秒たったら消す
-      setTimeout(() => {
-        this.isB2B = false
-      }, 2000)
-    },
-    enableIsTspin() {
-      this.isTspin = true
-      // 数秒たったら消す
-      setTimeout(() => {
-        this.isTspin = false
-      }, 2000)
-    },
     setTspinType(type) {
       this.TspinType = type
     }
@@ -140,16 +118,16 @@ export default {
   watch: {},
   beforeMount() {
     this.tetris.init()
-    // 関数を渡す時に関数名()とか書かずに関数名のみで書かないと正しくうごいてくれないらしい｡
-    this.tetris.score.setCallbacks({
-      enableIsTetris: this.enableIsTetris,
-      enableIsB2B: this.enableIsB2B,
-      enableIsTspin: this.enableIsTspin,
-      setTspinType: this.setTspinType
-    })
     this.reRender()
   },
   mounted() {
+    // 関数を渡す時に関数名()とか書かずに関数名のみで書かないと正しくうごいてくれないらしい｡
+    this.tetris.score.setCallbacks({
+      enableIsTetris: this.$refs.isTetris.showMessage,
+      enableIsB2B: this.$refs.isB2B.showMessage,
+      enableIsTspin: this.$refs.isTspin.showMessage,
+      setTspinType: this.setTspinType
+    })
     /** キーボード受付 */
     document.addEventListener('keydown', this.keyEvents)
   },
@@ -175,16 +153,16 @@ export default {
           <p v-show="this.tetris.ojyama.countDown <= 2000">Danger!!</p>
         </div>
         <p class="Ren" v-show="this.tetris.score.ren > 0">Ren:{{ this.tetris.score.ren }}</p>
-        <p class="isTetris" v-show="this.isTetris">Tetris!</p>
-        <p class="Tspin" v-show="this.isTspin">
+        <FlashMessage ref="isTetris" class="isTetris">Tetris!</FlashMessage>
+        <FlashMessage ref="isTspin" class="isTspin">
           Tspin <br />
           {{ this.TspinType }}
-        </p>
-        <p class="isB2B" v-show="this.isB2B">
+        </FlashMessage>
+        <FlashMessage ref="isB2B" class="isB2B">
           Back <br />
           To <br />
           Back!
-        </p>
+        </FlashMessage>
       </div>
       <div class="Center">
         <Tetrimino :tetrimino="tetrimino" />
