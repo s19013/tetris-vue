@@ -30,8 +30,6 @@ export default {
       ghost: [],
       reRendIntervalId: 0,
       inPreparation: true,
-      isB2B: false,
-      isTspin: false,
       TspinType: ''
     }
   },
@@ -105,20 +103,6 @@ export default {
       // 定期的再描画
       this.reRendIntervalId = setInterval(this.reRender, 100)
     },
-    enableIsB2B() {
-      this.isB2B = true
-      // 数秒たったら消す
-      setTimeout(() => {
-        this.isB2B = false
-      }, 2000)
-    },
-    enableIsTspin() {
-      this.isTspin = true
-      // 数秒たったら消す
-      setTimeout(() => {
-        this.isTspin = false
-      }, 2000)
-    },
     setTspinType(type) {
       this.TspinType = type
     }
@@ -140,8 +124,8 @@ export default {
     // 関数を渡す時に関数名()とか書かずに関数名のみで書かないと正しくうごいてくれないらしい｡
     this.tetris.score.setCallbacks({
       enableIsTetris: this.$refs.isTetris.showMessage,
-      enableIsB2B: this.enableIsB2B,
-      enableIsTspin: this.enableIsTspin,
+      enableIsB2B: this.$refs.isB2B.showMessage,
+      enableIsTspin: this.$refs.isTspin.showMessage,
       setTspinType: this.setTspinType
     })
     /** キーボード受付 */
@@ -170,15 +154,15 @@ export default {
         </div>
         <p class="Ren" v-show="this.tetris.score.ren > 0">Ren:{{ this.tetris.score.ren }}</p>
         <FlashMessage ref="isTetris" class="isTetris">Tetris!</FlashMessage>
-        <p class="Tspin" v-show="this.isTspin">
+        <FlashMessage ref="isTspin" class="isTspin">
           Tspin <br />
           {{ this.TspinType }}
-        </p>
-        <p class="isB2B" v-show="this.isB2B">
+        </FlashMessage>
+        <FlashMessage ref="isB2B" class="isB2B">
           Back <br />
           To <br />
           Back!
-        </p>
+        </FlashMessage>
       </div>
       <div class="Center">
         <Tetrimino :tetrimino="tetrimino" />
