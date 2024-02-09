@@ -21,7 +21,9 @@ export default {
       }, this.timeLimit)
     }
   },
-  watch: {}
+  beforeUnmount() {
+    clearInterval(this.timerid)
+  }
 }
 </script>
 
