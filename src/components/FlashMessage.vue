@@ -22,14 +22,14 @@ export default {
     }
   },
   beforeUnmount() {
-    clearInterval(this.timerid)
+    clearTimeout(this.timerid)
   }
 }
 </script>
 
 <template>
   <div class="flashMessage">
-    <p v-show="this.showFlag">
+    <p v-show="showFlag">
       <slot></slot>
     </p>
   </div>
