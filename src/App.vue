@@ -160,8 +160,7 @@ export default {
         </FlashMessage>
         <FlashMessage ref="isB2B" class="isB2B">
           Back <br />
-          To <br />
-          Back!
+          To Back!
         </FlashMessage>
       </div>
       <div class="Center">
@@ -260,6 +259,18 @@ export default {
   .LeftInfo {
     .Hold {
       margin-left: auto;
+    }
+    .isTetris {
+      color: rgb(226, 234, 241);
+      background-color: rgb(75, 120, 124);
+    }
+    .isTspin {
+      color: rgb(0, 0, 0);
+      background-color: rgb(228, 145, 44);
+    }
+    .isB2B {
+      color: rgb(226, 234, 241);
+      background-color: rgb(32, 24, 114);
     }
   }
   .Center {
