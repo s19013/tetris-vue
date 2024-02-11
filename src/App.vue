@@ -144,7 +144,7 @@ export default {
     <GameStart @gameStart="gameStart" />
     <GameEnd v-if="this.tetris.isGameOver" :score="this.tetris.score.score" />
     <h1>動きに癖がある非公式テトリス</h1>
-    <a href="https://github.com/s19013/tetris-vue">コード</a>
+    <a href="https://github.com/s19013/tetris-vue">コード(githubへ)</a>
     <div class="game">
       <div class="LeftInfo">
         <Hold :hold="this.tetris.hold.holdingTetrimino" />
@@ -225,8 +225,7 @@ export default {
         <p>回したら大きくずれることがある｡</p>
         <h2>できないこと(未実装)</h2>
         <p>一部回し入れ</p>
-        <p>Back To Back</p>
-        <p>Tスピンボーナス</p>
+        <p></p>
       </div>
     </div>
     <!-- <pre>{{ field }}</pre> -->
