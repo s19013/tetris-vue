@@ -275,7 +275,7 @@ export default class Tetris {
 
         // Tスピンminiかどうか調べる
         if (this.tetrimino.tSpinMini) {
-            this.score.TspinMiniCalculation({countOfAlignedRows:countOfAlignedRows,level:this.level})
+            this.score.TspinCalculation({countOfAlignedRows:countOfAlignedRows,level:this.level,tSpinMini:true})
             return
         }
         
