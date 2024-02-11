@@ -18,6 +18,7 @@ export default class Tmino extends Tetrimino{
         this.counterClockwiseTurninDirections = ["down","right","down"]
         this.directionOfMino = 1
         this.tSpin = false
+        this.tSpinMini = false
     }
 
     moveLeft(){
@@ -42,6 +43,7 @@ export default class Tmino extends Tetrimino{
 
     disableFlags(){
         this.tSpin = false
+        this.tSpinMini = false
     }
 
     addDirectionOfMino(){
@@ -55,6 +57,15 @@ export default class Tmino extends Tetrimino{
     }
 
     clockwise(field){
+        // tspinminiができるか調べとく
+        this.canTspinMini({
+            field:field,
+            coordinate:this.coordinate,
+            recessedPart:3,
+            protrudingPart:0,
+            vector:-1
+        })
+        console.log(this.tSpinMini);
         this.coordinate = this.rotateTetrimino({
             field:field,
             coordinate:this.coordinate,
@@ -66,6 +77,16 @@ export default class Tmino extends Tetrimino{
     }
 
     counterClockwise(field){
+        // tspinminiができるか調べとく
+        this.canTspinMini({
+            field:field,
+            coordinate:this.coordinate,
+            recessedPart:0,
+            protrudingPart:3,
+            vector:+1
+        })
+
+        console.log(this.tSpinMini);
         this.coordinate = this.rotateTetrimino({
             field:field,
             coordinate:this.coordinate,
@@ -93,13 +114,12 @@ export default class Tmino extends Tetrimino{
         // 回転実行
         const rotated = rotateFunction({rotationPoint: rotationPoint});
 
-    
         // 補正をかける
         const corrected = pushOut.correction(rotated);
     
         // どのブロックにも被って無いならすぐ返す
         if (field.tetriminoIsNotOverlap(corrected)) {
-            this.is3CornersFill({field:field,coordinate:corrected})
+            this.isTspin({field:field,coordinate:corrected})
             return corrected; 
         }
     
@@ -111,7 +131,7 @@ export default class Tmino extends Tetrimino{
     
         // 回し入れ成功ならそれを返す
         if (turnedIn != null) {
-            this.is3CornersFill({field:field,coordinate:turnedIn})
+            this.isTspin({field:field,coordinate:turnedIn})
             return turnedIn; 
         }
         
@@ -132,7 +152,7 @@ export default class Tmino extends Tetrimino{
         return coordinate;
     }
     
-    is3CornersFill({field,coordinate}){
+    isTspin({field,coordinate}){
         let count = 0
         if (this.directionOfMino % 2 == 1) {
             count = this.directionOfMinoIsOdd({field:field,coordinate:coordinate})
@@ -160,6 +180,7 @@ export default class Tmino extends Tetrimino{
         return false
     }
 
+    // 向きが横だった場合
     directionOfMinoIsOdd({field,coordinate}){
         let count = 0
 
@@ -188,6 +209,7 @@ export default class Tmino extends Tetrimino{
         return count
     }
 
+    // 向きが縦だった場合
     directionOfMinoIsEven({field,coordinate}){
         let count = 0
 
@@ -214,5 +236,43 @@ export default class Tmino extends Tetrimino{
         }
 
         return count
+    }
+
+    canTspinMini({
+        field,
+        coordinate,
+        recessedPart,  // 出っ張ってない部分
+        protrudingPart,  // 出っ張ってる部分
+        vector  // 動かすベクトル､ついでにかべがあるべき場所
+    }){
+        // 向きが規定の方向以外だったら即返す
+        if (this.directionOfMino != 1) { return }
+
+        // 最底辺ではTspinminiができないので即返す
+        // 前のif文でdirectionOfMino == 1であるのが確定したため,0,2,3が一番下
+        if (coordinate.status[0].y == fieldHeight - 1) { return }
+
+        // 出っ張ってない部分と中央の下にブロックがなかったら即返す
+        if(field.status[(coordinate.status[recessedPart].y) + 1][coordinate.status[recessedPart].x] == false){return}
+        if(field.status[(coordinate.status[2].y) + 1][coordinate.status[2].x] == false){return}
+
+        // 出っ張っている部分の上下が埋まっていたら即返す
+        if(field.status[(coordinate.status[protrudingPart].y) + 1][coordinate.status[protrudingPart].x] ){return}
+        if(field.status[(coordinate.status[protrudingPart].y) - 1][coordinate.status[protrudingPart].x] ){return}
+
+        // 出っ張っている部分の隣とその上下が埋まってなかったら即返す
+        if (this.isWall((coordinate.status[protrudingPart].x) + vector)) {
+            // この場所が壁だとわかった｡
+            // その上下も壁なのでTspinminiフラグをonにしても良い
+            this.tSpinMini = true
+            return 
+        }
+        
+        if(field.status[(coordinate.status[protrudingPart].y)][(coordinate.status[protrudingPart].x) + vector] == false ){return}
+        if(field.status[(coordinate.status[protrudingPart].y) + 1][(coordinate.status[protrudingPart].x) + vector] == false ){return}
+        if(field.status[(coordinate.status[protrudingPart].y) - 1][(coordinate.status[protrudingPart].x) + vector] == false ){return}
+
+        // ここまできたということはTスピンミニができるということ
+        this.tSpinMini = true
     }
 }
