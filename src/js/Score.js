@@ -59,7 +59,7 @@ export default class Score{
          else { console.error('Invalid score addition: ', ScoreToAdd); }
     }
 
-    scoreCalculater({base,level}){
+    scoreCalculater({base,level,bonus=0}){
         // (基本スコア+RENスコア)*レベル*BackToBack+追加スコア
         // b2b成立時1.5倍 不成立時1倍
 
@@ -68,11 +68,14 @@ export default class Score{
         let b2bCorrection = 1
         if (this.back2back) { b2bCorrection = 1.5 }
 
-        this.addScore((base+this.ren)*level*b2bCorrection)
+        this.addScore((base+this.ren)*level*b2bCorrection + bonus)
     }
 
     // Tスピン用
     TspinCalculation({countOfAlignedRows,level}){
+        this.setTspinType(this.TspinTypeLabels[countOfAlignedRows])
+        this.enableIsTspin()
+
         if (countOfAlignedRows == 0) { 
             this.resetRen() 
             return
@@ -86,8 +89,36 @@ export default class Score{
         // renを加える
         this.ren += countOfAlignedRows
 
-        this.setTspinType(this.TspinTypeLabels[countOfAlignedRows])
+        // b2b発動は最後
+        if (countOfAlignedRows > 0) {
+            // フロントにb2bを表示するのはすでにb2bが発動してる時
+            if (this.back2back) { this.enableIsB2B() }
+            this.back2back = true 
+        }
+        else { this.back2back = false}
+
+    }
+
+    // Tスピンミニ用
+    // tspinminiって1列しか成立しないと思うけど念の為やっとく
+    TspinMiniCalculation({countOfAlignedRows,level}){
+        this.setTspinType("mini")
         this.enableIsTspin()
+
+        if (countOfAlignedRows == 0) { 
+            this.resetRen() 
+            return
+        }
+
+        this.scoreCalculater({
+            base:this.points[countOfAlignedRows],
+            level:level,
+            bonus:100
+
+        })
+
+        // renを加える
+        this.ren += countOfAlignedRows
 
         // b2b発動は最後
         if (countOfAlignedRows > 0) {
