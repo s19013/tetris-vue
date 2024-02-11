@@ -72,64 +72,32 @@ export default class Score{
     }
 
     // Tスピン用
-    TspinCalculation({countOfAlignedRows,level}){
-        this.setTspinType(this.TspinTypeLabels[countOfAlignedRows])
+    // フラグ引数は良くないというけどほとんどやること同じなんだもん
+    TspinCalculation({countOfAlignedRows,level,tSpinMini=false}){
+        if (tSpinMini) { this.setTspinType("mini") }
+        else { this.setTspinType(this.TspinTypeLabels[countOfAlignedRows]) }
         this.enableIsTspin()
 
         if (countOfAlignedRows == 0) { 
-            this.resetRen() 
+            this.resetRen()
+            this.back2back = false
             return
         }
 
         this.scoreCalculater({
             base:this.tspinPoints[countOfAlignedRows],
-            level:level
-        })
-
-        // renを加える
-        this.ren += countOfAlignedRows
-
-        // b2b発動は最後
-        if (countOfAlignedRows > 0) {
-            // フロントにb2bを表示するのはすでにb2bが発動してる時
-            if (this.back2back) { this.enableIsB2B() }
-            this.back2back = true 
-        }
-        else { this.back2back = false}
-
-    }
-
-    // Tスピンミニ用
-    // tspinminiって1列しか成立しないと思うけど念の為やっとく
-    TspinMiniCalculation({countOfAlignedRows,level}){
-        this.setTspinType("mini")
-        this.enableIsTspin()
-
-        if (countOfAlignedRows == 0) { 
-            this.resetRen() 
-            return
-        }
-
-        this.scoreCalculater({
-            base:this.points[countOfAlignedRows],
             level:level,
-            bonus:100
-
+            bonus:tSpinMini ? 100 : 0
         })
 
         // renを加える
         this.ren += countOfAlignedRows
 
         // b2b発動は最後
-        if (countOfAlignedRows > 0) {
-            // フロントにb2bを表示するのはすでにb2bが発動してる時
-            if (this.back2back) { this.enableIsB2B() }
-            this.back2back = true 
-        }
-        else { this.back2back = false}
-
+        // フロントにb2bを表示するのはすでにb2bが発動してる時
+        if (this.back2back) { this.enableIsB2B() }
+        this.back2back = true
     }
-
     // 他のミノ用
     calculation({countOfAlignedRows,level}){
         if (countOfAlignedRows == 0) {
