@@ -272,6 +272,12 @@ export default class Tetris {
             this.score.calculation({countOfAlignedRows:countOfAlignedRows,level:this.level})
             return
         }
+
+        // Tスピンminiかどうか調べる
+        if (this.tetrimino.tSpinMini) {
+            this.score.TspinMiniCalculation({countOfAlignedRows:countOfAlignedRows,level:this.level})
+            return
+        }
         
         // Tスピンかどうか調べる
         if (this.tetrimino.tSpin) {
