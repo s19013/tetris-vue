@@ -18,6 +18,7 @@ export default class Tmino extends Tetrimino{
         this.counterClockwiseTurninDirections = ["down","right","down"]
         this.directionOfMino = 1
         this.tSpin = false
+        this.tSpinMini = false
     }
 
     moveLeft(){
@@ -42,6 +43,7 @@ export default class Tmino extends Tetrimino{
 
     disableFlags(){
         this.tSpin = false
+        this.tSpinMini = false
     }
 
     addDirectionOfMino(){
@@ -54,7 +56,125 @@ export default class Tmino extends Tetrimino{
         if (this.directionOfMino < 1) { this.directionOfMino = 4 }
     }
 
-    is3CornersFill({field,coordinate}){
+    clockwise(field){
+        // tspinminiができるか調べるのが先
+        this.canTspinMini({
+            field:field,
+            coordinate:this.coordinate,
+            recessedPart:3,
+            protrudingPart:0,
+            nextTo:-1
+        })
+
+        // tspinminiができるならtspinmini実行
+        if (this.tSpinMini) {
+            this.coordinate = this.doTspinMini({
+                rotationPoint:2,
+                vector:-1,
+                rotateFunction: this.coordinate.clockwise.bind(this.coordinate),
+                directionOfMinoFunction:this.addDirectionOfMino.bind(this)
+            })
+            return 
+        }
+        
+        this.coordinate = this.rotateTetrimino({
+            field:field,
+            coordinate:this.coordinate,
+            rotationPoint:2,
+            directions:this.clockwiseTurninDirections,
+            rotateFunction: this.coordinate.clockwise.bind(this.coordinate),
+            directionOfMinoFunction:this.addDirectionOfMino.bind(this)
+        });
+    }
+
+    counterClockwise(field){
+        // tspinminiができるか調べとく
+        this.canTspinMini({
+            field:field,
+            coordinate:this.coordinate,
+            recessedPart:0,
+            protrudingPart:3,
+            nextTo:+1
+        })
+
+        // tspinminiができるならtspinmini実行
+        if (this.tSpinMini) {
+            this.coordinate = this.doTspinMini({
+                rotationPoint:2,
+                vector:1,
+                rotateFunction: this.coordinate.counterClockwise.bind(this.coordinate),
+                directionOfMinoFunction:this.subDirectionOfMino.bind(this)
+            })
+            return 
+        }
+
+        this.coordinate = this.rotateTetrimino({
+            field:field,
+            coordinate:this.coordinate,
+            rotationPoint:2,
+            directions:this.counterClockwiseTurninDirections,
+            rotateFunction: this.coordinate.counterClockwise.bind(this.coordinate),
+            directionOfMinoFunction:this.subDirectionOfMino.bind(this)
+        });
+    }
+
+    rotateTetrimino({
+        field,
+        coordinate,
+        rotationPoint,
+        directions,
+        rotateFunction, // コールバックというか回す関数を入れる
+        directionOfMinoFunction, // directionOfMinoFunctionを増減させる関数
+    }) {
+        // 回転できなかったときに使う
+        const oldDirectionOfMino = this.directionOfMino
+
+        // directionOfMinoFunctionを増減させる
+        directionOfMinoFunction()
+
+        // 回転実行
+        const rotated = rotateFunction({rotationPoint: rotationPoint});
+
+        // 補正をかける
+        const corrected = pushOut.correction(rotated);
+    
+        // どのブロックにも被って無いならすぐ返す
+        if (field.tetriminoIsNotOverlap(corrected)) {
+            this.isTspin({field:field,coordinate:corrected})
+            return corrected; 
+        }
+    
+
+        const turnedIn = helper.turnIn({
+            field: field,
+            coordinate: corrected, 
+            directions: directions
+        });
+    
+        // 回し入れ成功ならそれを返す
+        if (turnedIn != null) {
+            this.isTspin({field:field,coordinate:turnedIn})
+            return turnedIn; 
+        }
+        
+        // 失敗時したら上げる方法を試す｡
+        const liftUpded = helper.liftUp({
+            field: field,
+            coordinate: rotated
+        });
+    
+        // 押上で問題ないならそれを返す
+        if (liftUpded != null) { return liftUpded; }
+    
+        // ここまでやってだめなら初期値を返す
+
+        // directionOfMinoを回転前に戻す
+        this.directionOfMino = oldDirectionOfMino
+
+        return coordinate;
+    }
+    
+    isTspin({field,coordinate}){
         let count = 0
         if (this.directionOfMino % 2 == 1) {
             count = this.directionOfMinoIsOdd({field:field,coordinate:coordinate})
@@ -82,6 +202,7 @@ export default class Tmino extends Tetrimino{
         return false
     }
 
+    // 向きが横だった場合
     directionOfMinoIsOdd({field,coordinate}){
         let count = 0
 
@@ -110,6 +231,7 @@ export default class Tmino extends Tetrimino{
         return count
     }
 
+    // 向きが縦だった場合
     directionOfMinoIsEven({field,coordinate}){
         let count = 0
 
@@ -138,82 +260,63 @@ export default class Tmino extends Tetrimino{
         return count
     }
 
-    clockwise(field){
-        this.coordinate = this.rotateTetrimino({
-            field:field,
-            coordinate:this.coordinate,
-            rotationPoint:2,
-            directions:this.clockwiseTurninDirections,
-            rotateFunction: this.coordinate.clockwise.bind(this.coordinate),
-            directionOfMinoFunction:this.addDirectionOfMino.bind(this)
-        });
-    }
-
-    counterClockwise(field){
-        this.coordinate = this.rotateTetrimino({
-            field:field,
-            coordinate:this.coordinate,
-            rotationPoint:2,
-            directions:this.counterClockwiseTurninDirections,
-            rotateFunction: this.coordinate.counterClockwise.bind(this.coordinate),
-            directionOfMinoFunction:this.subDirectionOfMino.bind(this)
-        });
-    }
-
-    rotateTetrimino({
+    canTspinMini({
         field,
         coordinate,
+        recessedPart,  // 出っ張ってない部分
+        protrudingPart,  // 出っ張ってる部分
+        nextTo  // かべがあるべき場所 +右隣､-左隣
+    }){
+        // 向きが規定の方向以外だったら即返す
+        if (this.directionOfMino != 1) { return }
+
+        // 最底辺ではTspinminiができないので即返す
+        // 前のif文でdirectionOfMino == 1であるのが確定したため,0,2,3が一番下
+        if (coordinate.status[0].y == fieldHeight - 1) { return }
+
+        // 出っ張ってない部分と中央の下にブロックがなかったら即返す
+        if(field.status[(coordinate.status[recessedPart].y) + 1][coordinate.status[recessedPart].x] == false){return}
+        if(field.status[(coordinate.status[2].y) + 1][coordinate.status[2].x] == false){return}
+
+        // 出っ張っている部分の上下が埋まっていたら即返す
+        if(field.status[(coordinate.status[protrudingPart].y) + 1][coordinate.status[protrudingPart].x] ){return}
+        if(field.status[(coordinate.status[protrudingPart].y) - 1][coordinate.status[protrudingPart].x] ){return}
+
+        // 出っ張っている部分の隣とその上下が埋まってなかったら即返す
+        if (this.isWall((coordinate.status[protrudingPart].x) + nextTo)) {
+            // この場所が壁だとわかった｡
+            // その上下も壁なのでTspinminiフラグをonにしても良い
+            this.tSpinMini = true
+            return 
+        }
+
+        if(field.status[(coordinate.status[protrudingPart].y)][(coordinate.status[protrudingPart].x) + nextTo] == false ){return}
+        if(field.status[(coordinate.status[protrudingPart].y) + 1][(coordinate.status[protrudingPart].x) + nextTo] == false ){return}
+        if(field.status[(coordinate.status[protrudingPart].y) - 1][(coordinate.status[protrudingPart].x) + nextTo] == false ){return}
+
+        // ここまできたということはTスピンミニができるということ
+        this.tSpinMini = true
+    }
+
+    doTspinMini({
         rotationPoint,
-        directions,
+        vector,
         rotateFunction, // コールバックというか回す関数を入れる
         directionOfMinoFunction, // directionOfMinoFunctionを増減させる関数
-    }) {
-        // 回転できなかったときに使う
-        const oldDirectionOfMino = this.directionOfMino
-
+    }){
         // directionOfMinoFunctionを増減させる
         directionOfMinoFunction()
 
         // 回転実行
         const rotated = rotateFunction({rotationPoint: rotationPoint});
 
-    
-        // 補正をかける
-        const corrected = pushOut.correction(rotated);
-    
-        // どのブロックにも被って無いならすぐ返す
-        if (field.tetriminoIsNotOverlap(corrected)) {
-            this.is3CornersFill({field:field,coordinate:corrected})
-            return corrected; 
-        }
-    
-        const turnedIn = helper.turnIn({
-            field: field,
-            coordinate: corrected,
-            directions: directions
-        });
-    
-        // 回し入れ成功ならそれを返す
-        if (turnedIn != null) {
-            this.is3CornersFill({field:field,coordinate:turnedIn})
-            return turnedIn; 
-        }
-        
-        // 失敗時したら上げる方法を試す｡
-        const liftUpded = helper.liftUp({
-            field: field,
-            coordinate: rotated
-        });
-    
-        // 押上で問題ないならそれを返す
-        if (liftUpded != null) { return liftUpded; }
-    
-        // ここまでやってだめなら初期値を返す
+        // 横にずらす
+        let slided = null
+        if (vector > 0) { slided = rotated.moveRight() }
+        else {slided = rotated.moveLeft()}
 
-        // directionOfMinoを回転前に戻す
-        this.directionOfMino = oldDirectionOfMino
-
-        return coordinate;
+        // Tspinminiは回転前に色々調べているので｡補正もチェックもいらない?
+        return slided
     }
-    
+
 }
