@@ -54,6 +54,84 @@ export default class Tmino extends Tetrimino{
         if (this.directionOfMino < 1) { this.directionOfMino = 4 }
     }
 
+    clockwise(field){
+        this.coordinate = this.rotateTetrimino({
+            field:field,
+            coordinate:this.coordinate,
+            rotationPoint:2,
+            directions:this.clockwiseTurninDirections,
+            rotateFunction: this.coordinate.clockwise.bind(this.coordinate),
+            directionOfMinoFunction:this.addDirectionOfMino.bind(this)
+        });
+    }
+
+    counterClockwise(field){
+        this.coordinate = this.rotateTetrimino({
+            field:field,
+            coordinate:this.coordinate,
+            rotationPoint:2,
+            directions:this.counterClockwiseTurninDirections,
+            rotateFunction: this.coordinate.counterClockwise.bind(this.coordinate),
+            directionOfMinoFunction:this.subDirectionOfMino.bind(this)
+        });
+    }
+
+    rotateTetrimino({
+        field,
+        coordinate,
+        rotationPoint,
+        directions,
+        rotateFunction, // コールバックというか回す関数を入れる
+        directionOfMinoFunction, // directionOfMinoFunctionを増減させる関数
+    }) {
+        // 回転できなかったときに使う
+        const oldDirectionOfMino = this.directionOfMino
+
+        // directionOfMinoFunctionを増減させる
+        directionOfMinoFunction()
+
+        // 回転実行
+        const rotated = rotateFunction({rotationPoint: rotationPoint});
+
+    
+        // 補正をかける
+        const corrected = pushOut.correction(rotated);
+    
+        // どのブロックにも被って無いならすぐ返す
+        if (field.tetriminoIsNotOverlap(corrected)) {
+            this.is3CornersFill({field:field,coordinate:corrected})
+            return corrected; 
+        }
+    
+        const turnedIn = helper.turnIn({
+            field: field,
+            coordinate: corrected,
+            directions: directions
+        });
+    
+        // 回し入れ成功ならそれを返す
+        if (turnedIn != null) {
+            this.is3CornersFill({field:field,coordinate:turnedIn})
+            return turnedIn; 
+        }
+        
+        // 失敗時したら上げる方法を試す｡
+        const liftUpded = helper.liftUp({
+            field: field,
+            coordinate: rotated
+        });
+    
+        // 押上で問題ないならそれを返す
+        if (liftUpded != null) { return liftUpded; }
+    
+        // ここまでやってだめなら初期値を返す
+
+        // directionOfMinoを回転前に戻す
+        this.directionOfMino = oldDirectionOfMino
+
+        return coordinate;
+    }
+    
     is3CornersFill({field,coordinate}){
         let count = 0
         if (this.directionOfMino % 2 == 1) {
@@ -137,83 +215,4 @@ export default class Tmino extends Tetrimino{
 
         return count
     }
-
-    clockwise(field){
-        this.coordinate = this.rotateTetrimino({
-            field:field,
-            coordinate:this.coordinate,
-            rotationPoint:2,
-            directions:this.clockwiseTurninDirections,
-            rotateFunction: this.coordinate.clockwise.bind(this.coordinate),
-            directionOfMinoFunction:this.addDirectionOfMino.bind(this)
-        });
-    }
-
-    counterClockwise(field){
-        this.coordinate = this.rotateTetrimino({
-            field:field,
-            coordinate:this.coordinate,
-            rotationPoint:2,
-            directions:this.counterClockwiseTurninDirections,
-            rotateFunction: this.coordinate.counterClockwise.bind(this.coordinate),
-            directionOfMinoFunction:this.subDirectionOfMino.bind(this)
-        });
-    }
-
-    rotateTetrimino({
-        field,
-        coordinate,
-        rotationPoint,
-        directions,
-        rotateFunction, // コールバックというか回す関数を入れる
-        directionOfMinoFunction, // directionOfMinoFunctionを増減させる関数
-    }) {
-        // 回転できなかったときに使う
-        const oldDirectionOfMino = this.directionOfMino
-
-        // directionOfMinoFunctionを増減させる
-        directionOfMinoFunction()
-
-        // 回転実行
-        const rotated = rotateFunction({rotationPoint: rotationPoint});
-
-    
-        // 補正をかける
-        const corrected = pushOut.correction(rotated);
-    
-        // どのブロックにも被って無いならすぐ返す
-        if (field.tetriminoIsNotOverlap(corrected)) {
-            this.is3CornersFill({field:field,coordinate:corrected})
-            return corrected; 
-        }
-    
-        const turnedIn = helper.turnIn({
-            field: field,
-            coordinate: corrected,
-            directions: directions
-        });
-    
-        // 回し入れ成功ならそれを返す
-        if (turnedIn != null) {
-            this.is3CornersFill({field:field,coordinate:turnedIn})
-            return turnedIn; 
-        }
-        
-        // 失敗時したら上げる方法を試す｡
-        const liftUpded = helper.liftUp({
-            field: field,
-            coordinate: rotated
-        });
-    
-        // 押上で問題ないならそれを返す
-        if (liftUpded != null) { return liftUpded; }
-    
-        // ここまでやってだめなら初期値を返す
-
-        // directionOfMinoを回転前に戻す
-        this.directionOfMino = oldDirectionOfMino
-
-        return coordinate;
-    }
-    
 }
