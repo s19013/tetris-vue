@@ -57,15 +57,26 @@ export default class Tmino extends Tetrimino{
     }
 
     clockwise(field){
-        // tspinminiができるか調べとく
+        // tspinminiができるか調べるのが先
         this.canTspinMini({
             field:field,
             coordinate:this.coordinate,
             recessedPart:3,
             protrudingPart:0,
-            vector:-1
+            nextTo:-1
         })
-        console.log(this.tSpinMini);
+
+        // tspinminiができるならtspinmini実行
+        if (this.tSpinMini) {
+            this.coordinate = this.doTspinMini({
+                rotationPoint:2,
+                vector:-1,
+                rotateFunction: this.coordinate.clockwise.bind(this.coordinate),
+                directionOfMinoFunction:this.addDirectionOfMino.bind(this)
+            })
+            return 
+        }
+        
         this.coordinate = this.rotateTetrimino({
             field:field,
             coordinate:this.coordinate,
@@ -83,10 +94,20 @@ export default class Tmino extends Tetrimino{
             coordinate:this.coordinate,
             recessedPart:0,
             protrudingPart:3,
-            vector:+1
+            nextTo:+1
         })
 
-        console.log(this.tSpinMini);
+        // tspinminiができるならtspinmini実行
+        if (this.tSpinMini) {
+            this.coordinate = this.doTspinMini({
+                rotationPoint:2,
+                vector:1,
+                rotateFunction: this.coordinate.counterClockwise.bind(this.coordinate),
+                directionOfMinoFunction:this.subDirectionOfMino.bind(this)
+            })
+            return 
+        }
+
         this.coordinate = this.rotateTetrimino({
             field:field,
             coordinate:this.coordinate,
@@ -123,9 +144,10 @@ export default class Tmino extends Tetrimino{
             return corrected; 
         }
     
+
         const turnedIn = helper.turnIn({
             field: field,
-            coordinate: corrected,
+            coordinate: corrected, 
             directions: directions
         });
     
@@ -243,7 +265,7 @@ export default class Tmino extends Tetrimino{
         coordinate,
         recessedPart,  // 出っ張ってない部分
         protrudingPart,  // 出っ張ってる部分
-        vector  // 動かすベクトル､ついでにかべがあるべき場所
+        nextTo  // かべがあるべき場所 +右隣､-左隣
     }){
         // 向きが規定の方向以外だったら即返す
         if (this.directionOfMino != 1) { return }
@@ -261,18 +283,40 @@ export default class Tmino extends Tetrimino{
         if(field.status[(coordinate.status[protrudingPart].y) - 1][coordinate.status[protrudingPart].x] ){return}
 
         // 出っ張っている部分の隣とその上下が埋まってなかったら即返す
-        if (this.isWall((coordinate.status[protrudingPart].x) + vector)) {
+        if (this.isWall((coordinate.status[protrudingPart].x) + nextTo)) {
             // この場所が壁だとわかった｡
             // その上下も壁なのでTspinminiフラグをonにしても良い
             this.tSpinMini = true
             return 
         }
-        
-        if(field.status[(coordinate.status[protrudingPart].y)][(coordinate.status[protrudingPart].x) + vector] == false ){return}
-        if(field.status[(coordinate.status[protrudingPart].y) + 1][(coordinate.status[protrudingPart].x) + vector] == false ){return}
-        if(field.status[(coordinate.status[protrudingPart].y) - 1][(coordinate.status[protrudingPart].x) + vector] == false ){return}
+
+        if(field.status[(coordinate.status[protrudingPart].y)][(coordinate.status[protrudingPart].x) + nextTo] == false ){return}
+        if(field.status[(coordinate.status[protrudingPart].y) + 1][(coordinate.status[protrudingPart].x) + nextTo] == false ){return}
+        if(field.status[(coordinate.status[protrudingPart].y) - 1][(coordinate.status[protrudingPart].x) + nextTo] == false ){return}
 
         // ここまできたということはTスピンミニができるということ
         this.tSpinMini = true
     }
+
+    doTspinMini({
+        rotationPoint,
+        vector,
+        rotateFunction, // コールバックというか回す関数を入れる
+        directionOfMinoFunction, // directionOfMinoFunctionを増減させる関数
+    }){
+        // directionOfMinoFunctionを増減させる
+        directionOfMinoFunction()
+
+        // 回転実行
+        const rotated = rotateFunction({rotationPoint: rotationPoint});
+
+        // 横にずらす
+        let slided = null
+        if (vector > 0) { slided = rotated.moveRight() }
+        else {slided = rotated.moveLeft()}
+
+        // Tspinminiは回転前に色々調べているので｡補正もチェックもいらない?
+        return slided
+    }
+
 }
