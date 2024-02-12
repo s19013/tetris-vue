@@ -27,6 +27,9 @@ export default class Score{
         /** 連続特殊消し */
         this.enableIsB2B = null
 
+        /** パフェクリ */
+        this.enableIsPerfectClear = null
+
         /** Tスピン */
         this.enableIsTspin = null
 
@@ -40,11 +43,13 @@ export default class Score{
         enableIsTetris,
         enableIsB2B,
         enableIsTspin,
+        enableIsPerfectClear,
         setTspinType
     }){
         this.enableIsTetris = enableIsTetris
         this.enableIsB2B = enableIsB2B
         this.enableIsTspin = enableIsTspin
+        this.enableIsPerfectClear = enableIsPerfectClear
         this.setTspinType = setTspinType
     }
 
@@ -121,6 +126,12 @@ export default class Score{
             this.enableIsTetris()
         } 
         else { this.back2back = false}
+    }
+
+    // パフェクリ用の計算
+    perfectClearCalculation(countOfAlignedRows){
+        this.enableIsPerfectClear()
+        this.addScore(this.PerfectClearPoints[countOfAlignedRows])
     }
 
     resetRen(){ this.ren = 0 }

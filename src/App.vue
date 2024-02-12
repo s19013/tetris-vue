@@ -126,6 +126,7 @@ export default {
       enableIsTetris: this.$refs.isTetris.showMessage,
       enableIsB2B: this.$refs.isB2B.showMessage,
       enableIsTspin: this.$refs.isTspin.showMessage,
+      enableIsPerfectClear: this.$refs.isPerfectClear.showMessage,
       setTspinType: this.setTspinType
     })
     /** キーボード受付 */
@@ -162,6 +163,7 @@ export default {
           Back <br />
           To Back!
         </FlashMessage>
+        <FlashMessage ref="isPerfectClear" class="isPerfectClear">PerfectClear!</FlashMessage>
       </div>
       <div class="Center">
         <Tetrimino :tetrimino="tetrimino" />
