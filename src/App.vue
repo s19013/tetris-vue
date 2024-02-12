@@ -163,9 +163,9 @@ export default {
           Back <br />
           To Back!
         </FlashMessage>
-        <FlashMessage ref="isPerfectClear" class="isPerfectClear">PerfectClear!</FlashMessage>
       </div>
       <div class="Center">
+        <FlashMessage ref="isPerfectClear" class="isPerfectClear">PerfectClear!</FlashMessage>
         <Tetrimino :tetrimino="tetrimino" />
         <Ghost :ghost="ghost" />
         <Field :field="field" />
@@ -278,6 +278,15 @@ export default {
     display: grid;
     grid-template-rows: 10fr 1fr;
     grid-template-columns: 1fr;
+    .isPerfectClear {
+      position: absolute;
+      top: 30%;
+      font-size: 2rem;
+      -webkit-text-stroke: 1px rgb(189, 186, 0);
+      text-stroke: 1px rgb(189, 186, 0);
+      color: aliceblue;
+      z-index: 4;
+    }
     .Tetrimino {
       position: absolute;
       grid-row: 1/2;
