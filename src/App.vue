@@ -224,6 +224,7 @@ export default {
       <div class="Cannot">
         <h2>注意</h2>
         <p>公式といろいろ違う</p>
+        <p>一部回し入れの仕方が公式と異なる</p>
         <p>回したら大きくずれることがある｡</p>
         <h2>できないこと(未実装)</h2>
         <p>一部回し入れ</p>
@@ -282,8 +283,8 @@ export default {
       position: absolute;
       top: 30%;
       font-size: 2rem;
-      -webkit-text-stroke: 1px rgb(189, 186, 0);
-      text-stroke: 1px rgb(189, 186, 0);
+      -webkit-text-stroke: 5px rgb(189, 186, 0);
+      text-stroke: 5px rgb(189, 186, 0);
       color: aliceblue;
       z-index: 4;
     }
