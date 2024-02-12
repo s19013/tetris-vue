@@ -279,14 +279,17 @@ export default {
     .Tetrimino {
       position: absolute;
       grid-row: 1/2;
+      z-index: 3;
     }
     .Ghost {
       position: absolute;
       grid-row: 1/2;
+      z-index: 2;
     }
     .Field {
       position: relative;
       grid-row: 1/2;
+      z-index: 1;
     }
     p {
       grid-row: 2/3;

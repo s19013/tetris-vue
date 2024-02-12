@@ -43,7 +43,6 @@ export default {
   width: fit-content;
   height: fit-content; // 中身に幅をあわせる
   border: 1px black solid;
-  z-index: 2;
 }
 ul {
   display: flex;
