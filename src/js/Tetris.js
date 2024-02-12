@@ -239,6 +239,11 @@ export default class Tetris {
         // 揃ってる列があるなら消す
         await this.vanishAlignedRows(countOfAlignedRows)
 
+        // パフェクリしてるか調べる
+        if (this.Field.isPerfectClear()) {
+            this.score.perfectClearCalculation(countOfAlignedRows)
+        }
+
         // 状況によってはおじゃま発動を発動させる
         await this.insertOjyama()
 

@@ -126,6 +126,7 @@ export default {
       enableIsTetris: this.$refs.isTetris.showMessage,
       enableIsB2B: this.$refs.isB2B.showMessage,
       enableIsTspin: this.$refs.isTspin.showMessage,
+      enableIsPerfectClear: this.$refs.isPerfectClear.showMessage,
       setTspinType: this.setTspinType
     })
     /** キーボード受付 */
@@ -164,6 +165,7 @@ export default {
         </FlashMessage>
       </div>
       <div class="Center">
+        <FlashMessage ref="isPerfectClear" class="isPerfectClear">PerfectClear!</FlashMessage>
         <Tetrimino :tetrimino="tetrimino" />
         <Ghost :ghost="ghost" />
         <Field :field="field" />
@@ -222,6 +224,7 @@ export default {
       <div class="Cannot">
         <h2>注意</h2>
         <p>公式といろいろ違う</p>
+        <p>一部回し入れの仕方が公式と異なる</p>
         <p>回したら大きくずれることがある｡</p>
         <h2>できないこと(未実装)</h2>
         <p>一部回し入れ</p>
@@ -276,17 +279,29 @@ export default {
     display: grid;
     grid-template-rows: 10fr 1fr;
     grid-template-columns: 1fr;
+    .isPerfectClear {
+      position: absolute;
+      top: 30%;
+      font-size: 2rem;
+      -webkit-text-stroke: 5px rgb(189, 186, 0);
+      text-stroke: 5px rgb(189, 186, 0);
+      color: aliceblue;
+      z-index: 4;
+    }
     .Tetrimino {
       position: absolute;
       grid-row: 1/2;
+      z-index: 3;
     }
     .Ghost {
       position: absolute;
       grid-row: 1/2;
+      z-index: 2;
     }
     .Field {
       position: relative;
       grid-row: 1/2;
+      z-index: 1;
     }
     p {
       grid-row: 2/3;
