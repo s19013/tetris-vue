@@ -99,6 +99,16 @@ export default class Field {
         }
     }
 
+    isPerfectClear(){
+        // 1つでもtrueがあったらだめ
+        for (const row of this.status) {
+            for (const block of row) {
+                if (block) { return false }
+            }
+        }
+        return true
+    }
+
     // デバック用
     /** テスト用の地形を生成する */
     setTestField(){
