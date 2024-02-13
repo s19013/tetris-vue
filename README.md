@@ -33,7 +33,7 @@
 ### おじゃまブロック
 一定時間時間が立つ事におじゃまブロックがせり上がってくる
 
-https://github.com/s19013/tetris-vue/assets/50346558/b1d9f2cb-5f9c-4fba-b2a8-b7aac4cddff7
+https://github.com/s19013/tetris-vue/assets/50346558/bc026cf4-a243-4946-a93b-8bdf2f5e83ab
 
 
 ### 回し入れ,tスピン判定,back to back判定
