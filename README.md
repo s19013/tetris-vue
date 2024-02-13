@@ -32,10 +32,14 @@
 ## デモ
 ### おじゃまブロック
 一定時間時間が立つ事におじゃまブロックがせり上がってくる
-<iframe src="https://drive.google.com/file/d/1ZjfBHeWJCpfLSLj-wM4UfdpD4zJ4-cBn/preview" width="320" height="240" allow="autoplay"></iframe>
+
+https://github.com/s19013/tetris-vue/assets/50346558/b1d9f2cb-5f9c-4fba-b2a8-b7aac4cddff7
+
 
 ### 回し入れ,tスピン判定,back to back判定
-<iframe src="https://drive.google.com/file/d/1c6USJyKeyRn4Tj4mjN8BC9UwdwtRDO3D/preview" width="320" height="240" allow="autoplay"></iframe>
+https://github.com/s19013/tetris-vue/assets/50346558/d4e9b6ff-34ce-4c52-9e4d-092876f9563d
+
+
 
 # 目的や動機
 とりあえず自力だけで1から作ってみたかった｡  
