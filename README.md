@@ -33,13 +33,16 @@
 ### おじゃまブロック
 一定時間時間が立つ事におじゃまブロックがせり上がってくる
 
-https://github.com/s19013/tetris-vue/assets/50346558/bc026cf4-a243-4946-a93b-8bdf2f5e83ab
-
+<video 
+  height="300" 
+  src="https://github.com/s19013/tetris-vue/assets/50346558/bc026cf4-a243-4946-a93b-8bdf2f5e83ab"
+/>
 
 ### 回し入れ,tスピン判定,back to back判定
-https://github.com/s19013/tetris-vue/assets/50346558/d4e9b6ff-34ce-4c52-9e4d-092876f9563d
-
-
+<video 
+  height="300" 
+  src="https://github.com/s19013/tetris-vue/assets/50346558/d4e9b6ff-34ce-4c52-9e4d-092876f9563d"
+/>
 
 # 目的や動機
 とりあえず自力だけで1から作ってみたかった｡  
