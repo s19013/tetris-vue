@@ -1,5 +1,5 @@
 # 動きにちょっと癖があるテトリス
-[実物](s19013.github.io/tetris-vue/)  
+[実物](https://s19013.github.io/tetris-vue/)
 パソコン推奨  
 ブラウザで動作するのでインストールは不要です｡
 
